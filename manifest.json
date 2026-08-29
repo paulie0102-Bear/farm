@@ -1,0 +1,19 @@
+{
+    "name": "秘密花園 × 餐車",
+    "short_name": "秘密花園",
+    "description": "秘密花園 × 餐車",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#dff1d8",
+    "theme_color": "#dff1d8",
+    "icons": [
+        {
+            "src": "https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/quokka.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
