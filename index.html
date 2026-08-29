@@ -3836,17 +3836,17 @@ for(let i=0;i<state.cookingLines;i++){
 if(!state.cooking[i])state.cooking[i]={recipeId:null,endTime:0,helperEnabled:false};
 const line=state.cooking[i];
 const recipe=RECIPES.find(r=>r.id===line.recipeId);
-const job=state.helper.jobs?.[i];
-const busy=job?true:(line.recipeId&&line.endTime>Date.now());
-const done=!job&&line.recipeId&&line.endTime>0&&line.endTime<=Date.now();
+const job=state.helper?.jobs?.[i];
+const busy=line.recipeId&&line.endTime>Date.now();
+const done=line.recipeId&&line.endTime>0&&line.endTime<=Date.now();
 html+=`
 <div class="line-card">
 <div class="line-header">
 <div class="line-name">🍳 料理線 ${i+1}</div>
-<div class="line-status">${busy?"製作中":done?"完成":"待機中"}</div>
+<div class="line-status">${job?(job.completed?"小幫手完成":"小幫手製作中"):busy?"製作中":done?"完成":"待機中"}</div>
 </div>
 ${renderHelperSwitch(i,line,job)}
-${job?renderHelperProgress(i,job,recipe):done?renderCookingProgress(line,recipe):renderRecipeSelector(i,line)}
+${job?renderHelperProgress(i,job,recipe):done?renderCookingProgress(line,recipe):line.helperEnabled?renderHelperRecipeSelector(i):renderRecipeSelector(i,line)}
 </div>`;
 }
 container.innerHTML=html;
@@ -4238,7 +4238,11 @@ container.innerHTML=`<div class="dish-grid">${list.map(recipe=>`
 }
 
 function ensureHelperDaily(){
-if(!state.helper)state.helper={date:"",requests:[],served:{},jobs:{}};
+if(!state.helper)state.helper={date:"",requests:[],served:{},jobs:{},characterId:null};
+if(!state.helper.date)state.helper.date="";
+if(!Array.isArray(state.helper.requests))state.helper.requests=[];
+if(!state.helper.served)state.helper.served={};
+if(!state.helper.jobs)state.helper.jobs={};
 const today=new Date().toLocaleDateString("zh-TW");
 if(state.helper.date!==today){
 const pool=[...RECIPES];
@@ -4246,54 +4250,78 @@ state.helper.requests=pool.sort(()=>Math.random()-.5).slice(0,Math.min(4,pool.le
 state.helper.served={};
 state.helper.date=today;
 }
-state.helper.jobs=state.helper.jobs||{};
 }
-
+function getHelperCharacters(){
+return (state.joined||[]).map(id=>getCharacter(id)).filter(c=>c&&Number(state.friendship?.[c.id]||0)>=3);
+}
 function renderCookingHelper(){
 const box=document.getElementById("cookingHelper");
 if(!box)return;
 ensureHelperDaily();
-const requests=state.helper.requests||[];
-const used=Object.keys(state.helper.served||{}).length;
+const helper=state.helper?.characterId?getCharacter(state.helper.characterId):null;
+if(!helper){
+box.innerHTML=`<div onclick="openHelperSelect()" style="padding:10px;border:1px dashed #e0b84f;border-radius:10px;background:#fffdf2;text-align:center;color:#9a6a15;font-size:12px;font-weight:900;cursor:pointer">＋ 選擇料理小幫手</div>`;
+return;
+}
+const remaining=(state.helper.requests||[]).filter(id=>!state.helper.served?.[id]).length;
 box.innerHTML=`
-<div class="helper-box">
-<div class="helper-title">🌟 今日料理委託 ${used}/${requests.length}</div>
-<div class="helper-desc">今天小幫手想吃以下料理，消耗料理即可完成委託。</div>
+<div style="display:flex;align-items:center;gap:8px">
+<div style="width:48px;height:48px;flex-shrink:0;overflow:hidden;border-radius:10px;background:#fff8d6;display:flex;align-items:center;justify-content:center">
+<img src="${characterImage(helper)}" style="max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;display:block">
+</div>
+<div style="flex:1;min-width:0;text-align:left">
+<div style="font-size:12px;font-weight:900">${helper.name}</div>
+<div style="font-size:9px;color:#9a8775;margin-top:3px">🌟 今日剩餘委託 ${remaining}/4</div>
+</div>
+<button class="btn btn-light" style="width:auto;padding:5px 8px;font-size:9px" onclick="openHelperSelect()">更換</button>
+</div>
 <div class="helper-recipes">
-${requests.map(id=>{
-const recipe=RECIPES.find(r=>r.id===id);
-if(!recipe)return"";
+${(state.helper.requests||[]).map(id=>{
+const r=RECIPES.find(x=>x.id===id);
+if(!r)return"";
 const count=Number(state.dishes[id]||0);
-const served=!!state.helper.served[id];
-return `<div class="helper-recipe ${count>0?"have":""} ${served?"used":""}">
-<div class="helper-recipe-icon">${recipe.icon}</div>
-<div class="helper-recipe-name">${recipe.name}</div>
-<div class="helper-recipe-count">${served?"✓ 已委託":`持有 ${count}`}</div>
+const served=!!state.helper.served?.[id];
+return `<div class="helper-recipe ${served?"done":""}">
+<div class="helper-recipe-icon">${r.icon}</div>
+<div class="helper-recipe-name">${r.name}</div>
+<div class="helper-recipe-count">${served?"✓ 已委託":"持有 "+count}</div>
 </div>`;
 }).join("")}
-</div>
-<div class="helper-note">每種料理每天只能委託一次</div>
 </div>`;
 }
 
-function processHelperJobs(){
-    if(!state.helper?.jobs)return;
-    Object.keys(state.helper.jobs).forEach(index=>{
-        const job=state.helper.jobs[index];
-        if(!job)return;
-        if(Date.now()>=job.endTime&&!job.completed){
-            job.completed=true;
-            save();
-        }
-    });
+function openHelperSelect(){
+const list=getHelperCharacters();
+document.getElementById("modal").innerHTML=`
+<div class="modal-title">🌟 選擇料理小幫手</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
+${list.length?list.map(c=>`
+<div onclick="selectHelper('${c.id}')" style="padding:8px;border:1px solid #eee;border-radius:10px;background:#fff;text-align:center;cursor:pointer">
+<div style="width:50px;height:50px;margin:auto;overflow:hidden">
+<img src="${characterImage(c)}" style="width:100%;height:100%;object-fit:contain;display:block">
+</div>
+<div style="font-size:10px;font-weight:900;margin-top:4px">${c.name}</div>
+</div>`).join(""):`<div style="grid-column:1/-1;text-align:center;color:#999;padding:15px;font-size:11px">目前沒有好感度滿的角色</div>`}
+</div>
+<div style="height:8px"></div>
+<button class="btn btn-light" onclick="closeModal()">取消</button>`;
+openModal();
 }
 
-
+function selectHelper(id){
+if(!state.joined.includes(id)||Number(state.friendship?.[id]||0)<3){
+toast("此角色無法擔任小幫手");
+return;
+}
+state.helper.characterId=id;
+save();
+closeModal();
+renderKitchen();
+toast(`🌟 ${getCharacter(id).name} 成為料理小幫手`);
+}
 function renderHelperSwitch(index,line,job){
-if(job)return "";
 const enabled=!!line.helperEnabled;
-return `
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
 <div style="font-size:10px;color:#998675">🌟 小幫手</div>
 <div class="helper-switch ${enabled?"on":""}" onclick="toggleHelperLine(${index})">
 <div class="helper-switch-dot"></div>
@@ -4301,39 +4329,162 @@ return `
 </div>
 </div>`;
 }
-
 function toggleHelperLine(index){
 const line=state.cooking[index];
 if(!line)return;
+if(!state.helper?.characterId){
+toast("請先選擇料理小幫手");
+openHelperSelect();
+return;
+}
 if(line.recipeId&&line.endTime>Date.now()){
-toast("料理線正在製作中");
+toast("這條料理線正在製作中");
 return;
 }
 line.helperEnabled=!line.helperEnabled;
 save();
 renderKitchen();
 }
-
-function startHelperCooking(index){
-const line=state.cooking[index];
-if(!line||line.recipeId)return;
+function renderHelperRecipeSelector(index){
 ensureHelperDaily();
-const available=state.helper.requests.filter(id=>!state.helper.served[id]&&Number(state.dishes[id]||0)>0);
-if(!available.length){
-toast("沒有符合今日委託的料理");
+return `
+<div style="font-size:10px;color:#9a8775;margin-bottom:7px">選擇今日小幫手料理</div>
+<div class="recipe-select">
+${state.helper.requests.map(id=>{
+const recipe=RECIPES.find(r=>r.id===id);
+if(!recipe||state.helper.served[id])return"";
+const count=Number(state.dishes[id]||0);
+return `<div class="recipe-mini ${count>0?"":"disabled"}" onclick="${count>0?`confirmHelperCooking(${index},'${recipe.id}')`:``}">
+<div class="recipe-mini-icon">${recipe.icon}</div>
+<div class="recipe-mini-name">${recipe.name}</div>
+<div style="font-size:8px;color:#998675">持有 ${count}</div>
+</div>`;
+}).join("")}
+</div>`;
+}
+function confirmHelperCooking(index,recipeId){
+const recipe=RECIPES.find(r=>r.id===recipeId);
+if(!recipe)return;
+if(Number(state.dishes[recipeId]||0)<1){
+toast("料理倉庫沒有這道料理");
 return;
 }
-const recipe=RECIPES.find(r=>r.id===available[0]);
-if(!recipe)return;
-state.dishes[recipe.id]--;
-line.recipeId=recipe.id;
-line.endTime=Date.now()+COOK_TIME;
+document.getElementById("modal").innerHTML=`
+<div class="modal-title">🌟 小幫手委託</div>
+<div style="text-align:center;font-size:35px">${recipe.icon}</div>
+<div style="text-align:center;font-size:15px;font-weight:900;margin:6px 0 12px">${recipe.name}</div>
+<div style="padding:12px;border-radius:13px;background:#fff3dc;text-align:center;font-size:12px;line-height:1.7">是否要消耗 <b>${recipe.name} ×1</b><br>委託料理小幫手？</div>
+<div style="height:10px"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<button class="btn btn-light" onclick="closeModal()">取消</button>
+<button class="btn btn-green" onclick="startHelperCooking(${index},'${recipe.id}')">確認委託</button>
+</div>`;
+openModal();
+}
+function startHelperCooking(index,recipeId){
+const line=state.cooking[index];
+const recipe=RECIPES.find(r=>r.id===recipeId);
+const helperId=state.helper?.characterId;
+if(!line||!recipe||!helperId)return;
+if(!state.helper.requests.includes(recipeId)){
+toast("不是今日指定料理");
+return;
+}
+if(state.helper.served[recipeId]){
+toast("今天已經委託過這道料理");
+return;
+}
+if(Number(state.dishes[recipeId]||0)<1){
+toast("料理倉庫沒有這道料理");
+return;
+}
+if(line.recipeId){
+toast("這條料理線正在使用中");
+return;
+}
+state.dishes[recipeId]--;
+const now=Date.now();
+line.recipeId=recipeId;
+line.endTime=now+COOK_TIME;
+line.helperEnabled=true;
+state.helper.jobs[index]={
+helperId:helperId,
+recipeId:recipeId,
+startTime:now,
+endTime:now+COOK_TIME,
+completed:false
+};
+state.helper.served[recipeId]=true;
+save();
+closeModal();
+renderKitchen();
+toast(`🌟 ${recipe.name} 已交給小幫手`);
+}
+function processHelperJobs(){
+if(!state.helper?.jobs)return;
+let changed=false;
+Object.keys(state.helper.jobs).forEach(index=>{
+const job=state.helper.jobs[index];
+if(job&&!job.completed&&Date.now()>=job.endTime){
+job.completed=true;
+changed=true;
+}
+});
+if(changed)save();
+}
+function renderHelperProgress(index,job,recipe){
+const remaining=Math.max(0,job.endTime-Date.now());
+const percent=Math.min(100,((COOK_TIME-remaining)/COOK_TIME)*100);
+if(job.completed||remaining<=0){
+return `
+<div class="recipe-result">
+<div class="recipe-result-icon">${recipe?.icon||"🍱"}</div>
+<div style="flex:1">
+<div class="recipe-result-name">${recipe?.name||"料理"}</div>
+<div style="color:#e0a52c;font-size:11px;font-weight:900">🌟 小幫手已完成</div>
+</div>
+<button class="btn btn-orange" style="width:auto;min-height:38px" onclick="claimHelperCooking(${index})">🎁 領取料理</button>
+</div>`;
+}
+return `
+<div class="recipe-result">
+<div class="recipe-result-icon">${recipe?.icon||"🍱"}</div>
+<div style="flex:1">
+<div class="recipe-result-name">${recipe?.name||"料理"}</div>
+<div class="cook-progress">
+<div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div>
+</div>
+<div class="cook-time">🌟 小幫手協助中・${formatHelperTime(remaining)}</div>
+</div>
+</div>`;
+}
+function formatHelperTime(ms){
+const sec=Math.max(0,Math.ceil(ms/1000));
+const h=Math.floor(sec/3600);
+const m=Math.floor((sec%3600)/60);
+const s=sec%60;
+return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+function claimHelperCooking(index){
+const job=state.helper?.jobs?.[index];
+if(!job||!job.completed){
+toast("小幫手還沒完成");
+return;
+}
+const recipe=RECIPES.find(r=>r.id===job.recipeId);
+if(recipe)state.dishes[recipe.id]=(state.dishes[recipe.id]||0)+1;
+delete state.helper.jobs[index];
+const line=state.cooking[index];
+if(line){
+line.recipeId=null;
+line.endTime=0;
 line.helperEnabled=false;
-state.helper.served[recipe.id]=true;
+}
 save();
 renderKitchen();
-toast(`🌟 小幫手已消耗 ${recipe.name} 並開始料理`);
+toast(`🎁 ${recipe?.name||"料理"} 已放入料理倉庫`);
 }
+
 /* =========================================================
    餐車
 ========================================================= */
@@ -5466,13 +5617,11 @@ async function importSaveFile(event){
 ========================================================= */
 
 function gameTick(){
-
+    processHelperJobs();
     /*
        料理完成
     */
-
     let cookingChanged=false;
-
 
     for(
         const line of state.cooking
@@ -5657,12 +5806,10 @@ async function init(){
     ){
 
         state.cooking.push({
-
-            recipeId:null,
-
-            endTime:0
-
-        });
+recipeId:null,
+endTime:0,
+helperEnabled:false
+});
 
     }
 
