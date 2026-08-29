@@ -477,72 +477,63 @@ button,
 .f3{right:80px;}
 .f4{right:20px;}
 
-.garden-character{
+.garden-character-wrap{
     position:absolute;
-
-    bottom:5px;
     left:50%;
-
+    bottom:5px;
     transform:translateX(-50%);
+    width:120px;
+    height:125px;
+    cursor:pointer;
+    z-index:5;
+}
 
+.garden-character{
+    display:block;
     width:105px;
     height:105px;
-
+    margin:0 auto;
     object-fit:contain;
-
     filter:drop-shadow(0 5px 4px rgba(0,0,0,.15));
+    pointer-events:none;
+}
+
+.garden-character-hint{
+    position:absolute;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    padding:3px 8px;
+    border-radius:10px;
+    background:rgba(255,250,240,.9);
+    color:#765b45;
+    font-size:9px;
+    font-weight:900;
+    white-space:nowrap;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
 }
 
 /* =========================================================
    地區
 ========================================================= */
 
-.region-list{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:9px;
-}
+.region-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.region-card{position:relative;min-height:150px;padding:13px;border-radius:16px;border:2px solid transparent;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer}
+.region-card.selected{border-color:var(--green);background:#f1faee}
+.region-icon{font-size:28px}
+.region-name{margin-top:5px;font-weight:900;font-size:14px}
+.region-desc{margin-top:2px;font-size:10px;color:#9a8876}
+.region-reward-title{margin-top:10px;padding-top:8px;border-top:1px solid #eee4d5;font-size:10px;font-weight:900;color:#765b45}
+.region-reward-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.region-reward-item{padding:4px 7px;border-radius:10px;background:#f5f1e9;color:#6f8f62;font-size:10px;font-weight:900}
+.dispatch-team{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.dispatch-slot{min-height:100px;padding:8px;border:2px dashed #d8cdbd;border-radius:15px;background:#fffaf2;text-align:center;cursor:pointer}
+.dispatch-slot.filled{border-style:solid;border-color:var(--green);background:#f1faee}
+.dispatch-slot-icon{font-size:34px;height:52px;display:flex;align-items:center;justify-content:center}
+.dispatch-slot-name{font-size:10px;font-weight:900;color:#765b45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dispatch-slot-plus{font-size:36px;line-height:52px;color:#b8aa98}
+.dispatch-team-title{margin-top:10px;font-size:12px;font-weight:900;color:#765b45}
 
-.region-card{
-    position:relative;
-
-    min-height:92px;
-
-    padding:13px;
-
-    border-radius:16px;
-
-    border:2px solid transparent;
-
-    background:#fff;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
-
-    cursor:pointer;
-}
-
-.region-card.selected{
-    border-color:var(--green);
-    background:#f1faee;
-}
-
-.region-icon{
-    font-size:28px;
-}
-
-.region-name{
-    margin-top:5px;
-
-    font-weight:900;
-    font-size:14px;
-}
-
-.region-desc{
-    margin-top:2px;
-
-    font-size:10px;
-    color:#9a8876;
-}
 
 /* =========================================================
    派遣
@@ -871,6 +862,27 @@ button,
     color:#a28e7a;
 }
 
+.helper-box{padding:12px;border-radius:16px;background:linear-gradient(135deg,#fff9dc,#fff3c5);border:1px solid #f2d46b}
+.helper-title{font-size:13px;font-weight:900;color:#795548}
+.helper-desc{margin-top:3px;font-size:10px;color:#9a806d}
+.helper-recipes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.helper-recipe{padding:7px 3px;border-radius:11px;background:#fff;border:1px solid #eadfce;text-align:center}
+.helper-recipe.have{border-color:#e0b84f;background:#fff9df}
+.helper-recipe.used{opacity:.45;filter:grayscale(1)}
+.helper-recipe-icon{font-size:22px}
+.helper-recipe-name{margin-top:3px;font-size:9px;font-weight:900}
+.helper-recipe-count{margin-top:2px;font-size:9px;color:#998675}
+.helper-note{margin-top:9px;font-size:10px;text-align:center;color:#9a806d}
+.helper-switch{position:relative;display:inline-flex;align-items:center;width:62px;height:25px;border-radius:15px;background:#ddd;border:1px solid #ccc;cursor:pointer}
+.helper-switch.on{background:#ffd54f;border-color:#e0b84f}
+.helper-switch-dot{position:absolute;top:3px;left:4px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.helper-switch.on .helper-switch-dot{left:39px}
+.helper-switch-text{width:100%;text-align:center;font-size:9px;font-weight:900;color:#795548}
+.dish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.dish-stock{display:flex;align-items:center;gap:8px;padding:9px;border-radius:13px;background:#fff;border:1px solid #eee2d4}
+.dish-stock-icon{font-size:27px}
+.dish-stock-name{font-size:11px;font-weight:900}
+.dish-stock-count{margin-top:2px;font-size:10px;color:#998675}
 /* =========================================================
    餐車
 ========================================================= */
@@ -1514,21 +1526,42 @@ button,
 
         <div class="topbar">
 
-            <div class="title-area">
+    <div class="title-area">
 
-                <h1 class="title">🌿 秘密花園</h1>
+        <h1 class="title">🌿 秘密花園</h1>
 
-                <div class="subtitle">
-                    派遣、採集、料理，與大家慢慢成為朋友
-                </div>
-
-            </div>
-
-            <div class="currency">
-                💰 <span id="gardenCoins">0</span>
-            </div>
-
+        <div class="subtitle">
+            派遣、採集、料理，與大家慢慢成為朋友
         </div>
+
+    </div>
+
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:6px;
+    ">
+
+        <div class="currency">
+            💰 <span id="gardenCoins">0</span>
+        </div>
+
+        <button
+            class="btn btn-light"
+            style="
+                width:auto;
+                min-height:36px;
+                padding:6px 9px;
+                font-size:11px;
+            "
+            onclick="openSaveModal()"
+        >
+            💾 存檔
+        </button>
+
+    </div>
+
+</div>
 
 
         <div class="garden-scene">
@@ -1543,11 +1576,19 @@ button,
             <div class="flower f3">🌻</div>
             <div class="flower f4">🌷</div>
 
-            <img
-                id="gardenCharacter"
-                class="garden-character"
-                alt="花園角色"
-            >
+            <div
+    class="garden-character-wrap"
+    onclick="openGardenCharacterModal()"
+>
+    <img
+        id="gardenCharacter"
+        class="garden-character"
+        alt="花園角色"
+    >
+    <div class="garden-character-hint">
+        點擊更換角色
+    </div>
+</div>
 
         </div>
 
@@ -1578,33 +1619,13 @@ button,
                 <div style="height:10px"></div>
 
                 <div id="selectedRegionInfo"></div>
-
-                <div style="height:8px"></div>
-
-                <div
-                    style="
-                        font-size:12px;
-                        font-weight:900;
-                        color:#765b45;
-                    "
-                >
-                    🍱 要帶料理嗎？
-                </div>
-
-                <div
-                    id="dispatchFoodList"
-                    class="food-choice"
-                ></div>
-
-                <div style="height:9px"></div>
-
-                <button
-                    id="dispatchButton"
-                    class="btn btn-green"
-                    onclick="startDispatch()"
-                >
-                    🧭 開始派遣
-                </button>
+<div class="dispatch-team-title">👥 派遣隊員</div>
+<div id="dispatchTeam" class="dispatch-team"></div>
+<div style="height:8px"></div>
+<div style="font-size:12px;font-weight:900;color:#765b45">🍱 要帶料理嗎？</div>
+<div id="dispatchFoodList" class="food-choice"></div>
+<div style="height:9px"></div>
+<button id="dispatchButton" class="btn btn-green" onclick="startDispatch()">🧭 開始派遣</button>
 
             </div>
 
@@ -1658,76 +1679,34 @@ button,
     ====================================================== -->
 
     <section id="kitchenPage" class="page">
+<div class="topbar">
+<div class="title-area">
+<h1 class="title">🍳 料理工房</h1>
+<div class="subtitle">把派遣帶回來的食材變成料理</div>
+</div>
+<div class="currency">💰 <span id="kitchenCoins">0</span></div>
+</div>
 
-        <div class="topbar">
+<div class="card">
+<div class="section-title"><span>🌟 料理小幫手</span><small id="helperRemain"></small></div>
+<div id="cookingHelper"></div>
+</div>
 
-            <div class="title-area">
+<div class="card">
+<div class="section-title"><span>🍳 料理線</span><small><span id="lineCount"></span> 條</small></div>
+<div id="cookingLines" class="cooking-lines"></div>
+</div>
 
-                <h1 class="title">🍳 料理工房</h1>
+<div class="card">
+<div class="section-title"><span>💰 擴充料理線</span></div>
+<div id="upgradeLineArea"></div>
+</div>
 
-                <div class="subtitle">
-                    把派遣帶回來的食材變成料理
-                </div>
-
-            </div>
-
-            <div class="currency">
-                💰 <span id="kitchenCoins">0</span>
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="section-title">
-
-                <span>🍳 料理線</span>
-
-                <small>
-                    <span id="lineCount"></span> 條
-                </small>
-
-            </div>
-
-            <div
-                id="cookingLines"
-                class="cooking-lines"
-            ></div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="section-title">
-
-                <span>💰 擴充料理線</span>
-
-            </div>
-
-            <div
-                id="upgradeLineArea"
-            ></div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="section-title">
-
-                <span>🍱 已完成料理</span>
-
-                <small>可以派遣或販售</small>
-
-            </div>
-
-            <div id="dishInventory"></div>
-
-        </div>
-
-    </section>
+<div class="card">
+<div class="section-title"><span>🍱 料理倉庫</span><small>目前持有</small></div>
+<div id="dishInventory"></div>
+</div>
+</section>
 
 
     <!-- =====================================================
@@ -2051,56 +2030,16 @@ function characterImage(character){
    地區
 ========================================================= */
 
-const REGIONS = [
+/* =========================================================
+   派遣地區
+   每個地區固定獲得 3 種食材
+========================================================= */
 
-    {
-        id:"forest",
-        name:"青翠森林",
-        icon:"🌳",
-        desc:"森林裡藏著新鮮的蔬菜",
-        ingredients:["🌾","🥗"]
-    },
-
-    {
-        id:"coast",
-        name:"蔚藍海岸",
-        icon:"🌊",
-        desc:"海風帶來豐富的海鮮",
-        ingredients:["🐟","🦐"]
-    },
-
-    {
-        id:"village",
-        name:"暖陽村莊",
-        icon:"🏡",
-        desc:"村莊裡有香噴噴的食材",
-        ingredients:["🥩","🥚"]
-    },
-
-    {
-        id:"mountain",
-        name:"雲霧山地",
-        icon:"⛰️",
-        desc:"山裡有珍貴的天然食材",
-        ingredients:["🌾","🥩","🥚"]
-    },
-
-    {
-        id:"lake",
-        name:"月光湖畔",
-        icon:"🌙",
-        desc:"湖邊可以找到水產與蔬菜",
-        ingredients:["🐟","🥗","🦐"]
-    },
-
-    {
-        id:"town",
-        name:"夕陽小鎮",
-        icon:"🌇",
-        desc:"小鎮附近有各種料理材料",
-        ingredients:["🥩","🥚","🌾","🥗"]
-    }
-
+const REGIONS=[
+{id:"forest",name:"青翠森林",icon:"🌳",desc:"森林裡藏著新鮮的蔬菜",ingredients:["🌾","🥗","🥚"]},
+{id:"coast",name:"蔚藍海岸",icon:"🌊",desc:"海風帶來豐富的海鮮",ingredients:["🐟","🦐","🥗"]},
+{id:"village",name:"暖陽村莊",icon:"🏡",desc:"村莊裡有香噴噴的食材",ingredients:["🥩","🥚","🌾"]},
+{id:"mountain",name:"雲霧山地",icon:"⛰️",desc:"山裡有珍貴的天然食材",ingredients:["🌾","🥩","🦐"]}
 ];
 
 
@@ -2302,11 +2241,9 @@ const SALE_TIME = 5 * 60 * 1000;
 /* =========================================================
    初始資料
 ========================================================= */
-
-const DEFAULT_STATE = {
-
+const DEFAULT_STATE={
+    playerCharacter:"QUOKKA",
     coins:100,
-
     ingredients:{
         "🌾":2,
         "🥗":2,
@@ -2315,149 +2252,462 @@ const DEFAULT_STATE = {
         "🥩":2,
         "🥚":2
     },
-
     dishes:{},
-
     cookingLines:1,
-
     cooking:[
         {
             recipeId:null,
-            endTime:0
+            endTime:0,
+            helperEnabled:false
         }
     ],
-
-    friendship:{},
-
-    joined:[],
-
-    expedition:{
-
-        region:null,
-
-        selectedDish:null,
-
-        active:false,
-
-        startTime:0,
-
-        endTime:0,
-
-        targetCharacter:null
-
+    helper:{
+        date:"",
+        requests:[],
+        served:{},
+        jobs:{}
     },
-
+    friendship:{
+        BOBO:3,
+        QUOKKA:3
+    },
+    joined:[
+        "BOBO",
+        "QUOKKA"
+    ],
+    expedition:{
+        region:null,
+        selectedDish:null,
+        members:[],
+        active:false,
+        startTime:0,
+        endTime:0,
+        targetCharacter:null
+    },
     truck:{
-
         skin:"spring",
-
         stock:[],
-
         lastSaleTime:Date.now(),
-
         totalSales:0
-
     }
-
 };
 
 
-let state = loadState();
-
-
 /* =========================================================
-   讀檔
+   IndexedDB 存檔系統
 ========================================================= */
 
-function loadState(){
+const SAVE_DB_NAME = "SecretGardenDB";
+const SAVE_DB_VERSION = 1;
+const SAVE_STORE_NAME = "saveData";
+const SAVE_KEY = "main";
 
-    try{
+let state = cloneDefaultState();
+let saveReady = false;
+let saveQueue = Promise.resolve();
 
-        const raw =
-            localStorage.getItem(STORAGE_KEY);
 
-        if(!raw){
+function cloneDefaultState(){
 
-            return structuredClone
-                ? structuredClone(DEFAULT_STATE)
-                : JSON.parse(
-                    JSON.stringify(DEFAULT_STATE)
-                );
-
-        }
-
-        const saved = JSON.parse(raw);
-
-        const merged =
-            Object.assign(
-                {},
-                JSON.parse(
-                    JSON.stringify(DEFAULT_STATE)
-                ),
-                saved
-            );
-
-        merged.ingredients =
-            Object.assign(
-                {},
-                DEFAULT_STATE.ingredients,
-                saved.ingredients || {}
-            );
-
-        merged.dishes =
-            Object.assign(
-                {},
-                saved.dishes || {}
-            );
-
-        merged.friendship =
-            Object.assign(
-                {},
-                saved.friendship || {}
-            );
-
-        merged.expedition =
-            Object.assign(
-                {},
-                DEFAULT_STATE.expedition,
-                saved.expedition || {}
-            );
-
-        merged.truck =
-            Object.assign(
-                {},
-                DEFAULT_STATE.truck,
-                saved.truck || {}
-            );
-
-        merged.cooking =
-            Array.isArray(saved.cooking)
-                ? saved.cooking
-                : [];
-
-        while(
-            merged.cooking.length <
-            merged.cookingLines
-        ){
-
-            merged.cooking.push({
-                recipeId:null,
-                endTime:0
-            });
-
-        }
-
-        return merged;
-
-    }catch(e){
-
-        console.error(e);
-
-        return JSON.parse(
+    return structuredClone
+        ? structuredClone(DEFAULT_STATE)
+        : JSON.parse(
             JSON.stringify(DEFAULT_STATE)
         );
 
+}
+
+
+/* =========================================================
+   開啟 IndexedDB
+========================================================= */
+
+function openSaveDB(){
+
+    return new Promise(
+        (resolve,reject)=>{
+
+            const request =
+                indexedDB.open(
+                    SAVE_DB_NAME,
+                    SAVE_DB_VERSION
+                );
+
+
+            request.onupgradeneeded =
+                event=>{
+
+                    const db =
+                        event.target.result;
+
+
+                    if(
+                        !db.objectStoreNames.contains(
+                            SAVE_STORE_NAME
+                        )
+                    ){
+
+                        db.createObjectStore(
+                            SAVE_STORE_NAME
+                        );
+
+                    }
+
+                };
+
+
+            request.onsuccess =
+                ()=>{
+
+                    resolve(
+                        request.result
+                    );
+
+                };
+
+
+            request.onerror =
+                ()=>{
+
+                    reject(
+                        request.error
+                    );
+
+                };
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   IndexedDB 讀取
+========================================================= */
+
+function readIndexedDB(){
+
+    return openSaveDB()
+        .then(
+            db=>{
+
+                return new Promise(
+                    (resolve,reject)=>{
+
+                        const transaction =
+                            db.transaction(
+                                SAVE_STORE_NAME,
+                                "readonly"
+                            );
+
+                        const store =
+                            transaction.objectStore(
+                                SAVE_STORE_NAME
+                            );
+
+                        const request =
+                            store.get(
+                                SAVE_KEY
+                            );
+
+
+                        request.onsuccess =
+                            ()=>{
+
+                                resolve(
+                                    request.result || null
+                                );
+
+                            };
+
+
+                        request.onerror =
+                            ()=>{
+
+                                reject(
+                                    request.error
+                                );
+
+                            };
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   IndexedDB 寫入
+========================================================= */
+
+function writeIndexedDB(data){
+
+    return openSaveDB()
+        .then(
+            db=>{
+
+                return new Promise(
+                    (resolve,reject)=>{
+
+                        const transaction =
+                            db.transaction(
+                                SAVE_STORE_NAME,
+                                "readwrite"
+                            );
+
+                        const store =
+                            transaction.objectStore(
+                                SAVE_STORE_NAME
+                            );
+
+
+                        store.put(
+                            data,
+                            SAVE_KEY
+                        );
+
+
+                        transaction.oncomplete =
+                            ()=>{
+
+                                resolve();
+
+                            };
+
+
+                        transaction.onerror =
+                            ()=>{
+
+                                reject(
+                                    transaction.error
+                                );
+
+                            };
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   讀取存檔
+   IndexedDB → 舊 localStorage
+========================================================= */
+
+async function loadState(){
+
+    try{
+
+        const indexedData =
+            await readIndexedDB();
+
+
+        if(indexedData){
+
+            return mergeState(
+                indexedData
+            );
+
+        }
+
+
+        /*
+           第一次改成 IndexedDB 時，
+           嘗試讀取舊 localStorage。
+        */
+
+        const oldRaw =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+
+        if(oldRaw){
+
+            try{
+
+                const oldData =
+                    JSON.parse(
+                        oldRaw
+                    );
+
+
+                const merged =
+                    mergeState(
+                        oldData
+                    );
+
+
+                /*
+                   搬到 IndexedDB。
+                */
+
+                await writeIndexedDB(
+                    merged
+                );
+
+
+                /*
+                   搬完之後刪除舊存檔。
+                */
+
+                localStorage.removeItem(
+                    STORAGE_KEY
+                );
+
+
+                console.log(
+                    "舊存檔已轉移至 IndexedDB"
+                );
+
+
+                return merged;
+
+            }catch(error){
+
+                console.error(
+                    "舊 localStorage 存檔讀取失敗",
+                    error
+                );
+
+            }
+
+        }
+
+
+        return cloneDefaultState();
+
+    }catch(error){
+
+        console.error(
+            "IndexedDB 讀檔失敗",
+            error
+        );
+
+
+        /*
+           如果瀏覽器不支援 IndexedDB，
+           暫時使用預設資料，避免整個遊戲無法啟動。
+        */
+
+        return cloneDefaultState();
+
     }
+
+}
+
+
+/* =========================================================
+   合併存檔
+========================================================= */
+
+function mergeState(saved){
+
+    const base =
+        cloneDefaultState();
+
+
+    const merged =
+        Object.assign(
+            base,
+            saved || {}
+        );
+
+    merged.dishes=Object.assign({},saved?.dishes||{});
+merged.helper=Object.assign({
+    date:"",
+    requests:[],
+    served:{},
+    jobs:{}
+},saved?.helper||{});
+merged.helper.requests=Array.isArray(merged.helper.requests)?merged.helper.requests:[];
+merged.helper.served=merged.helper.served||{};
+merged.helper.jobs=merged.helper.jobs||{};
+
+
+    merged.ingredients =
+        Object.assign(
+            {},
+            DEFAULT_STATE.ingredients,
+            saved?.ingredients || {}
+        );
+
+
+    merged.dishes =
+        Object.assign(
+            {},
+            saved?.dishes || {}
+        );
+
+
+    merged.friendship =
+        Object.assign(
+            {},
+            saved?.friendship || {}
+        );
+
+
+    merged.expedition =
+        Object.assign(
+            {},
+            DEFAULT_STATE.expedition,
+            saved?.expedition || {}
+        );
+
+
+    merged.truck =
+        Object.assign(
+            {},
+            DEFAULT_STATE.truck,
+            saved?.truck || {}
+        );
+
+
+    merged.cooking =
+        Array.isArray(
+            saved?.cooking
+        )
+        ?
+        saved.cooking
+        :
+        [];
+
+
+    while(
+        merged.cooking.length <
+        merged.cookingLines
+    ){
+
+        merged.cooking.push({
+
+            recipeId:null,
+
+            endTime:0
+
+        });
+
+    }
+
+
+    if(
+        !Array.isArray(
+            merged.joined
+        )
+    ){
+
+        merged.joined=[];
+
+    }
+
+
+    return merged;
 
 }
 
@@ -2468,10 +2718,38 @@ function loadState(){
 
 function save(){
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(state)
-    );
+    /*
+       讓大量連續 save() 不會同時寫入 IndexedDB。
+    */
+
+    const data =
+        structuredClone
+            ? structuredClone(state)
+            : JSON.parse(
+                JSON.stringify(state)
+            );
+
+
+    saveQueue =
+        saveQueue
+            .then(
+                ()=>writeIndexedDB(
+                    data
+                )
+            )
+            .catch(
+                error=>{
+
+                    console.error(
+                        "存檔失敗",
+                        error
+                    );
+
+                }
+            );
+
+
+    return saveQueue;
 
 }
 
@@ -2709,30 +2987,13 @@ function renderGarden(){
 
 function renderGardenCharacter(){
 
-    const joined =
-        state.joined;
-
-    let character = null;
-
-    if(joined.length){
-
-        const id =
-            joined[
-                Math.floor(
-                    Date.now()/5000
-                ) % joined.length
-            ];
-
-        character =
-            getCharacter(id);
-
-    }
+    let character =
+        getCharacter(
+            state.playerCharacter
+        );
 
     if(!character){
-
-        character =
-            CHARACTERS[0];
-
+        character=CHARACTERS[0];
     }
 
     const img =
@@ -2740,109 +3001,247 @@ function renderGardenCharacter(){
             "gardenCharacter"
         );
 
+    if(!img){
+        return;
+    }
+
     img.src =
         characterImage(character);
 
 }
 
+function openGardenCharacterModal(){
+
+    const modal =
+        document.getElementById(
+            "modal"
+        );
+
+    if(!modal){
+        return;
+    }
+
+    modal.innerHTML=`
+
+        <div class="modal-title">
+            🌿 選擇花園角色
+        </div>
+
+        <div
+            style="
+                font-size:11px;
+                color:#998675;
+                margin-bottom:12px;
+            "
+        >
+            選擇一位你想在秘密花園中出現的角色。
+        </div>
+
+        <div
+            style="
+                display:grid;
+                grid-template-columns:repeat(3,1fr);
+                gap:8px;
+                max-height:55vh;
+                overflow-y:auto;
+                padding:2px;
+            "
+        >
+
+            ${
+                CHARACTERS.map(
+                    character=>{
+
+                        const selected =
+                            state.playerCharacter===
+                            character.id;
+
+                        return `
+
+                            <div
+                                onclick="
+                                    selectGardenCharacter(
+                                        '${character.id}'
+                                    )
+                                "
+                                style="
+                                    padding:8px 4px;
+                                    border-radius:14px;
+                                    text-align:center;
+                                    cursor:pointer;
+                                    background:${selected ? "#edf7e9" : "#fff"};
+                                    border:2px solid ${selected ? "#5f8f55" : "#eee2d4"};
+                                "
+                            >
+
+                                <img
+                                    src="${characterImage(character)}"
+                                    style="
+                                        width:65px;
+                                        height:65px;
+                                        object-fit:contain;
+                                    "
+                                >
+
+                                <div
+                                    style="
+                                        margin-top:3px;
+                                        font-size:10px;
+                                        font-weight:900;
+                                        color:#765b45;
+                                    "
+                                >
+                                    ${character.name}
+                                </div>
+
+                                ${
+                                    selected
+                                    ?
+                                    `
+                                        <div
+                                            style="
+                                                margin-top:3px;
+                                                font-size:9px;
+                                                color:#5f8f55;
+                                                font-weight:900;
+                                            "
+                                        >
+                                            ✓ 使用中
+                                        </div>
+                                    `
+                                    :
+                                    ""
+                                }
+
+                            </div>
+
+                        `;
+
+                    }
+                ).join("")
+            }
+
+        </div>
+
+        <div style="height:10px"></div>
+
+        <button
+            class="btn btn-light"
+            onclick="closeModal()"
+        >
+            關閉
+        </button>
+
+    `;
+
+    openModal();
+
+}
+
+function selectGardenCharacter(id){
+
+    const character =
+        getCharacter(id);
+
+    if(!character){
+        return;
+    }
+
+    state.playerCharacter =
+        character.id;
+
+    save();
+
+    closeModal();
+
+    renderGardenCharacter();
+
+    toast(
+        `🌿 已選擇 ${character.name}`
+    );
+
+}
+/* =========================================================
+   地區
+========================================================= */
 
 /* =========================================================
    地區
 ========================================================= */
 
 function renderRegions(){
-
-    const container =
-        document.getElementById(
-            "regionList"
-        );
-
-    container.innerHTML =
-        REGIONS.map(
-            region=>{
-
-                const selected =
-                    state.expedition.region ===
-                    region.id;
-
-                return `
-
-                    <div
-                        class="region-card ${selected ? "selected":""}"
-                        onclick="selectRegion('${region.id}')"
-                    >
-
-                        <div class="region-icon">
-                            ${region.icon}
-                        </div>
-
-                        <div class="region-name">
-                            ${region.name}
-                        </div>
-
-                        <div class="region-desc">
-                            ${region.desc}
-                        </div>
-
-                    </div>
-
-                `;
-
-            }
-        ).join("");
-
-
-    const region =
-        REGIONS.find(
-            r=>r.id===state.expedition.region
-        );
-
-
-    const info =
-        document.getElementById(
-            "selectedRegionInfo"
-        );
-
-
+    const container=document.getElementById("regionList");
+    container.innerHTML=REGIONS.map(region=>{
+        const selected=state.expedition.region===region.id;
+        const foods=region.ingredients.map(id=>{
+            const data=INGREDIENTS[id];
+            return `<span class="region-reward-item">${data?.icon||id} ${data?.name||id}</span>`;
+        }).join("");
+        return `<div class="region-card ${selected?"selected":""}" onclick="selectRegion('${region.id}')">
+            <div class="region-icon">${region.icon}</div>
+            <div class="region-name">${region.name}</div>
+            <div class="region-desc">${region.desc}</div>
+            <div class="region-reward-title">可獲得：</div>
+            <div class="region-reward-list">${foods}</div>
+        </div>`;
+    }).join("");
+    const region=REGIONS.find(r=>r.id===state.expedition.region);
+    const info=document.getElementById("selectedRegionInfo");
     if(!region){
-
-        info.innerHTML = `
-            <div class="empty">
-                請先選擇要前往的地區
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    info.innerHTML = `
-
-        <div class="dispatch-region">
-
-            <div class="dispatch-region-icon">
-                ${region.icon}
-            </div>
-
+        info.innerHTML=`<div class="empty">請先選擇要前往的地區</div>`;
+    }else{
+        info.innerHTML=`<div class="dispatch-region">
+            <div class="dispatch-region-icon">${region.icon}</div>
             <div>
-
-                <div class="dispatch-region-name">
-                    ${region.name}
-                </div>
-
-                <div class="dispatch-region-desc">
-                    ${region.desc}
-                </div>
-
+                <div class="dispatch-region-name">${region.name}</div>
+                <div class="dispatch-region-desc">${region.desc}</div>
             </div>
-
-        </div>
-
-    `;
-
+        </div>`;
+    }
+    renderDispatchTeam();
 }
 
+
+function renderDispatchTeam(){
+    const box=document.getElementById("dispatchTeam");
+    if(!box)return;
+    box.innerHTML=[0,1,2].map(i=>{
+        const id=state.expedition.members?.[i];
+        const c=id?getCharacter(id):null;
+        return `<div class="dispatch-slot ${c?"filled":""}" onclick="openDispatchMemberModal(${i})">
+            ${c?`<div class="dispatch-slot-icon"><img src="${characterImage(c)}" style="width:52px;height:52px;object-fit:contain"></div><div class="dispatch-slot-name">${c.name}</div>`:`<div class="dispatch-slot-plus">＋</div><div class="dispatch-slot-name">選擇隊員</div>`}
+        </div>`;
+    }).join("");
+}
+function openDispatchMemberModal(slot){
+    if(state.expedition.active)return;
+    const current=state.expedition.members?.[slot];
+    const options=state.joined.map(id=>{
+        const c=getCharacter(id);
+        const used=state.expedition.members.includes(id)&&id!==current;
+        return `<div class="character-card" style="cursor:${used?"not-allowed":"pointer"};opacity:${used?".4":"1"}" ${used?"":"onclick=\"selectDispatchMember("+slot+",'"+id+"')\""}>
+            <img class="character-img" src="${characterImage(c)}">
+            <div class="character-name">${c.name}</div>
+            <div class="hearts">❤️❤️❤️</div>
+            ${used?`<div class="joined">已選擇</div>`:""}
+        </div>`;
+    }).join("");
+    document.getElementById("modal").innerHTML=`
+        <div class="modal-title">👥 選擇第 ${slot+1} 位隊員</div>
+        <div class="character-grid">${options||`<div class="empty">目前沒有可派遣的隊員</div>`}</div>
+        <div style="height:10px"></div>
+        <button class="btn btn-light" onclick="closeModal()">關閉</button>
+    `;
+    openModal();
+}
+function selectDispatchMember(slot,id){
+    if(state.expedition.members.includes(id)&&state.expedition.members[slot]!==id)return;
+    state.expedition.members[slot]=id;
+    state.expedition.members=state.expedition.members.filter(Boolean);
+    save();
+    closeModal();
+    renderGarden();
+}
 
 /* =========================================================
    選擇地區
@@ -3030,106 +3429,35 @@ function selectDispatchDish(id){
 ========================================================= */
 
 function startDispatch(){
-
-    if(state.expedition.active){
-
-        return;
-
-    }
-
-
+    if(state.expedition.active)return;
     if(!state.expedition.region){
-
         toast("請選擇一個地區");
-
         return;
-
     }
-
-
-    const dish =
-        state.expedition.selectedDish;
-
-
+    const members=state.expedition.members?.filter(Boolean)||[];
+    if(!members.length){
+        toast("請至少選擇一位派遣隊員");
+        return;
+    }
+    const dish=state.expedition.selectedDish;
     if(dish){
-
-        const count =
-            Number(
-                state.dishes[dish] || 0
-            );
-
-
+        const count=Number(state.dishes[dish]||0);
         if(count<=0){
-
             toast("料理數量不足");
-
             state.expedition.selectedDish=null;
-
             renderGarden();
-
             return;
-
         }
-
-
-        state.dishes[dish] =
-            count-1;
-
+        state.dishes[dish]=count-1;
     }
-
-
-    const region =
-        REGIONS.find(
-            r=>r.id===state.expedition.region
-        );
-
-
-    const pool =
-        REGION_CHARACTERS[
-            region.id
-        ];
-
-
-    /*
-       不提前決定好感結果。
-       派遣開始時決定遇到誰，
-       完成時才增加好感。
-    */
-
-    const target =
-        pool[
-            Math.floor(
-                Math.random()*pool.length
-            )
-        ];
-
-
-    const now =
-        Date.now();
-
-
+    const now=Date.now();
     state.expedition.active=true;
-
-    state.expedition.startTime=
-        now;
-
-    state.expedition.endTime=
-        now + DISPATCH_TIME;
-
-    state.expedition.targetCharacter=
-        target;
-
-
+    state.expedition.startTime=now;
+    state.expedition.endTime=now+DISPATCH_TIME;
+    state.expedition.targetCharacter=members[0];
     save();
-
     renderGarden();
-
-    toast(
-        dish
-            ? "🍱 帶著料理出發了！"
-            : "🧭 出發前往 " + region.name
-    );
-
+    toast(`🧭 ${members.length} 位隊員出發了！`);
 }
 
 
@@ -3322,154 +3650,30 @@ function renderExpedition(){
 ========================================================= */
 
 function completeDispatch(){
-
-    if(!state.expedition.active){
-
-        return;
-
-    }
-
-
-    if(
-        Date.now() <
-        state.expedition.endTime
-    ){
-
+    if(!state.expedition.active)return;
+    if(Date.now()<state.expedition.endTime){
         toast("派遣還沒完成");
-
         return;
-
     }
-
-
-    const region =
-        REGIONS.find(
-            r=>r.id===state.expedition.region
-        );
-
-
+    const region=REGIONS.find(r=>r.id===state.expedition.region);
     if(!region){
-
         resetExpedition();
-
         return;
-
     }
-
-
-    /*
-       每次派遣帶回 3~5 個食材。
-    */
-
-    const amount =
-        3 +
-        Math.floor(
-            Math.random()*3
-        );
-
-
-    const reward = {};
-
-
-    for(
-        let i=0;
-        i<amount;
-        i++
-    ){
-
-        const icon =
-            region.ingredients[
-                Math.floor(
-                    Math.random() *
-                    region.ingredients.length
-                )
-            ];
-
-
-        state.ingredients[icon] =
-            (
-                state.ingredients[icon] || 0
-            ) + 1;
-
-
-        reward[icon] =
-            (
-                reward[icon] || 0
-            ) + 1;
-
-    }
-
-
-    let friendshipMessage="";
-
-
-    /*
-       帶料理才增加好感。
-    */
-
-    if(
-        state.expedition.selectedDish
-    ){
-
-        const id =
-            state.expedition.targetCharacter;
-
-
-        if(
-            !state.joined.includes(id)
-        ){
-
-            state.friendship[id] =
-                Math.min(
-                    3,
-                    getFriendship(id)+1
-                );
-
-
-            const current =
-                getFriendship(id);
-
-
-            if(current>=3){
-
-                state.joined.push(id);
-
-                friendshipMessage =
-                    `💗 ${getCharacter(id).name} 加入小隊了！`;
-
-            }else{
-
-                friendshipMessage =
-                    `💗 ${getCharacter(id).name} 好感 +1（${current}/3）`;
-
-            }
-
-        }
-
-    }else{
-
-        friendshipMessage =
-            "🚫 沒有帶料理，因此沒有增加好感";
-
-    }
-
-
-    const rewardText =
-        Object.entries(reward)
-            .map(
-                ([icon,count])=>
-                    `${icon}×${count}`
-            )
-            .join("  ");
-
-
-    toast(
-        `🎁 ${rewardText}\n${friendshipMessage}`
-    );
-
-
+    const members=state.expedition.members?.filter(Boolean)||[];
+    const amount=members.length;
+    const reward={};
+    region.ingredients.forEach(id=>{
+        const count=amount;
+        state.ingredients[id]=(state.ingredients[id]||0)+count;
+        reward[id]=count;
+    });
+    const rewardText=Object.entries(reward).map(([id,count])=>{
+        const data=INGREDIENTS[id];
+        return `${data?.icon||id}×${count}`;
+    }).join("　");
+    toast(`🎁 ${rewardText}`);
     resetExpedition();
-
 }
 
 
@@ -3478,21 +3682,13 @@ function completeDispatch(){
 ========================================================= */
 
 function resetExpedition(){
-
     state.expedition.active=false;
-
     state.expedition.startTime=0;
-
     state.expedition.endTime=0;
-
     state.expedition.targetCharacter=null;
-
     state.expedition.selectedDish=null;
-
     save();
-
     renderGarden();
-
 }
 
 
@@ -3616,29 +3812,15 @@ function renderCharacters(){
 ========================================================= */
 
 function renderKitchen(){
-
-    document.getElementById(
-        "kitchenCoins"
-    ).textContent =
-        state.coins;
-
-    document.getElementById(
-        "gardenCoins"
-    ).textContent =
-        state.coins;
-
-    document.getElementById(
-        "truckCoins"
-    ).textContent =
-        state.coins;
-
-
-    renderCookingLines();
-
-    renderUpgradeLine();
-
-    renderDishInventory();
-
+document.getElementById("kitchenCoins").textContent=state.coins;
+document.getElementById("gardenCoins").textContent=state.coins;
+document.getElementById("truckCoins").textContent=state.coins;
+ensureHelperDaily();
+processHelperJobs();
+renderCookingHelper();
+renderCookingLines();
+renderUpgradeLine();
+renderDishInventory();
 }
 
 
@@ -3647,96 +3829,27 @@ function renderKitchen(){
 ========================================================= */
 
 function renderCookingLines(){
-
-    const container =
-        document.getElementById(
-            "cookingLines"
-        );
-
-
-    document.getElementById(
-        "lineCount"
-    ).textContent =
-        state.cookingLines;
-
-
-    let html="";
-
-
-    for(
-        let i=0;
-        i<state.cookingLines;
-        i++
-    ){
-
-        if(!state.cooking[i]){
-
-            state.cooking[i]={
-                recipeId:null,
-                endTime:0
-            };
-
-        }
-
-
-        const line =
-            state.cooking[i];
-
-
-        const cooking =
-            line.recipeId &&
-            line.endTime > Date.now();
-
-
-        const recipe =
-            RECIPES.find(
-                r=>r.id===line.recipeId
-            );
-
-
-        html += `
-
-            <div class="line-card">
-
-                <div class="line-header">
-
-                    <div class="line-name">
-                        🍳 料理線 ${i+1}
-                    </div>
-
-                    <div class="line-status">
-                        ${
-                            cooking
-                            ? "料理中"
-                            : "待機中"
-                        }
-                    </div>
-
-                </div>
-
-                ${
-                    cooking
-                    ?
-                    renderCookingProgress(
-                        line,
-                        recipe
-                    )
-                    :
-                    renderRecipeSelector(
-                        i,
-                        line
-                    )
-                }
-
-            </div>
-
-        `;
-
-    }
-
-
-    container.innerHTML=html;
-
+const container=document.getElementById("cookingLines");
+document.getElementById("lineCount").textContent=state.cookingLines;
+let html="";
+for(let i=0;i<state.cookingLines;i++){
+if(!state.cooking[i])state.cooking[i]={recipeId:null,endTime:0,helperEnabled:false};
+const line=state.cooking[i];
+const recipe=RECIPES.find(r=>r.id===line.recipeId);
+const job=state.helper.jobs?.[i];
+const busy=job?true:(line.recipeId&&line.endTime>Date.now());
+const done=!job&&line.recipeId&&line.endTime>0&&line.endTime<=Date.now();
+html+=`
+<div class="line-card">
+<div class="line-header">
+<div class="line-name">🍳 料理線 ${i+1}</div>
+<div class="line-status">${busy?"製作中":done?"完成":"待機中"}</div>
+</div>
+${renderHelperSwitch(i,line,job)}
+${job?renderHelperProgress(i,job,recipe):done?renderCookingProgress(line,recipe):renderRecipeSelector(i,line)}
+</div>`;
+}
+container.innerHTML=html;
 }
 
 
@@ -3744,109 +3857,46 @@ function renderCookingLines(){
    料理選擇
 ========================================================= */
 
-function renderRecipeSelector(
-    lineIndex,
-    line
-){
-
-    return `
-
-        <div
-            style="
-                font-size:10px;
-                color:#9a8775;
-                margin-bottom:7px;
-            "
-        >
-            選擇三種食材開始料理
-        </div>
-
-        <div class="recipe-select">
-
-            ${
-                RECIPES.map(
-                    recipe=>`
-
-                        <div
-                            class="
-                                recipe-mini
-                                ${
-                                    line.recipeId ===
-                                    recipe.id
-                                    ? "selected"
-                                    : ""
-                                }
-                            "
-                            onclick="
-                                startCooking(
-                                    ${lineIndex},
-                                    '${recipe.id}'
-                                )
-                            "
-                        >
-
-                            <div class="recipe-mini-icon">
-                                ${recipe.icon}
-                            </div>
-
-                            <div class="recipe-mini-name">
-                                ${recipe.name}
-                            </div>
-
-                        </div>
-
-                    `
-                ).join("")
-            }
-
-        </div>
-
-        ${
-            line.recipeId
-            ?
-            `
-                <div class="recipe-result">
-
-                    <div class="recipe-result-icon">
-                        ${
-                            RECIPES.find(
-                                r=>r.id===line.recipeId
-                            )?.icon
-                        }
-                    </div>
-
-                    <div>
-
-                        <div class="recipe-result-name">
-                            ${
-                                RECIPES.find(
-                                    r=>r.id===line.recipeId
-                                )?.name
-                            }
-                        </div>
-
-                        <div
-                            style="
-                                font-size:10px;
-                                color:#998675;
-                            "
-                        >
-                            點擊料理即可開始製作
-                        </div>
-
-                    </div>
-
-                </div>
-            `
-            :
-            ""
-        }
-
-    `;
-
+function renderRecipeSelector(lineIndex,line){
+return `
+<div style="font-size:10px;color:#9a8775;margin-bottom:7px">選擇料理</div>
+<div class="recipe-select">
+${RECIPES.map(recipe=>`
+<div class="recipe-mini ${line.recipeId===recipe.id?"selected":""}" onclick="confirmStartCooking(${lineIndex},'${recipe.id}')">
+<div class="recipe-mini-icon">${recipe.icon}</div>
+<div class="recipe-mini-name">${recipe.name}</div>
+</div>`).join("")}
+</div>`;
 }
 
 
+function confirmStartCooking(lineIndex,recipeId){
+const recipe=RECIPES.find(r=>r.id===recipeId);
+if(!recipe)return;
+if(!canCook(recipe)){
+toast("食材不足");
+return;
+}
+const names=recipe.ingredients.map(id=>{
+const x=INGREDIENTS[id];
+return `${x?.icon||id}${x?.name||""}`;
+}).join("、");
+document.getElementById("modal").innerHTML=`
+<div class="modal-title">🍳 確認料理</div>
+<div style="text-align:center;font-size:35px">${recipe.icon}</div>
+<div style="text-align:center;margin:6px 0 12px;font-size:15px;font-weight:900">${recipe.name}</div>
+<div style="padding:12px;border-radius:13px;background:#fff3dc;text-align:center;font-size:12px;line-height:1.7">
+是否要消耗<br>
+<b>${names}</b><br>
+製作 <b>${recipe.name}</b>？
+</div>
+<div style="height:10px"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<button class="btn btn-light" onclick="closeModal()">取消</button>
+<button class="btn btn-green" onclick="startCooking(${lineIndex},'${recipe.id}')">確認製作</button>
+</div>`;
+openModal();
+}
 /* =========================================================
    檢查材料
 ========================================================= */
@@ -3867,78 +3917,23 @@ function canCook(recipe){
    開始料理
 ========================================================= */
 
-function startCooking(
-    lineIndex,
-    recipeId
-){
-
-    const line =
-        state.cooking[lineIndex];
-
-
-    if(
-        line.recipeId &&
-        line.endTime > Date.now()
-    ){
-
-        toast("這條料理線正在製作中");
-
-        return;
-
-    }
-
-
-    const recipe =
-        RECIPES.find(
-            r=>r.id===recipeId
-        );
-
-
-    if(!recipe){
-
-        return;
-
-    }
-
-
-    if(!canCook(recipe)){
-
-        toast(
-            "食材不足，需要：" +
-            recipe.ingredients.join(" ")
-        );
-
-        return;
-
-    }
-
-
-    /*
-       扣除三種食材。
-    */
-
-    recipe.ingredients.forEach(
-        ingredient=>{
-            state.ingredients[ingredient]--;
-        }
-    );
-
-
-    line.recipeId =
-        recipe.id;
-
-    line.endTime =
-        Date.now()+COOK_TIME;
-
-
-    save();
-
-    renderKitchen();
-
-    toast(
-        `🍳 ${recipe.name} 開始料理`
-    );
-
+function startCooking(lineIndex,recipeId){
+const line=state.cooking[lineIndex];
+if(!line)return;
+if(line.recipeId&&line.endTime>Date.now()){
+toast("這條料理線正在製作中");
+return;
+}
+const recipe=RECIPES.find(r=>r.id===recipeId);
+if(!recipe||!canCook(recipe))return;
+recipe.ingredients.forEach(id=>state.ingredients[id]--);
+line.recipeId=recipe.id;
+line.endTime=Date.now()+COOK_TIME;
+line.helperEnabled=false;
+closeModal();
+save();
+renderKitchen();
+toast(`🍳 ${recipe.name} 開始料理`);
 }
 
 
@@ -3969,50 +3964,16 @@ function renderCookingProgress(
 
 
     if(remaining<=0){
-
-        return `
-
-            <div class="recipe-result">
-
-                <div class="recipe-result-icon">
-                    ${recipe?.icon || "🍱"}
-                </div>
-
-                <div style="flex:1">
-
-                    <div class="recipe-result-name">
-                        ${recipe?.name || "料理"}
-                    </div>
-
-                    <div
-                        style="
-                            color:#6c9b5c;
-                            font-size:11px;
-                            font-weight:900;
-                        "
-                    >
-                        ✓ 已完成
-                    </div>
-
-                </div>
-
-                <button
-                    class="btn btn-green"
-                    style="width:auto;min-height:38px"
-                    onclick="
-                        collectCooking(
-                            ${state.cooking.indexOf(line)}
-                        )
-                    "
-                >
-                    收取
-                </button>
-
-            </div>
-
-        `;
-
-    }
+return `
+<div class="recipe-result">
+<div class="recipe-result-icon">${recipe?.icon||"🍱"}</div>
+<div style="flex:1">
+<div class="recipe-result-name">${recipe?.name||"料理"}</div>
+<div style="color:#6c9b5c;font-size:11px;font-weight:900">✓ 已完成</div>
+</div>
+<button class="btn btn-green" style="width:auto;min-height:38px" onclick="collectCooking(${state.cooking.indexOf(line)})">領取料理</button>
+</div>`;
+}
 
 
     const seconds =
@@ -4259,89 +4220,120 @@ function upgradeCookingLine(){
 /* =========================================================
    已完成料理
 ========================================================= */
-
 function renderDishInventory(){
+const container=document.getElementById("dishInventory");
+const list=RECIPES.filter(r=>Number(state.dishes[r.id]||0)>0);
+if(!list.length){
+container.innerHTML=`<div class="empty">料理倉庫目前是空的</div>`;
+return;
+}
+container.innerHTML=`<div class="dish-grid">${list.map(recipe=>`
+<div class="dish-stock">
+<div class="dish-stock-icon">${recipe.icon}</div>
+<div>
+<div class="dish-stock-name">${recipe.name}</div>
+<div class="dish-stock-count">持有 ${state.dishes[recipe.id]||0} 份</div>
+</div>
+</div>`).join("")}</div>`;
+}
 
-    const container =
-        document.getElementById(
-            "dishInventory"
-        );
+function ensureHelperDaily(){
+if(!state.helper)state.helper={date:"",requests:[],served:{},jobs:{}};
+const today=new Date().toLocaleDateString("zh-TW");
+if(state.helper.date!==today){
+const pool=[...RECIPES];
+state.helper.requests=pool.sort(()=>Math.random()-.5).slice(0,Math.min(4,pool.length)).map(r=>r.id);
+state.helper.served={};
+state.helper.date=today;
+}
+state.helper.jobs=state.helper.jobs||{};
+}
 
+function renderCookingHelper(){
+const box=document.getElementById("cookingHelper");
+if(!box)return;
+ensureHelperDaily();
+const requests=state.helper.requests||[];
+const used=Object.keys(state.helper.served||{}).length;
+box.innerHTML=`
+<div class="helper-box">
+<div class="helper-title">🌟 今日料理委託 ${used}/${requests.length}</div>
+<div class="helper-desc">今天小幫手想吃以下料理，消耗料理即可完成委託。</div>
+<div class="helper-recipes">
+${requests.map(id=>{
+const recipe=RECIPES.find(r=>r.id===id);
+if(!recipe)return"";
+const count=Number(state.dishes[id]||0);
+const served=!!state.helper.served[id];
+return `<div class="helper-recipe ${count>0?"have":""} ${served?"used":""}">
+<div class="helper-recipe-icon">${recipe.icon}</div>
+<div class="helper-recipe-name">${recipe.name}</div>
+<div class="helper-recipe-count">${served?"✓ 已委託":`持有 ${count}`}</div>
+</div>`;
+}).join("")}
+</div>
+<div class="helper-note">每種料理每天只能委託一次</div>
+</div>`;
+}
 
-    const list =
-        RECIPES.filter(
-            recipe=>
-                Number(
-                    state.dishes[recipe.id] || 0
-                ) > 0
-        );
-
-
-    if(!list.length){
-
-        container.innerHTML = `
-            <div class="empty">
-                還沒有完成的料理
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        list.map(
-            recipe=>`
-
-                <div
-                    style="
-                        display:flex;
-                        align-items:center;
-                        gap:10px;
-                        padding:10px;
-                        margin-bottom:7px;
-                        border-radius:13px;
-                        background:#fff;
-                    "
-                >
-
-                    <div style="font-size:28px">
-                        ${recipe.icon}
-                    </div>
-
-                    <div style="flex:1">
-
-                        <div
-                            style="
-                                font-size:12px;
-                                font-weight:900;
-                            "
-                        >
-                            ${recipe.name}
-                        </div>
-
-                        <div
-                            style="
-                                font-size:10px;
-                                color:#998675;
-                            "
-                        >
-                            持有 ${state.dishes[recipe.id]} 份
-                            ・餐車售價 ${recipe.price} 💰
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `
-        )
-        .join("");
-
+function processHelperJobs(){
+    if(!state.helper?.jobs)return;
+    Object.keys(state.helper.jobs).forEach(index=>{
+        const job=state.helper.jobs[index];
+        if(!job)return;
+        if(Date.now()>=job.endTime&&!job.completed){
+            job.completed=true;
+            save();
+        }
+    });
 }
 
 
+function renderHelperSwitch(index,line,job){
+if(job)return "";
+const enabled=!!line.helperEnabled;
+return `
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+<div style="font-size:10px;color:#998675">🌟 小幫手</div>
+<div class="helper-switch ${enabled?"on":""}" onclick="toggleHelperLine(${index})">
+<div class="helper-switch-dot"></div>
+<div class="helper-switch-text">${enabled?"開啟":"關閉"}</div>
+</div>
+</div>`;
+}
+
+function toggleHelperLine(index){
+const line=state.cooking[index];
+if(!line)return;
+if(line.recipeId&&line.endTime>Date.now()){
+toast("料理線正在製作中");
+return;
+}
+line.helperEnabled=!line.helperEnabled;
+save();
+renderKitchen();
+}
+
+function startHelperCooking(index){
+const line=state.cooking[index];
+if(!line||line.recipeId)return;
+ensureHelperDaily();
+const available=state.helper.requests.filter(id=>!state.helper.served[id]&&Number(state.dishes[id]||0)>0);
+if(!available.length){
+toast("沒有符合今日委託的料理");
+return;
+}
+const recipe=RECIPES.find(r=>r.id===available[0]);
+if(!recipe)return;
+state.dishes[recipe.id]--;
+line.recipeId=recipe.id;
+line.endTime=Date.now()+COOK_TIME;
+line.helperEnabled=false;
+state.helper.served[recipe.id]=true;
+save();
+renderKitchen();
+toast(`🌟 小幫手已消耗 ${recipe.name} 並開始料理`);
+}
 /* =========================================================
    餐車
 ========================================================= */
@@ -5146,6 +5138,328 @@ function closeModalByBackground(event){
 
 }
 
+/* =========================================================
+   存檔管理
+========================================================= */
+
+function openSaveModal(){
+
+    const modal =
+        document.getElementById(
+            "modal"
+        );
+
+
+    modal.innerHTML = `
+
+        <div class="modal-title">
+            💾 存檔管理
+        </div>
+
+        <div style="
+            font-size:11px;
+            color:#998675;
+            line-height:1.6;
+            margin-bottom:12px;
+        ">
+            存檔會保存在目前瀏覽器的 IndexedDB。
+            <br>
+            如果要換裝置或備份，請使用匯出存檔。
+        </div>
+
+
+        <button
+            class="btn btn-green"
+            onclick="exportSave()"
+        >
+            📤 匯出存檔
+        </button>
+
+
+        <div style="height:8px"></div>
+
+
+        <button
+            class="btn btn-orange"
+            onclick="openImportFile()"
+        >
+            📥 匯入存檔
+        </button>
+
+
+        <input
+            id="saveImportFile"
+            type="file"
+            accept=".json,application/json"
+            style="display:none"
+            onchange="importSaveFile(event)"
+        >
+
+
+        <div style="height:8px"></div>
+
+
+        <button
+            class="btn btn-light"
+            onclick="closeModal()"
+        >
+            關閉
+        </button>
+
+    `;
+
+
+    openModal();
+
+}
+
+
+/* =========================================================
+   匯出存檔
+========================================================= */
+
+async function exportSave(){
+
+    try{
+
+        await save();
+
+
+        const data =
+            structuredClone
+                ? structuredClone(state)
+                : JSON.parse(
+                    JSON.stringify(state)
+                );
+
+
+        const exportData = {
+
+            game:"secretGardenTruck",
+
+            version:1,
+
+            exportedAt:
+                new Date().toISOString(),
+
+            state:data
+
+        };
+
+
+        const json =
+            JSON.stringify(
+                exportData,
+                null,
+                2
+            );
+
+
+        const blob =
+            new Blob(
+                [json],
+                {
+                    type:
+                        "application/json"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        const date =
+            new Date()
+                .toISOString()
+                .slice(0,10);
+
+
+        link.href=url;
+
+        link.download=
+            `秘密花園存檔_${date}.json`;
+
+
+        document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        URL.revokeObjectURL(
+            url
+        );
+
+
+        toast(
+            "📤 存檔匯出成功"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            error
+        );
+
+        toast(
+            "❌ 存檔匯出失敗"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   開啟匯入檔案
+========================================================= */
+
+function openImportFile(){
+
+    const input =
+        document.getElementById(
+            "saveImportFile"
+        );
+
+
+    if(!input){
+
+        return;
+
+    }
+
+
+    input.value="";
+
+    input.click();
+
+}
+
+
+/* =========================================================
+   匯入存檔
+========================================================= */
+
+async function importSaveFile(event){
+
+    const file =
+        event.target.files?.[0];
+
+
+    if(!file){
+
+        return;
+
+    }
+
+
+    try{
+
+        const text =
+            await file.text();
+
+
+        const imported =
+            JSON.parse(
+                text
+            );
+
+
+        /*
+           檢查存檔格式。
+        */
+
+        if(
+            !imported ||
+            imported.game !==
+                "secretGardenTruck" ||
+            !imported.state
+        ){
+
+            throw new Error(
+                "不是有效的秘密花園存檔"
+            );
+
+        }
+
+
+        /*
+           合併到目前版本，
+           避免未來新增欄位後造成錯誤。
+        */
+
+        const newState =
+            mergeState(
+                imported.state
+            );
+
+
+        /*
+           先寫入 IndexedDB。
+        */
+
+        await writeIndexedDB(
+            newState
+        );
+
+
+        /*
+           更新目前遊戲狀態。
+        */
+
+        state =
+            newState;
+
+
+        closeModal();
+
+
+        /*
+           重新渲染所有目前畫面。
+        */
+
+        renderGarden();
+
+        renderKitchen();
+
+        renderTruck();
+
+
+        toast(
+            "📥 存檔匯入成功"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "匯入存檔失敗",
+            error
+        );
+
+
+        toast(
+            "❌ 存檔格式錯誤，無法匯入"
+        );
+
+    }
+
+}
 
 /* =========================================================
    全域更新
@@ -5269,7 +5583,15 @@ function gameTick(){
    初始化
 ========================================================= */
 
-function init(){
+async function init(){
+
+    /*
+       先從 IndexedDB 讀取存檔。
+    */
+
+    state =
+        await loadState();
+
 
     /*
        舊存檔相容
@@ -5278,11 +5600,7 @@ function init(){
     if(!state.truck){
 
         state.truck =
-            JSON.parse(
-                JSON.stringify(
-                    DEFAULT_STATE.truck
-                )
-            );
+            cloneDefaultState().truck;
 
     }
 
@@ -5349,14 +5667,29 @@ function init(){
     }
 
 
-    save();
+    /*
+       標記存檔系統已準備完成。
+    */
 
+    saveReady=true;
+
+
+    /*
+       確保目前資料寫入 IndexedDB。
+    */
+
+    await save();
+
+
+    /*
+       第一次顯示遊戲。
+    */
 
     renderGarden();
 
 
     /*
-       每秒更新
+       每秒更新。
     */
 
     setInterval(
