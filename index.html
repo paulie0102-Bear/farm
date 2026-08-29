@@ -1424,6 +1424,18 @@ const CHARACTERS = [
     },
 
     {
+        id:"BOBO1",
+        name:"BOBO1",
+        file:"BOBO1.gif"
+    },
+
+    {
+        id:"BOBO2",
+        name:"BOBO2",
+        file:"BOBO2.gif"
+    },
+
+    {
         id:"FATTY",
         name:"FATTY",
         file:"FATTY.gif"
@@ -2257,53 +2269,6 @@ function showPage(page){
 }
 
 
-/* =========================================================
-   地區角色分配
-   讓每個地區都有自己的角色池
-========================================================= */
-
-const REGION_CHARACTERS = {
-
-    forest:[
-        "BOBO",
-        "QUOKKA",
-        "QUOKKA1",
-        "HATTY"
-    ],
-
-    coast:[
-        "FATTY",
-        "MARSH",
-        "QUOKKA2"
-    ],
-
-    village:[
-        "MAMA_QUOKKA",
-        "PAPA_QUOKKA",
-        "QUOKKA3"
-    ],
-
-    mountain:[
-        "GRANDPA_QUOKKA",
-        "QUOKKA4",
-        "QUOKKA5"
-    ],
-
-    lake:[
-        "QUOKKA6",
-        "QUOKKA7",
-        "QUOKKA8"
-    ],
-
-    town:[
-        "MR_BURNT",
-        "QUOKKA9",
-        "QUOKKA10",
-        "QUOKKA11"
-    ]
-
-};
-
 
 /* =========================================================
    找人物
@@ -2729,184 +2694,66 @@ function startDispatch(){
 /* =========================================================
    派遣畫面
 ========================================================= */
-
 function renderExpedition(){
-
-    const setup =
-        document.getElementById(
-            "dispatchSetup"
-        );
-
-    const active =
-        document.getElementById(
-            "activeExpedition"
-        );
-
-
-    if(!state.expedition.active){
-
-        setup.style.display="block";
-
-        active.style.display="none";
-
-        document.getElementById(
-            "dispatchStatus"
-        ).textContent =
-            "尚未派遣";
-
-        return;
-
-    }
-
-
-    setup.style.display="none";
-
-    active.style.display="block";
-
-
-    const end =
-        state.expedition.endTime;
-
-    const remaining =
-        Math.max(
-            0,
-            end-Date.now()
-        );
-
-
-    const seconds =
-        Math.ceil(
-            remaining/1000
-        );
-
-
-    const mins =
-        Math.floor(
-            seconds/60
-        );
-
-    const secs =
-        seconds%60;
-
-
-    const character =
-        getCharacter(
-            state.expedition.targetCharacter
-        );
-
-
-    const region =
-        REGIONS.find(
-            r=>r.id===state.expedition.region
-        );
-
-
-    const progress =
-        Math.min(
-            100,
-            Math.max(
-                0,
-                (
-                    (Date.now() -
-                    state.expedition.startTime)
-                    /
-                    DISPATCH_TIME
-                )*100
-            )
-        );
-
-
-    active.innerHTML = `
-
-        <div class="expedition-active">
-
-            <div
-                style="
-                    font-size:13px;
-                    font-weight:900;
-                "
-            >
-                ${region?.icon || "🧭"}
-                正在前往 ${region?.name || ""}
-            </div>
-
-            <img
-                class="expedition-character"
-                src="${characterImage(character)}"
-                alt="${character?.name || ""}"
-            >
-
-            <div
-                style="
-                    font-weight:900;
-                    color:#765b45;
-                "
-            >
-                ${character?.name || ""}
-            </div>
-
-            <div
-                style="
-                    margin-top:4px;
-                    font-size:11px;
-                    color:#9a8775;
-                "
-            >
-                ${state.expedition.selectedDish
-                    ? "🍱 有帶料理"
-                    : "🚫 沒有帶料理"}
-            </div>
-
-            <div class="progress-track">
-
-                <div
-                    class="progress-fill"
-                    style="width:${progress}%"
-                ></div>
-
-            </div>
-
-            ${
-                remaining<=0
-                ?
-                `
-                    <button
-                        class="btn btn-orange"
-                        onclick="completeDispatch()"
-                    >
-                        🎁 派遣完成，領取成果
-                    </button>
-                `
-                :
-                `
-                    <div
-                        style="
-                            padding:10px;
-                            border-radius:12px;
-                            background:#fff;
-                            font-size:14px;
-                            font-weight:900;
-                        "
-                    >
-                        ⏳
-                        ${mins}:
-                        ${String(secs).padStart(2,"0")}
-                    </div>
-                `
-            }
-
-        </div>
-
-    `;
-
-
-    document.getElementById(
-        "dispatchStatus"
-    ).textContent =
-        remaining<=0
-            ? "可以領取"
-            : "派遣中";
-
+const setup=document.getElementById("dispatchSetup");
+const active=document.getElementById("activeExpedition");
+if(!setup||!active)return;
+if(!state.expedition.active){
+setup.style.display="block";
+active.style.display="none";
+const status=document.getElementById("dispatchStatus");
+if(status)status.textContent="尚未派遣";
+return;
+}
+setup.style.display="none";
+active.style.display="block";
+const end=state.expedition.endTime;
+const remaining=Math.max(0,end-Date.now());
+const seconds=Math.ceil(remaining/1000);
+const mins=Math.floor(seconds/60);
+const secs=seconds%60;
+const character=getCharacter(state.expedition.targetCharacter);
+const region=REGIONS.find(r=>r.id===state.expedition.region);
+let content=active.querySelector(".expedition-active");
+if(!content){
+active.innerHTML=`<div class="expedition-active">
+<div class="expedition-region"></div>
+<img class="expedition-character">
+<div class="expedition-character-name"></div>
+<div class="expedition-food"></div>
+<div class="progress-track"><div class="progress-fill"></div></div>
+<div class="expedition-countdown"></div>
+</div>`;
+content=active.querySelector(".expedition-active");
+}
+const regionEl=content.querySelector(".expedition-region");
+const img=content.querySelector(".expedition-character");
+const nameEl=content.querySelector(".expedition-character-name");
+const foodEl=content.querySelector(".expedition-food");
+const progressFill=content.querySelector(".progress-fill");
+const countdown=content.querySelector(".expedition-countdown");
+if(regionEl)regionEl.textContent=`${region?.icon||"🧭"} 正在前往 ${region?.name||""}`;
+if(img){
+const src=characterImage(character);
+if(img.getAttribute("src")!==src)img.src=src;
+img.alt=character?.name||"";
+}
+if(nameEl)nameEl.textContent=character?.name||"";
+if(foodEl)foodEl.textContent=state.expedition.selectedDish?"🍱 有帶料理":"🚫 沒有帶料理";
+const progress=Math.min(100,Math.max(0,((Date.now()-state.expedition.startTime)/DISPATCH_TIME)*100));
+if(progressFill)progressFill.style.width=`${progress}%`;
+if(remaining<=0){
+if(!countdown||countdown.tagName!=="BUTTON"){
+const old=content.querySelector(".expedition-countdown");
+if(old)old.outerHTML=`<button class="btn btn-orange expedition-countdown" onclick="completeDispatch()">🎁 派遣完成，領取成果</button>`;
+}else{
+countdown.textContent="🎁 派遣完成，領取成果";
+}
+}else{
+if(countdown)countdown.textContent=`⏳ ${mins}:${String(secs).padStart(2,"0")}`;
+}
+const status=document.getElementById("dispatchStatus");
+if(status)status.textContent=remaining<=0?"可以領取":"派遣中";
 }
 
 
@@ -3020,75 +2867,20 @@ function renderIngredients(){
 /* =========================================================
    角色
 ========================================================= */
-
 function renderCharacters(){
-
-    const container =
-        document.getElementById(
-            "characterGrid"
-        );
-
-
-    container.innerHTML =
-        CHARACTERS.map(
-            character=>{
-
-                const joined =
-                    state.joined.includes(
-                        character.id
-                    );
-
-
-                return `
-
-                    <div class="character-card">
-
-                        <img
-                            class="character-img"
-                            src="${characterImage(character)}"
-                            alt="${character.name}"
-                        >
-
-                        <div class="character-name">
-                            ${character.name}
-                        </div>
-
-                        ${
-                            joined
-                            ?
-                            `
-                                <div class="hearts">
-                                    ❤️❤️❤️
-                                </div>
-
-                                <div class="joined">
-                                    ✓ 已加入小隊
-                                </div>
-                            `
-                            :
-                            `
-                                <div class="hearts">
-                                    ${hearts(character.id)}
-                                </div>
-                            `
-                        }
-
-                    </div>
-
-                `;
-
-            }
-        )
-        .join("");
-
-
-    document.getElementById(
-        "teamCount"
-    ).textContent =
-        `${state.joined.length}/${CHARACTERS.length}`;
-
+const container=document.getElementById("characterGrid");
+if(!container)return;
+const signature=CHARACTERS.map(c=>`${c.id}:${state.joined.includes(c.id)?1:0}:${state.friendship?.[c.id]||0}`).join("|");
+if(container.dataset.signature!==signature){
+container.innerHTML=CHARACTERS.map(character=>{
+const joined=state.joined.includes(character.id);
+return`<div class="character-card"><img class="character-img" src="${characterImage(character)}" alt="${character.name}"><div class="character-name">${character.name}</div>${joined?`<div class="hearts">❤️❤️❤️</div><div class="joined">✓ 已加入小隊</div>`:`<div class="hearts">${hearts(character.id)}</div>`}</div>`;
+}).join("");
+container.dataset.signature=signature;
 }
-
+const team=document.getElementById("teamCount");
+if(team)team.textContent=`${state.joined.length}/${CHARACTERS.length}`;
+}
 
 /* =========================================================
    料理頁面
@@ -3114,26 +2906,51 @@ renderDishInventory();
 function renderCookingLines(){
 const container=document.getElementById("cookingLines");
 if(!container)return;
-document.getElementById("lineCount").textContent=state.cookingLines;
-let html="";
+const count=document.getElementById("lineCount");
+if(count)count.textContent=state.cookingLines;
 for(let i=0;i<state.cookingLines;i++){
 if(!state.cooking[i])state.cooking[i]={recipeId:null,endTime:0,helperEnabled:false};
+let card=container.children[i];
 const line=state.cooking[i];
 const recipe=RECIPES.find(r=>r.id===line.recipeId);
+if(!card){
+card=document.createElement("div");
+card.className="line-card";
+container.appendChild(card);
+}
+if(!card.dataset.lineReady){
+card.innerHTML=`<div class="line-header"><div class="line-name">🍳 料理線 ${i+1}</div><div class="line-status"></div></div><div class="line-content"></div>`;
+card.dataset.lineReady="1";
+}
+const status=card.querySelector(".line-status");
+const content=card.querySelector(".line-content");
 const now=Date.now();
 const busy=line.recipeId&&line.endTime>now;
 const done=line.recipeId&&line.endTime>0&&line.endTime<=now;
-let content="";
-if(done){
-content=renderCookingProgress(line,recipe);
-}else if(busy){
-content=renderCookingProgress(line,recipe);
+if(status)status.textContent=busy?"製作中":done?"完成":"待機中";
+if(!line.recipeId){
+if(card.dataset.recipeId!==""){
+content.innerHTML=renderRecipeSelector(i,line);
+card.dataset.recipeId="";
+}
+continue;
+}
+const recipeId=String(line.recipeId);
+if(card.dataset.recipeId!==recipeId||card.dataset.done!==String(done)){
+content.innerHTML=renderCookingProgress(line,recipe);
+card.dataset.recipeId=recipeId;
+card.dataset.done=String(done);
 }else{
-content=renderRecipeSelector(i,line);
+const remaining=Math.max(0,line.endTime-now);
+const seconds=Math.ceil(remaining/1000);
+const progress=Math.min(100,Math.max(0,((COOK_TIME-remaining)/COOK_TIME)*100));
+const timeEl=content.querySelector(".cook-time");
+const fill=content.querySelector(".progress-fill");
+if(timeEl&&remaining>0)timeEl.textContent=`⏳ ${seconds} 秒`;
+if(fill&&remaining>0)fill.style.width=`${progress}%`;
 }
-html+=`<div class="line-card"><div class="line-header"><div class="line-name">🍳 料理線 ${i+1}</div><div class="line-status">${busy?"製作中":done?"完成":"待機中"}</div></div>${content}</div>`;
 }
-container.innerHTML=html;
+while(container.children.length>state.cookingLines)container.removeChild(container.lastChild);
 }
 
 
@@ -3535,6 +3352,14 @@ const helper=state.helper.characterId?getCharacter(state.helper.characterId):nul
 const requests=state.helper.requests||[];
 const used=requests.filter(id=>state.helper.served?.[id]).length;
 const active=getActiveHelperJob();
+let oldImg=box.querySelector(".helper-character img");
+let oldSrc=oldImg?.getAttribute("src");
+if(!helper){
+box.innerHTML=`<div class="helper-box"><div class="helper-title">🌟 料理小幫手</div><div class="helper-desc">選擇一位好感度達標的角色協助料理</div><div class="helper-character" onclick="openHelperSelect()"><div style="font-size:42px">＋</div></div><button class="btn btn-orange" style="max-width:220px;margin:auto" onclick="openHelperSelect()">選擇小幫手</button></div>`;
+const remain=document.getElementById("helperRemain");
+if(remain)remain.textContent=`今日委託 ${used}/${requests.length}`;
+return;
+}
 let jobHtml="";
 if(active){
 const job=active.job;
@@ -3551,13 +3376,29 @@ jobHtml=`<div class="helper-job"><div class="helper-job-title">🌟 小幫手正
 }
 }
 }
-if(!helper){
-box.innerHTML=`<div class="helper-box"><div class="helper-title">🌟 料理小幫手</div><div class="helper-desc">選擇一位好感度達標的角色協助料理</div><div class="helper-character" onclick="openHelperSelect()"><div style="font-size:42px">＋</div></div><button class="btn btn-orange" style="max-width:220px;margin:auto" onclick="openHelperSelect()">選擇小幫手</button></div>`;
-const remain=document.getElementById("helperRemain");
-if(remain)remain.textContent=`今日委託 ${used}/${requests.length}`;
-return;
+const currentHelperId=box.dataset.helperId||"";
+if(currentHelperId!==String(helper.id)){
+box.innerHTML=`<div class="helper-box"><div class="helper-title">🌟 料理小幫手</div><div class="helper-character"><img src="${characterImage(helper)}"></div><div class="helper-name">${helper.name}</div><div class="helper-count">今日已委託 ${used}/${requests.length} 道料理</div><button class="btn btn-light" style="width:auto;margin-top:7px;padding:6px 12px;font-size:10px" onclick="openHelperSelect()">更換小幫手</button><div class="helper-recipes"></div><div class="helper-job-area"></div></div>`;
+box.dataset.helperId=helper.id;
 }
-box.innerHTML=`<div class="helper-box"><div class="helper-title">🌟 料理小幫手</div><div class="helper-character"><img src="${characterImage(helper)}"></div><div class="helper-name">${helper.name}</div><div class="helper-count">今日已委託 ${used}/${requests.length} 道料理</div><button class="btn btn-light" style="width:auto;margin-top:7px;padding:6px 12px;font-size:10px" onclick="openHelperSelect()">更換小幫手</button><div class="helper-recipes">${requests.map(id=>{const r=RECIPES.find(x=>x.id===id);if(!r)return"";const done=!!state.helper.served[id];const count=Number(state.dishes?.[id]||0);const cycles=getHelperMaxCycles(r);return`<div class="helper-recipe ${done?"done":cycles>0?"have":""}" onclick="${done?"":`confirmHelperCooking('${r.id}')`}"><div class="helper-recipe-icon">${r.icon}</div><div class="helper-recipe-name">${r.name}</div><div class="helper-recipe-count">${done?"✓ 已委託":cycles>0?`料理 ${count}・可委託 ${cycles} 份`:"材料不足"}</div></div>`}).join("")}</div>${jobHtml}</div>`;
+const img=box.querySelector(".helper-character img");
+const src=characterImage(helper);
+if(img&&img.getAttribute("src")!==src)img.src=src;
+const count=box.querySelector(".helper-count");
+if(count)count.textContent=`今日已委託 ${used}/${requests.length} 道料理`;
+const recipesBox=box.querySelector(".helper-recipes");
+if(recipesBox){
+recipesBox.innerHTML=requests.map(id=>{
+const r=RECIPES.find(x=>x.id===id);
+if(!r)return"";
+const done=!!state.helper.served[id];
+const count=Number(state.dishes?.[id]||0);
+const cycles=getHelperMaxCycles(r);
+return`<div class="helper-recipe ${done?"done":cycles>0?"have":""}" onclick="${done?"":`confirmHelperCooking('${r.id}')`}"><div class="helper-recipe-icon">${r.icon}</div><div class="helper-recipe-name">${r.name}</div><div class="helper-recipe-count">${done?"✓ 已委託":cycles>0?`料理 ${count}・可委託 ${cycles} 份`:"材料不足"}</div></div>`;
+}).join("");
+}
+const jobArea=box.querySelector(".helper-job-area");
+if(jobArea)jobArea.innerHTML=jobHtml;
 const remain=document.getElementById("helperRemain");
 if(remain)remain.textContent=`今日委託 ${used}/${requests.length}`;
 }
@@ -4301,114 +4142,23 @@ async function importSaveFile(event){
 ========================================================= */
 
 function gameTick(){
-    processHelperJobs();
-    /*
-       料理完成
-    */
-    let cookingChanged=false;
-
-    for(
-        const line of state.cooking
-    ){
-
-        if(
-            line &&
-            line.recipeId &&
-            line.endTime &&
-            line.endTime<=Date.now()
-        ){
-
-            cookingChanged=true;
-
-        }
-
-    }
-
-
-    /*
-       派遣完成
-    */
-
-    if(
-        state.expedition.active &&
-        Date.now() >=
-        state.expedition.endTime
-    ){
-
-        const status =
-            document.getElementById(
-                "dispatchStatus"
-            );
-
-
-        if(status){
-
-            status.textContent =
-                "可以領取";
-
-        }
-
-    }
-
-
-    /*
-       餐車販售
-    */
-
-    processTruckSales();
-
-
-    if(cookingChanged){
-
-        save();
-
-    }
-
-
-    /*
-       依照目前頁面重新渲染。
-    */
-
-    const garden =
-        document
-            .getElementById("gardenPage")
-            .classList.contains("active");
-
-
-    const kitchen =
-        document
-            .getElementById("kitchenPage")
-            .classList.contains("active");
-
-
-    const truck =
-        document
-            .getElementById("truckPage")
-            .classList.contains("active");
-
-
-    if(garden){
-
-        renderGarden();
-
-    }
-
-
-    if(kitchen){
-
-        renderKitchen();
-
-    }
-
-
-    if(truck){
-
-        renderTruck();
-
-        renderCustomer();
-
-    }
-
+processHelperJobs();
+const now=Date.now();
+let cookingChanged=false;
+for(const line of state.cooking){
+if(line&&line.recipeId&&line.endTime&&line.endTime<=now&&!line._doneNotified){
+line._doneNotified=true;
+cookingChanged=true;
+}
+}
+if(state.expedition.active&&now>=state.expedition.endTime){
+const status=document.getElementById("dispatchStatus");
+if(status)status.textContent="可以領取";
+}
+processTruckSales();
+if(cookingChanged)save();
+const kitchen=document.getElementById("kitchenPage")?.classList.contains("active");
+if(kitchen)renderCookingLines();
 }
 
 
