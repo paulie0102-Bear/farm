@@ -907,12 +907,165 @@ button,
 .truck-window:after{content:"";position:absolute;top:50%;left:50%;width:3px;height:100%;transform:translate(-50%,-50%);background:#5b5148}
 .truck-counter{position:absolute;right:18px;top:32px;width:63px;height:25px;border-radius:7px;background:#fff0ca;border:3px solid #5b5148}
 .truck-sign{position:absolute;left:55px;right:55px;top:-50px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:13px 13px 6px 6px;background:#fffaf0;border:4px solid #5b5148;font-size:30px;z-index:5;box-shadow:0 4px 8px rgba(0,0,0,.12)}
-.sign-light{animation:signBlink .8s ease-in-out infinite alternate;box-shadow:0 0 16px #ffe66d}
-.sign-flower:before{content:"🌸";position:absolute;left:-19px;top:-15px;font-size:20px}
-.sign-flower:after{content:"🌸";position:absolute;right:-19px;top:-15px;font-size:20px}
-.sign-star:before{content:"⭐";position:absolute;left:-19px;top:-15px;font-size:18px}
-.sign-star:after{content:"⭐";position:absolute;right:-19px;top:-15px;font-size:18px}
-@keyframes signBlink{from{filter:brightness(1)}to{filter:brightness(1.6)}}
+.sign-plain{background:#fffaf0}
+
+.sign-light{
+animation:signBlink .8s ease-in-out infinite alternate;
+box-shadow:0 0 16px #ffe66d;
+}
+
+.sign-flower:before{
+content:"🌸";
+position:absolute;
+left:-19px;
+top:-15px;
+font-size:20px;
+}
+.sign-flower:after{
+content:"🌸";
+position:absolute;
+right:-19px;
+top:-15px;
+font-size:20px;
+}
+
+.sign-star:before{
+content:"⭐";
+position:absolute;
+left:-19px;
+top:-15px;
+font-size:18px;
+}
+.sign-star:after{
+content:"⭐";
+position:absolute;
+right:-19px;
+top:-15px;
+font-size:18px;
+}
+
+.sign-heart{
+background:#fff0f4;
+box-shadow:0 0 12px rgba(255,100,140,.45);
+}
+.sign-heart:before{
+content:"❤️";
+position:absolute;
+left:-18px;
+top:-14px;
+font-size:19px;
+}
+.sign-heart:after{
+content:"❤️";
+position:absolute;
+right:-18px;
+top:-14px;
+font-size:19px;
+}
+
+.sign-rainbow{
+background:linear-gradient(90deg,#ffd1dc,#fff1a8,#c9f2c0,#bde8ff,#d9c5ff);
+background-size:200% 100%;
+animation:rainbowMove 2s linear infinite;
+}
+
+.sign-sparkle{
+box-shadow:0 0 8px rgba(255,230,100,.7),0 0 18px rgba(255,210,100,.35);
+animation:sparkleGlow 1s ease-in-out infinite alternate;
+}
+.sign-sparkle:before{
+content:"✨";
+position:absolute;
+left:-18px;
+top:-14px;
+font-size:18px;
+}
+.sign-sparkle:after{
+content:"✨";
+position:absolute;
+right:-18px;
+top:-14px;
+font-size:18px;
+}
+
+.sign-candy{
+background:repeating-linear-gradient(45deg,#fff 0 10px,#ffd5df 10px 20px);
+}
+.sign-candy:before{
+content:"🍬";
+position:absolute;
+left:-20px;
+top:-15px;
+font-size:18px;
+}
+.sign-candy:after{
+content:"🍭";
+position:absolute;
+right:-20px;
+top:-15px;
+font-size:18px;
+}
+
+.sign-moon{
+background:#eef1ff;
+box-shadow:0 0 14px rgba(150,160,230,.55);
+}
+.sign-moon:before{
+content:"🌙";
+position:absolute;
+left:-18px;
+top:-14px;
+font-size:19px;
+}
+.sign-moon:after{
+content:"⭐";
+position:absolute;
+right:-18px;
+top:-14px;
+font-size:16px;
+}
+
+.sign-magic{
+background:linear-gradient(135deg,#eadcff,#fff0fa,#dff5ff);
+background-size:200% 200%;
+animation:magicMove 2.5s ease-in-out infinite;
+box-shadow:0 0 14px rgba(180,130,230,.5);
+}
+.sign-magic:before{
+content:"🪄";
+position:absolute;
+left:-20px;
+top:-16px;
+font-size:19px;
+}
+.sign-magic:after{
+content:"✨";
+position:absolute;
+right:-18px;
+top:-14px;
+font-size:18px;
+}
+
+@keyframes signBlink{
+from{filter:brightness(1)}
+to{filter:brightness(1.6)}
+}
+
+@keyframes rainbowMove{
+from{background-position:0% 50%}
+to{background-position:200% 50%}
+}
+
+@keyframes sparkleGlow{
+from{filter:brightness(1);transform:scale(1)}
+to{filter:brightness(1.25);transform:scale(1.03)}
+}
+
+@keyframes magicMove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
 .wheel{position:absolute;bottom:-18px;width:36px;height:36px;border-radius:50%;background:#403a35;border:5px solid #fff;box-shadow:0 0 0 2px #403a35}
 .wheel.left{left:23px}.wheel.right{right:23px}
 .truck-spring .truck-roof{background:#8ccf78}.truck-spring .truck-window{background:#c9edbc}.truck-spring .truck-counter{background:#fff8c9}
@@ -1124,6 +1277,171 @@ button,
     }
 }
 
+
+/* ===== 餐車環境 ===== */
+.truck-scene{
+position:absolute;
+inset:0;
+overflow:hidden;
+background:#dff3d5;
+transition:background .4s ease;
+}
+
+.truck-scene::before{
+content:"";
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:38%;
+background:#9bcf78;
+z-index:0;
+transition:all .4s ease;
+}
+
+.truck-scene::after{
+content:"";
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:10%;
+background:rgba(70,120,55,.18);
+z-index:0;
+}
+
+/* 草地 */
+.truck-scene.env-grass{
+background:linear-gradient(#dff4d7 0%,#cce9bd 58%,#a8d57f 58%,#8bc267 100%);
+}
+
+/* 森林 */
+.truck-scene.env-forest{
+background:linear-gradient(#cfe8d0 0%,#9dcc9b 58%,#6fa45f 58%,#4f873f 100%);
+}
+.truck-scene.env-forest::before{
+background:#63994e;
+}
+.truck-scene.env-forest::after{
+background:repeating-linear-gradient(90deg,transparent 0 45px,rgba(39,91,43,.18) 45px 70px);
+}
+
+/* 花園 */
+.truck-scene.env-flower{
+background:linear-gradient(#e7f5e1 0%,#d7efd0 58%,#9ed276 58%,#86bf61 100%);
+}
+.truck-scene.env-flower::before{
+background:
+radial-gradient(circle at 10% 65%,#f5b7c8 0 5px,transparent 6px),
+radial-gradient(circle at 22% 78%,#fff0a5 0 5px,transparent 6px),
+radial-gradient(circle at 38% 66%,#d9b5ee 0 5px,transparent 6px),
+radial-gradient(circle at 58% 78%,#f5b7c8 0 5px,transparent 6px),
+radial-gradient(circle at 76% 66%,#fff0a5 0 5px,transparent 6px),
+radial-gradient(circle at 91% 78%,#d9b5ee 0 5px,transparent 6px),
+#9ed276;
+}
+
+/* 池畔 */
+.truck-scene.env-pond{
+background:linear-gradient(#d8f0f3 0%,#b7e2e5 58%,#91c97d 58%,#75ad62 100%);
+}
+.truck-scene.env-pond::before{
+background:linear-gradient(90deg,#8fc978 0 32%,#77c9d2 32% 67%,#8fc978 67%);
+}
+.truck-scene.env-pond::after{
+background:repeating-linear-gradient(0deg,rgba(255,255,255,.2) 0 2px,transparent 2px 8px);
+}
+
+/* 夕陽 */
+.truck-scene.env-sunset{
+background:linear-gradient(#f5b879 0%,#f7d29b 48%,#eaa86b 58%,#b87555 100%);
+}
+.truck-scene.env-sunset::before{
+background:#c88962;
+}
+.truck-scene.env-sunset::after{
+background:rgba(104,61,45,.22);
+}
+
+/* 星空 */
+.truck-scene.env-starry{
+background:linear-gradient(#172044 0%,#293967 58%,#405d49 58%,#304936 100%);
+}
+.truck-scene.env-starry::before{
+background:#405d49;
+}
+.truck-scene.env-starry::after{
+background:
+radial-gradient(circle at 10% 30%,#fff 0 1px,transparent 2px),
+radial-gradient(circle at 25% 18%,#fff 0 1px,transparent 2px),
+radial-gradient(circle at 43% 34%,#fff 0 1px,transparent 2px),
+radial-gradient(circle at 61% 15%,#fff 0 1px,transparent 2px),
+radial-gradient(circle at 78% 28%,#fff 0 1px,transparent 2px),
+radial-gradient(circle at 92% 12%,#fff 0 1px,transparent 2px);
+}
+
+/* 雪地 */
+.truck-scene.env-snow{
+background:linear-gradient(#dcecf7 0%,#f7fbff 58%,#eef7fc 58%,#dcecf5 100%);
+}
+.truck-scene.env-snow::before{
+background:#edf7fc;
+}
+.truck-scene.env-snow::after{
+background:rgba(150,190,210,.18);
+}
+
+/* 楓葉 */
+.truck-scene.env-autumn{
+background:linear-gradient(#f4d5a7 0%,#e8bd82 58%,#c99357 58%,#a97548 100%);
+}
+.truck-scene.env-autumn::before{
+background:
+radial-gradient(circle at 12% 72%,#d66b45 0 7px,transparent 8px),
+radial-gradient(circle at 29% 82%,#e59b43 0 6px,transparent 7px),
+radial-gradient(circle at 52% 70%,#b94d3c 0 7px,transparent 8px),
+radial-gradient(circle at 73% 82%,#e59b43 0 6px,transparent 7px),
+radial-gradient(circle at 91% 70%,#d66b45 0 7px,transparent 8px),
+#c99357;
+}
+
+/* 雲端 */
+.truck-scene.env-cloud{
+background:linear-gradient(#dff3ff 0%,#c8e9fa 58%,#eef7fb 58%,#d8edf5 100%);
+}
+.truck-scene.env-cloud::before{
+background:
+radial-gradient(ellipse at 15% 70%,#fff 0 35px,transparent 36px),
+radial-gradient(ellipse at 38% 78%,#fff 0 42px,transparent 43px),
+radial-gradient(ellipse at 65% 70%,#fff 0 38px,transparent 39px),
+radial-gradient(ellipse at 88% 78%,#fff 0 45px,transparent 46px),
+#d8edf5;
+}
+
+/* 糖果樂園 */
+.truck-scene.env-candy{
+background:linear-gradient(#ffe4f1 0%,#f7d8eb 58%,#f7c6dc 58%,#e9a9c6 100%);
+}
+.truck-scene.env-candy::before{
+background:
+radial-gradient(circle at 12% 75%,#fff 0 8px,transparent 9px),
+radial-gradient(circle at 28% 68%,#f5b5ce 0 9px,transparent 10px),
+radial-gradient(circle at 48% 78%,#fff 0 8px,transparent 9px),
+radial-gradient(circle at 68% 68%,#f5b5ce 0 9px,transparent 10px),
+radial-gradient(circle at 88% 76%,#fff 0 8px,transparent 9px),
+#f7c6dc;
+}
+
+.truck-scene{z-index:1}
+.truck-scene::before,.truck-scene::after{pointer-events:none}
+.truck-scene::before{z-index:0}
+.truck-scene::after{z-index:1}
+.truck-environment{z-index:5}
+.food-truck{z-index:20}
+.truck-stand{z-index:25}
+.truck-sign{z-index:30}
+.truck-counter-title{z-index:50}
+.truck-customer-layer{z-index:40}
 </style>
 </head>
 
@@ -1341,7 +1659,7 @@ button,
 </div>
 <div class="card">
 <div class="section-title"><span>🚚 餐車說明</span><small>最多4台</small></div>
-<div style="font-size:11px;color:#998675;line-height:1.7">點擊已解鎖的餐車可以編輯販賣列表、餐車顏色、周遭環境與招牌。每份料理統一售價 💰20，顧客只負責演出，不影響實際販售。</div>
+<div style="font-size:11px;color:#998675;line-height:1.7">點擊已解鎖的餐車可以編輯販賣列表、餐車顏色、周遭環境與招牌。每份料理統一售價 💰30，顧客只負責演出，不影響實際販售。</div>
 </div>
 </section>
 
@@ -1601,10 +1919,10 @@ const RECIPES=[
 {id:"strawberry_cake",name:"草莓鮮奶蛋糕",icon:"🍰",ingredients:["🌾","🍓","🥛"],price:30},
 {id:"honey_pancake",name:"蜂蜜鬆餅",icon:"🥞",ingredients:["🌾","🍯","🥚"],price:30},
 {id:"strawberry_pudding",name:"草莓牛奶布丁",icon:"🍮",ingredients:["🍓","🥛","🥚"],price:30},
-{id:"apple_tart",name:"蘋果蜂蜜塔",icon:"🥧",ingredients:["🌾","🍎","🍯"],price:30},
-{id:"strawberry_cookie",name:"草莓奶香餅乾",icon:"🍪",ingredients:["🌾","🍓","🥚"],price:30},
-{id:"honey_milk",name:"蜂蜜牛奶甜點",icon:"🍨",ingredients:["🥛","🍯","🍎"],price:30},
-{id:"strawberry_honey",name:"蜂蜜草莓聖代",icon:"🍧",ingredients:["🍓","🍯","🥛"],price:30}
+{id:"apple_tart",name:"蘋果蜂蜜塔",icon:"🥮",ingredients:["🌾","🍎","🍯"],price:30},
+{id:"strawberry_cookie",name:"草莓奶香餅乾",icon:"🍪",ingredients:["🌾","🍓","🍯"],price:30},
+{id:"honey_milk",name:"蜂蜜牛奶甜點",icon:"🍦",ingredients:["🍎","🍯","🥛"],price:30},
+{id:"strawberry_honey",name:"蜂蜜草莓聖代",icon:"🍧",ingredients:["🍓","🍎","🥛"],price:30}
 ];
 
 
@@ -1625,7 +1943,7 @@ const TRUCK_SKINS = [
     {
         id:"ocean",
         name:"海風藍",
-        price:80,
+        price:120,
         css:"truck-ocean",
         roof:"#73b8d6"
     },
@@ -1641,7 +1959,7 @@ const TRUCK_SKINS = [
     {
         id:"sunset",
         name:"夕陽橘",
-        price:160,
+        price:120,
         css:"truck-sunset",
         roof:"#e68a4b"
     },
@@ -1649,7 +1967,7 @@ const TRUCK_SKINS = [
     {
         id:"lavender",
         name:"薰衣草",
-        price:220,
+        price:120,
         css:"truck-lavender",
         roof:"#9d8bc4"
     },
@@ -1657,7 +1975,7 @@ const TRUCK_SKINS = [
     {
         id:"night",
         name:"夜空",
-        price:300,
+        price:120,
         css:"truck-night",
         roof:"#44546f"
     }
@@ -1691,19 +2009,34 @@ const SALE_TIME = 5 * 60 * 1000;
 
 const TRUCK_ENVIRONMENTS=[
 {id:"grass",name:"草地",price:0,css:"env-grass",icon:"🌱"},
-{id:"forest",name:"森林",price:100,css:"env-forest",icon:"🌳"},
-{id:"flower",name:"花園",price:180,css:"env-flower",icon:"🌸"},
-{id:"pond",name:"池畔",price:260,css:"env-pond",icon:"💧"}
+{id:"forest",name:"森林",price:150,css:"env-forest",icon:"🌳"},
+{id:"flower",name:"花園",price:150,css:"env-flower",icon:"🌸"},
+{id:"pond",name:"池畔",price:150,css:"env-pond",icon:"💧"},
+{id:"sunset",name:"夕陽",price:150,css:"env-sunset",icon:"🌅"},
+{id:"starry",name:"星空",price:150,css:"env-starry",icon:"🌌"},
+{id:"snow",name:"雪地",price:150,css:"env-snow",icon:"❄️"},
+{id:"autumn",name:"楓葉",price:150,css:"env-autumn",icon:"🍁"},
+{id:"cloud",name:"雲端",price:150,css:"env-cloud",icon:"☁️"},
+{id:"candy",name:"糖果樂園",price:150,css:"env-candy",icon:"🍭"}
 ];
+
 const TRUCK_SIGNS=[
 {id:"plain",name:"普通招牌",price:0,css:"sign-plain"},
-{id:"light",name:"閃爍燈光",price:150,css:"sign-light"},
-{id:"flower",name:"花朵招牌",price:250,css:"sign-flower"},
-{id:"star",name:"星星招牌",price:350,css:"sign-star"}
+{id:"light",name:"閃爍燈光",price:90,css:"sign-light"},
+{id:"flower",name:"花朵招牌",price:90,css:"sign-flower"},
+{id:"star",name:"星星招牌",price:90,css:"sign-star"},
+{id:"heart",name:"愛心招牌",price:90,css:"sign-heart"},
+{id:"rainbow",name:"彩虹招牌",price:90,css:"sign-rainbow"},
+{id:"sparkle",name:"閃耀招牌",price:90,css:"sign-sparkle"},
+{id:"candy",name:"糖果招牌",price:90,css:"sign-candy"},
+{id:"moon",name:"月亮招牌",price:90,css:"sign-moon"},
+{id:"magic",name:"魔法招牌",price:90,css:"sign-magic"}
 ];
-const SALE_PRICE=20;
+
+
+const SALE_PRICE=30;
 const TRUCK_MAX=4;
-const TRUCK_UNLOCK_COST=[0,300,600,1000];
+const TRUCK_UNLOCK_COST=[0,300,450,600];
 function createDefaultTruck(id){
 return{
 id,
@@ -1724,49 +2057,45 @@ totalSales:0
    初始資料
 ========================================================= */
 const DEFAULT_STATE={
-    playerCharacter:"QUOKKA",
-    coins:100,
-    ingredients:{
-        "🌾":2,
-        "🥗":2,
-        "🐟":2,
-        "🦐":2,
-        "🥩":2,
-        "🥚":2
-    },
-    dishes:{},
-    cookingLines:1,
-    cooking:[
-        {
-            recipeId:null,
-            endTime:0,
-            helperEnabled:false
-        }
-    ],
-    helper:{
-        date:"",
-        requests:[],
-        served:{},
-        jobs:{}
-    },
-    friendship:{
-        BOBO:3,
-        QUOKKA:3
-    },
-    joined:[
-        "BOBO",
-        "QUOKKA"
-    ],
-    expedition:{
-        region:null,
-        selectedDish:null,
-        members:[],
-        active:false,
-        startTime:0,
-        endTime:0,
-        targetCharacter:null
-    },
-    trucks:Array.from({length:4},(_,i)=>createDefaultTruck(i))
+playerCharacter:"QUOKKA",
+coins:100,
+ingredients:{
+"🌾":2,
+"🍎":2,
+"🍓":2,
+"🥛":2,
+"🍯":2,
+"🥚":2
+},
+dishes:{},
+cookingLines:1,
+cooking:[
+{recipeId:null,endTime:0,helperEnabled:false}
+],
+helper:{
+date:"",
+requests:[],
+served:{},
+jobs:{}
+},
+friendship:{
+BOBO:3,
+QUOKKA:3
+},
+joined:[
+"BOBO",
+"QUOKKA"
+],
+expedition:{
+region:null,
+selectedDish:null,
+members:[],
+active:false,
+startTime:0,
+endTime:0,
+targetCharacter:null
+},
+trucks:Array.from({length:4},(_,i)=>createDefaultTruck(i))
 };
 
 
@@ -3633,8 +3962,22 @@ const env=TRUCK_ENVIRONMENTS.find(x=>x.id===truck.environment)||TRUCK_ENVIRONMEN
 const sign=TRUCK_SIGNS.find(x=>x.id===truck.sign)||TRUCK_SIGNS[0];
 const recipe=RECIPES.find(x=>x.id===currentTruckRecipe(truck));
 const remaining=calcTruckSellout(truck);
-scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="openTruckEditor(${currentTruckIndex})"><div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span></div><div class="truck-stand truck-stand-left"><div>全部完售</div><strong>${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div><div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
+scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="openTruckEditor(${currentTruckIndex})"><div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span><span>${env.icon}</span></div><div class="truck-stand truck-stand-left"><div>全部完售</div><strong id="truckSelloutTime">${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div><div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}" id="truckCurrentRecipeIcon">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
 }
+
+function updateTruckDisplay(){
+const truck=state.trucks?.[currentTruckIndex];
+if(!truck||!truck.unlocked)return;
+const scene=document.getElementById("truckScene");
+if(!scene)return;
+const timeEl=document.getElementById("truckSelloutTime");
+const signEl=document.getElementById("truckCurrentRecipeIcon");
+const remaining=calcTruckSellout(truck);
+if(timeEl)timeEl.textContent=remaining?formatTruckTime(remaining):"--:--";
+const recipe=RECIPES.find(x=>x.id===currentTruckRecipe(truck));
+if(signEl)signEl.textContent=recipe?.icon||"🍽️";
+}
+
 function unlockTruck(index){
 ensureTruckData();
 const truck=state.trucks[index];
@@ -4140,7 +4483,6 @@ async function importSaveFile(event){
 /* =========================================================
    全域更新
 ========================================================= */
-
 function gameTick(){
 processHelperJobs();
 const now=Date.now();
@@ -4157,8 +4499,14 @@ if(status)status.textContent="可以領取";
 }
 processTruckSales();
 if(cookingChanged)save();
+const garden=document.getElementById("gardenPage")?.classList.contains("active");
 const kitchen=document.getElementById("kitchenPage")?.classList.contains("active");
+const truck=document.getElementById("truckPage")?.classList.contains("active");
 if(kitchen)renderCookingLines();
+if(truck){
+updateTruckDisplay();
+renderCustomer();
+}
 }
 
 
