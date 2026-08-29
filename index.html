@@ -462,12 +462,17 @@ button,
 
 .region-list{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:9px;
+    width:100%;
+    max-width:100%;
 }
 
 .region-card{
     position:relative;
+    min-width:0;
+    width:100%;
+    max-width:100%;
     min-height:150px;
     padding:13px;
     border-radius:16px;
@@ -475,6 +480,7 @@ button,
     background:#fff;
     box-shadow:0 2px 8px rgba(0,0,0,.06);
     cursor:pointer;
+    overflow:hidden;
 }
 
 .region-card.selected{
@@ -4778,12 +4784,20 @@ return(state.joined||[]).map(id=>getCharacter(id)).filter(c=>c&&Number(state.fri
 }
 
 function getActiveHelperJob(){
-if(!state.helper?.jobs)return null;
-for(const key of Object.keys(state.helper.jobs)){
-const job=state.helper.jobs[key];
-if(job&&!job.completed)return{key,job};
-}
-return null;
+    if(!state.helper?.jobs)return null;
+
+    for(const key of Object.keys(state.helper.jobs)){
+        const job=state.helper.jobs[key];
+
+        if(job){
+            return{
+                key:key,
+                job:job
+            };
+        }
+    }
+
+    return null;
 }
 
 function getHelperMaxCycles(recipe){
@@ -4909,45 +4923,79 @@ openModal();
 }
 
 function startHelperCooking(recipeId,cycles){
-ensureHelperDaily();
-const recipe=RECIPES.find(r=>r.id===recipeId);
-const helperId=state.helper?.characterId;
-if(!recipe||!helperId)return;
-if(state.helper.served[recipeId]){
-toast("今天已經委託過這道料理");
-return;
-}
-if(!state.helper.requests.includes(recipeId)){
-toast("不是今日指定料理");
-return;
-}
-if(getActiveHelperJob()){
-toast("小幫手目前正在工作");
-return;
-}
-cycles=Math.min(4,Math.max(1,Number(cycles)||0));
-const maxCycles=getHelperMaxCycles(recipe);
-if(maxCycles<cycles){
-toast("材料數量已不足，請重新確認");
-renderCookingHelper();
-return;
-}
-if(Number(state.dishes?.[recipeId]||0)<1){
-toast(`需要先擁有 ${recipe.name} ×1`);
-return;
-}
-for(const id of recipe.ingredients){
-state.ingredients[id]=(Number(state.ingredients?.[id]||0)-cycles);
-}
-state.dishes[recipeId]=Number(state.dishes[recipeId]||0)-1;
-const now=Date.now();
-const jobId="helper_"+now+"_"+Math.random().toString(36).slice(2,7);
-state.helper.jobs[jobId]={helperId,recipeId,cycles,startTime:now,endTime:now+(60*60*1000*cycles),completed:false};
-state.helper.served[recipeId]=true;
-save();
-closeModal();
-renderKitchen();
-toast(`🌟 ${recipe.name} 已委託 ${cycles} 份，開始倒數 ${cycles} 小時`);
+    ensureHelperDaily();
+
+    const recipe=RECIPES.find(r=>r.id===recipeId);
+    const helperId=state.helper?.characterId;
+
+    if(!recipe||!helperId)return;
+
+    if(state.helper.served[recipeId]){
+        toast("今天已經委託過這道料理");
+        return;
+    }
+
+    if(!state.helper.requests.includes(recipeId)){
+        toast("不是今日指定料理");
+        return;
+    }
+
+    const active=getActiveHelperJob();
+
+    if(active){
+        toast("小幫手目前正在工作");
+        return;
+    }
+
+    cycles=Math.min(4,Math.max(1,Math.floor(Number(cycles)||1)));
+
+    const maxCycles=getHelperMaxCycles(recipe);
+
+    if(maxCycles<cycles){
+        toast("材料數量已不足，請重新確認");
+        renderCookingHelper();
+        return;
+    }
+
+    if(Number(state.dishes?.[recipeId]||0)<1){
+        toast(`需要先擁有 ${recipe.name} ×1`);
+        return;
+    }
+
+    for(const id of recipe.ingredients){
+        state.ingredients[id]=
+            Number(state.ingredients?.[id]||0)-cycles;
+    }
+
+    state.dishes[recipeId]=
+        Number(state.dishes[recipeId]||0)-1;
+
+    const now=Date.now();
+
+    // 每次建立工作時重新計算，不累加之前的時間
+    const duration=cycles*60*60*1000;
+
+    const jobId=
+        "helper_"+now+"_"+Math.random().toString(36).slice(2,7);
+
+    state.helper.jobs[jobId]={
+        helperId:helperId,
+        recipeId:recipeId,
+        cycles:cycles,
+        startTime:now,
+        endTime:now+duration,
+        completed:false
+    };
+
+    state.helper.served[recipeId]=true;
+
+    save();
+    closeModal();
+    renderKitchen();
+
+    toast(
+        `🌟 ${recipe.name} 已委託 ${cycles} 份，開始倒數 ${cycles} 小時`
+    );
 }
 
 function processHelperJobs(){
@@ -5608,24 +5656,35 @@ async function importSaveFile(event){
 ========================================================= */
 function gameTick(){
 processHelperJobs();
+
 const now=Date.now();
+
 let cookingChanged=false;
+
 for(const line of state.cooking){
 if(line&&line.recipeId&&line.endTime&&line.endTime<=now&&!line._doneNotified){
 line._doneNotified=true;
 cookingChanged=true;
 }
 }
+
 if(state.expedition.active&&now>=state.expedition.endTime){
 const status=document.getElementById("dispatchStatus");
 if(status)status.textContent="可以領取";
 }
+
 processTruckSales();
+
 if(cookingChanged)save();
-const garden=document.getElementById("gardenPage")?.classList.contains("active");
+
 const kitchen=document.getElementById("kitchenPage")?.classList.contains("active");
 const truck=document.getElementById("truckPage")?.classList.contains("active");
-if(kitchen)renderCookingLines();
+
+if(kitchen){
+renderCookingLines();
+renderCookingHelper();
+}
+
 if(truck){
 updateTruckDisplay();
 renderCustomer();
