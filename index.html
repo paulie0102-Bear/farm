@@ -1,1 +1,5455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
 
+<meta
+    name="viewport"
+    content="width=device-width,
+             initial-scale=1,
+             maximum-scale=1,
+             user-scalable=no,
+             viewport-fit=cover"
+>
+
+<meta name="theme-color" content="#dff1d8">
+
+<title>秘密花園 × 餐車</title>
+
+<style>
+
+/* =========================================================
+   基礎
+========================================================= */
+
+:root{
+    --green:#5f8f55;
+    --green-dark:#3f6840;
+    --green-light:#edf7e9;
+
+    --cream:#fffaf0;
+    --cream-dark:#f4ead4;
+
+    --brown:#765b45;
+    --brown-dark:#503b2c;
+
+    --orange:#e9a34a;
+    --orange-dark:#c87922;
+
+    --pink:#e98c9d;
+    --pink-light:#ffe8ed;
+
+    --blue:#79a9c7;
+    --blue-light:#e6f3fa;
+
+    --gold:#e0b84f;
+    --text:#4a4039;
+
+    --shadow:0 5px 18px rgba(74,64,57,.12);
+    --radius:18px;
+
+    --safe-bottom:env(safe-area-inset-bottom, 0px);
+    --safe-top:env(safe-area-inset-top, 0px);
+}
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+body{
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans TC",
+        "PingFang TC",
+        "Microsoft JhengHei",
+        sans-serif;
+
+    color:var(--text);
+    background:#dcebd8;
+
+    overscroll-behavior:none;
+}
+
+button{
+    font-family:inherit;
+}
+
+button,
+.card,
+.region-card,
+.recipe-card,
+.line-card,
+.skin-card,
+.character-card{
+    user-select:none;
+}
+
+#app{
+    position:relative;
+    width:100%;
+    height:100dvh;
+    min-height:100dvh;
+    overflow:hidden;
+}
+
+/* =========================================================
+   頁面
+========================================================= */
+
+.page{
+    position:absolute;
+    inset:0;
+
+    display:none;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    padding:
+        calc(12px + var(--safe-top))
+        12px
+        calc(105px + var(--safe-bottom))
+        12px;
+
+    -webkit-overflow-scrolling:touch;
+
+    background:
+        linear-gradient(
+            180deg,
+            #eaf5e5 0%,
+            #d9ecd2 45%,
+            #cfe5c8 100%
+        );
+}
+
+.page.active{
+    display:block;
+    animation:pageIn .25s ease-out;
+}
+
+@keyframes pageIn{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =========================================================
+   頂部
+========================================================= */
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    min-height:58px;
+
+    margin-bottom:12px;
+
+    padding:10px 13px;
+
+    border-radius:18px;
+
+    background:rgba(255,250,240,.92);
+    backdrop-filter:blur(12px);
+
+    box-shadow:var(--shadow);
+}
+
+.title-area{
+    min-width:0;
+}
+
+.title{
+    margin:0;
+
+    font-size:20px;
+    font-weight:900;
+
+    color:var(--green-dark);
+}
+
+.subtitle{
+    margin-top:2px;
+
+    font-size:11px;
+    color:#927f6d;
+}
+
+.currency{
+    display:flex;
+    align-items:center;
+    gap:5px;
+
+    padding:7px 10px;
+
+    border-radius:20px;
+
+    background:#fff3c9;
+
+    color:#9a6a15;
+    font-size:13px;
+    font-weight:900;
+
+    white-space:nowrap;
+}
+
+/* =========================================================
+   通用卡片
+========================================================= */
+
+.card{
+    margin-bottom:12px;
+
+    padding:15px;
+
+    background:rgba(255,250,240,.94);
+
+    border:
+        1px solid
+        rgba(118,91,69,.08);
+
+    border-radius:var(--radius);
+
+    box-shadow:var(--shadow);
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:10px;
+
+    font-size:16px;
+    font-weight:900;
+
+    color:var(--green-dark);
+}
+
+.section-title small{
+    font-size:11px;
+    color:#a38d79;
+    font-weight:600;
+}
+
+/* =========================================================
+   按鈕
+========================================================= */
+
+.btn{
+    width:100%;
+
+    min-height:44px;
+
+    border:0;
+    border-radius:13px;
+
+    padding:10px 13px;
+
+    font-size:14px;
+    font-weight:900;
+
+    cursor:pointer;
+
+    transition:
+        transform .1s,
+        filter .1s;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+.btn-green{
+    color:#fff;
+    background:var(--green);
+    box-shadow:0 3px 0 #466d40;
+}
+
+.btn-orange{
+    color:#fff;
+    background:var(--orange);
+    box-shadow:0 3px 0 var(--orange-dark);
+}
+
+.btn-pink{
+    color:#fff;
+    background:var(--pink);
+    box-shadow:0 3px 0 #c66e7d;
+}
+
+.btn-brown{
+    color:#fff;
+    background:var(--brown);
+    box-shadow:0 3px 0 var(--brown-dark);
+}
+
+.btn-light{
+    color:var(--brown);
+    background:#fff;
+    border:1px solid #eadfce;
+}
+
+/* =========================================================
+   底部導覽
+========================================================= */
+
+.bottom-nav{
+    position:fixed;
+
+    left:10px;
+    right:10px;
+
+    bottom:
+        calc(8px + var(--safe-bottom));
+
+    z-index:100;
+
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+
+    gap:7px;
+
+    padding:7px;
+
+    border-radius:20px;
+
+    background:rgba(75,64,53,.94);
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.2);
+
+    backdrop-filter:blur(12px);
+}
+
+.nav-btn{
+    min-height:58px;
+
+    border:0;
+    border-radius:14px;
+
+    color:#dfd7cb;
+
+    background:transparent;
+
+    font-size:11px;
+    font-weight:800;
+}
+
+.nav-btn .nav-icon{
+    display:block;
+    margin-bottom:3px;
+    font-size:22px;
+}
+
+.nav-btn.active{
+    color:#fff;
+    background:rgba(255,255,255,.16);
+}
+
+/* =========================================================
+   秘密花園背景
+========================================================= */
+
+.garden-scene{
+    position:relative;
+
+    min-height:180px;
+
+    margin-bottom:12px;
+
+    overflow:hidden;
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #cce9f0 0%,
+            #e8f3d8 48%,
+            #a7cc8d 49%,
+            #7ead68 100%
+        );
+
+    box-shadow:var(--shadow);
+}
+
+.sun{
+    position:absolute;
+
+    top:20px;
+    right:25px;
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    background:#ffe29a;
+
+    box-shadow:0 0 30px rgba(255,226,154,.8);
+}
+
+.cloud{
+    position:absolute;
+
+    width:70px;
+    height:22px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.7);
+}
+
+.cloud::before,
+.cloud::after{
+    content:"";
+
+    position:absolute;
+
+    border-radius:50%;
+
+    background:inherit;
+}
+
+.cloud::before{
+    width:28px;
+    height:28px;
+
+    left:12px;
+    bottom:5px;
+}
+
+.cloud::after{
+    width:35px;
+    height:35px;
+
+    right:10px;
+    bottom:3px;
+}
+
+.cloud.c1{
+    top:35px;
+    left:25px;
+}
+
+.cloud.c2{
+    top:70px;
+    left:170px;
+    transform:scale(.7);
+}
+
+.flower{
+    position:absolute;
+    bottom:12px;
+
+    font-size:25px;
+}
+
+.f1{left:15px;}
+.f2{left:70px;}
+.f3{right:80px;}
+.f4{right:20px;}
+
+.garden-character{
+    position:absolute;
+
+    bottom:5px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:105px;
+    height:105px;
+
+    object-fit:contain;
+
+    filter:drop-shadow(0 5px 4px rgba(0,0,0,.15));
+}
+
+/* =========================================================
+   地區
+========================================================= */
+
+.region-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+}
+
+.region-card{
+    position:relative;
+
+    min-height:92px;
+
+    padding:13px;
+
+    border-radius:16px;
+
+    border:2px solid transparent;
+
+    background:#fff;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+
+    cursor:pointer;
+}
+
+.region-card.selected{
+    border-color:var(--green);
+    background:#f1faee;
+}
+
+.region-icon{
+    font-size:28px;
+}
+
+.region-name{
+    margin-top:5px;
+
+    font-weight:900;
+    font-size:14px;
+}
+
+.region-desc{
+    margin-top:2px;
+
+    font-size:10px;
+    color:#9a8876;
+}
+
+/* =========================================================
+   派遣
+========================================================= */
+
+.dispatch-region{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:12px;
+
+    border-radius:14px;
+
+    background:#edf7e9;
+}
+
+.dispatch-region-icon{
+    font-size:35px;
+}
+
+.dispatch-region-name{
+    font-size:15px;
+    font-weight:900;
+}
+
+.dispatch-region-desc{
+    margin-top:2px;
+
+    color:#927f6d;
+    font-size:11px;
+}
+
+.food-choice{
+    display:grid;
+    gap:8px;
+
+    margin-top:8px;
+}
+
+.food-option{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:11px;
+
+    border-radius:13px;
+
+    border:2px solid #eee4d5;
+
+    background:#fff;
+
+    cursor:pointer;
+}
+
+.food-option.selected{
+    border-color:var(--orange);
+    background:#fff7e8;
+}
+
+.food-left{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.food-icon{
+    font-size:24px;
+}
+
+.food-name{
+    font-size:13px;
+    font-weight:900;
+}
+
+.food-count{
+    font-size:11px;
+    color:#998876;
+}
+
+/* =========================================================
+   派遣進行
+========================================================= */
+
+.expedition-active{
+    text-align:center;
+}
+
+.expedition-character{
+    display:block;
+
+    width:135px;
+    height:135px;
+
+    margin:5px auto 0;
+
+    object-fit:contain;
+
+    filter:drop-shadow(0 7px 5px rgba(0,0,0,.13));
+}
+
+.progress-track{
+    height:10px;
+
+    margin:12px 0;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    background:#e8dfd3;
+}
+
+.progress-fill{
+    height:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #79a969,
+            #b9d67a
+        );
+
+    transition:width .5s linear;
+}
+
+/* =========================================================
+   好感角色
+========================================================= */
+
+.character-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+}
+
+.character-card{
+    padding:10px;
+
+    border-radius:16px;
+
+    background:#fff;
+
+    text-align:center;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+.character-img{
+    width:80px;
+    height:80px;
+
+    object-fit:contain;
+}
+
+.character-name{
+    margin-top:3px;
+
+    font-size:12px;
+    font-weight:900;
+}
+
+.hearts{
+    margin-top:4px;
+
+    font-size:14px;
+    letter-spacing:1px;
+}
+
+.joined{
+    color:var(--green);
+    font-size:11px;
+    font-weight:900;
+}
+
+/* =========================================================
+   食材
+========================================================= */
+
+.ingredient-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.ingredient{
+    padding:11px 5px;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    text-align:center;
+}
+
+.ingredient-icon{
+    font-size:25px;
+}
+
+.ingredient-name{
+    margin-top:3px;
+
+    font-size:10px;
+    color:#917e6c;
+}
+
+.ingredient-count{
+    margin-top:2px;
+
+    font-size:16px;
+    font-weight:900;
+}
+
+/* =========================================================
+   料理線
+========================================================= */
+
+.cooking-lines{
+    display:grid;
+    gap:10px;
+}
+
+.line-card{
+    padding:13px;
+
+    border-radius:16px;
+
+    background:#fff;
+
+    border:1px solid #eee2d4;
+}
+
+.line-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:9px;
+}
+
+.line-name{
+    font-weight:900;
+    font-size:14px;
+}
+
+.line-status{
+    font-size:10px;
+    color:#a18d79;
+}
+
+.recipe-select{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+}
+
+.recipe-mini{
+    padding:7px 2px;
+
+    border-radius:10px;
+
+    border:1px solid #eadfce;
+
+    background:#fffaf2;
+
+    text-align:center;
+
+    cursor:pointer;
+}
+
+.recipe-mini.selected{
+    border:2px solid var(--orange);
+    background:#fff3dc;
+}
+
+.recipe-mini-icon{
+    font-size:21px;
+}
+
+.recipe-mini-name{
+    margin-top:2px;
+
+    font-size:9px;
+
+    line-height:1.2;
+}
+
+.recipe-result{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    margin-top:9px;
+
+    padding:9px;
+
+    border-radius:11px;
+
+    background:#f7f4ee;
+}
+
+.recipe-result-icon{
+    font-size:30px;
+}
+
+.recipe-result-name{
+    font-weight:900;
+    font-size:12px;
+}
+
+.cook-progress{
+    margin-top:8px;
+}
+
+.cook-time{
+    text-align:right;
+
+    font-size:10px;
+    color:#9a8775;
+}
+
+.lock-line{
+    text-align:center;
+    padding:20px 10px;
+    color:#a28e7a;
+}
+
+/* =========================================================
+   餐車
+========================================================= */
+
+.truck-stage{
+    position:relative;
+
+    min-height:255px;
+
+    margin-bottom:12px;
+
+    overflow:hidden;
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #dceef4 0%,
+            #eef1df 58%,
+            #b9c59b 59%,
+            #919e76 100%
+        );
+
+    box-shadow:var(--shadow);
+}
+
+/* 餐車本體 */
+
+.food-truck{
+    position:absolute;
+
+    left:50%;
+    bottom:30px;
+
+    transform:translateX(-50%);
+
+    width:235px;
+    height:125px;
+
+    border-radius:25px 25px 15px 15px;
+
+    background:#fff;
+
+    border:5px solid #5b5148;
+
+    box-shadow:
+        0 10px 0 rgba(0,0,0,.08),
+        0 10px 20px rgba(0,0,0,.15);
+
+    transition:.25s;
+}
+
+.truck-roof{
+    position:absolute;
+
+    left:-8px;
+    right:-8px;
+    top:-17px;
+
+    height:24px;
+
+    border-radius:20px 20px 5px 5px;
+
+    background:#e98c9d;
+
+    border:4px solid #5b5148;
+}
+
+.truck-window{
+    position:absolute;
+
+    left:35px;
+    top:25px;
+
+    width:72px;
+    height:48px;
+
+    border-radius:10px;
+
+    background:#b9dce5;
+
+    border:4px solid #5b5148;
+}
+
+.truck-window::after{
+    content:"";
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    width:4px;
+    height:100%;
+
+    transform:translate(-50%,-50%);
+
+    background:#5b5148;
+}
+
+.truck-counter{
+    position:absolute;
+
+    right:23px;
+    top:35px;
+
+    width:78px;
+    height:30px;
+
+    border-radius:8px;
+
+    background:#fff0ca;
+
+    border:3px solid #5b5148;
+}
+
+.truck-sign{
+    position:absolute;
+
+    left:20px;
+    right:20px;
+    bottom:11px;
+
+    padding:4px;
+
+    border-radius:8px;
+
+    text-align:center;
+
+    font-weight:900;
+    font-size:11px;
+
+    background:#fffaf0;
+}
+
+.wheel{
+    position:absolute;
+
+    bottom:-18px;
+
+    width:39px;
+    height:39px;
+
+    border-radius:50%;
+
+    background:#403a35;
+
+    border:6px solid #fff;
+
+    box-shadow:0 0 0 3px #403a35;
+}
+
+.wheel.left{
+    left:27px;
+}
+
+.wheel.right{
+    right:27px;
+}
+
+/* =========================================================
+   餐車外型 CSS
+========================================================= */
+
+.truck-spring .truck-roof{
+    background:#8ccf78;
+}
+
+.truck-spring .truck-window{
+    background:#c9edbc;
+}
+
+.truck-spring .truck-counter{
+    background:#fff8c9;
+}
+
+.truck-ocean .truck-roof{
+    background:#73b8d6;
+}
+
+.truck-ocean .truck-window{
+    background:#bce7ef;
+}
+
+.truck-ocean .truck-counter{
+    background:#e8f9ff;
+}
+
+.truck-cafe .truck-roof{
+    background:#9a6f52;
+}
+
+.truck-cafe .truck-window{
+    background:#d8c1a9;
+}
+
+.truck-cafe .truck-counter{
+    background:#f2dfc5;
+}
+
+.truck-sunset .truck-roof{
+    background:#e68a4b;
+}
+
+.truck-sunset .truck-window{
+    background:#f5c79d;
+}
+
+.truck-sunset .truck-counter{
+    background:#fff0d6;
+}
+
+.truck-lavender .truck-roof{
+    background:#9d8bc4;
+}
+
+.truck-lavender .truck-window{
+    background:#d8d0ee;
+}
+
+.truck-lavender .truck-counter{
+    background:#f2effb;
+}
+
+.truck-night .truck-roof{
+    background:#44546f;
+}
+
+.truck-night .truck-window{
+    background:#91a5c7;
+}
+
+.truck-night .truck-counter{
+    background:#e1e5ee;
+}
+
+/* =========================================================
+   客人
+========================================================= */
+
+.customer-area{
+    position:absolute;
+
+    left:10px;
+    right:10px;
+    top:12px;
+
+    display:flex;
+    justify-content:center;
+
+    pointer-events:none;
+}
+
+.customer{
+    display:flex;
+    align-items:center;
+    gap:5px;
+
+    padding:7px 10px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.85);
+
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+
+    font-size:11px;
+}
+
+.customer-dot{
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#76ad68;
+}
+
+.sold-message{
+    position:absolute;
+
+    left:50%;
+    bottom:190px;
+
+    transform:translateX(-50%);
+
+    padding:7px 12px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.95);
+
+    color:#c27a21;
+
+    font-size:12px;
+    font-weight:900;
+
+    opacity:0;
+    pointer-events:none;
+}
+
+.sold-message.show{
+    animation:soldUp 1.5s ease-out;
+}
+
+@keyframes soldUp{
+    0%{
+        opacity:0;
+        transform:translate(-50%,10px);
+    }
+
+    20%{
+        opacity:1;
+        transform:translate(-50%,0);
+    }
+
+    100%{
+        opacity:0;
+        transform:translate(-50%,-25px);
+    }
+}
+
+/* =========================================================
+   餐車庫存
+========================================================= */
+
+.truck-stock{
+    display:grid;
+    gap:8px;
+}
+
+.stock-row{
+    display:flex;
+    align-items:center;
+    gap:9px;
+
+    padding:10px;
+
+    border-radius:12px;
+
+    background:#fff;
+}
+
+.stock-icon{
+    font-size:27px;
+}
+
+.stock-info{
+    flex:1;
+}
+
+.stock-name{
+    font-weight:900;
+    font-size:12px;
+}
+
+.stock-amount{
+    margin-top:2px;
+
+    font-size:10px;
+    color:#998777;
+}
+
+/* =========================================================
+   外型商店
+========================================================= */
+
+.skin-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.skin-card{
+    padding:10px;
+
+    border-radius:16px;
+
+    background:#fff;
+
+    border:2px solid transparent;
+
+    cursor:pointer;
+}
+
+.skin-card.owned{
+    border-color:#d8cdbb;
+}
+
+.skin-card.current{
+    border-color:var(--green);
+    background:#f2faef;
+}
+
+.skin-preview{
+    position:relative;
+
+    height:82px;
+
+    margin-bottom:8px;
+
+    overflow:hidden;
+
+    border-radius:12px;
+
+    background:#dcebd8;
+}
+
+.mini-truck{
+    position:absolute;
+
+    left:50%;
+    bottom:12px;
+
+    width:100px;
+    height:48px;
+
+    transform:translateX(-50%);
+
+    border-radius:10px;
+
+    background:#fff;
+
+    border:3px solid #554b43;
+}
+
+.mini-roof{
+    position:absolute;
+
+    top:-8px;
+    left:-3px;
+    right:-3px;
+
+    height:12px;
+
+    border-radius:8px 8px 3px 3px;
+
+    border:2px solid #554b43;
+}
+
+.skin-name{
+    font-size:12px;
+    font-weight:900;
+}
+
+.skin-price{
+    margin-top:3px;
+
+    color:#a07726;
+
+    font-size:11px;
+}
+
+/* =========================================================
+   Modal
+========================================================= */
+
+.modal-layer{
+    position:fixed;
+
+    inset:0;
+
+    z-index:500;
+
+    display:none;
+
+    align-items:flex-end;
+    justify-content:center;
+
+    padding:
+        15px
+        12px
+        calc(15px + var(--safe-bottom));
+
+    background:rgba(54,45,38,.45);
+
+    backdrop-filter:blur(4px);
+}
+
+.modal-layer.show{
+    display:flex;
+}
+
+.modal{
+    width:100%;
+    max-width:520px;
+    max-height:82dvh;
+
+    overflow-y:auto;
+
+    padding:18px;
+
+    border-radius:22px 22px 18px 18px;
+
+    background:#fffaf2;
+
+    box-shadow:
+        0 -10px 40px rgba(0,0,0,.2);
+
+    animation:modalUp .25s ease-out;
+}
+
+@keyframes modalUp{
+    from{
+        transform:translateY(30px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0);
+        opacity:1;
+    }
+}
+
+.modal-title{
+    font-size:18px;
+    font-weight:900;
+
+    color:var(--green-dark);
+
+    margin-bottom:12px;
+}
+
+/* =========================================================
+   Toast
+========================================================= */
+
+#toast{
+    position:fixed;
+
+    left:50%;
+    bottom:
+        calc(90px + var(--safe-bottom));
+
+    z-index:1000;
+
+    transform:translateX(-50%) translateY(20px);
+
+    max-width:calc(100% - 40px);
+
+    padding:10px 15px;
+
+    border-radius:20px;
+
+    background:rgba(67,57,48,.94);
+
+    color:#fff;
+
+    font-size:12px;
+    font-weight:800;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.25s;
+
+    text-align:center;
+}
+
+#toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+/* =========================================================
+   空狀態
+========================================================= */
+
+.empty{
+    padding:25px 10px;
+
+    text-align:center;
+
+    color:#a28e7b;
+
+    font-size:12px;
+}
+
+/* =========================================================
+   桌面
+========================================================= */
+
+@media(min-width:700px){
+
+    .page{
+        padding-left:calc((100% - 620px)/2);
+        padding-right:calc((100% - 620px)/2);
+    }
+
+    .bottom-nav{
+        left:50%;
+        right:auto;
+
+        width:600px;
+
+        transform:translateX(-50%);
+    }
+}
+
+/* =========================================================
+   手機特別處理
+========================================================= */
+
+@media(max-width:390px){
+
+    .page{
+        padding-left:9px;
+        padding-right:9px;
+    }
+
+    .region-list{
+        gap:7px;
+    }
+
+    .recipe-select{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .recipe-mini-name{
+        font-size:8px;
+    }
+
+    .food-truck{
+        transform:translateX(-50%) scale(.9);
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- =====================================================
+         秘密花園
+    ====================================================== -->
+
+    <section id="gardenPage" class="page active">
+
+        <div class="topbar">
+
+            <div class="title-area">
+
+                <h1 class="title">🌿 秘密花園</h1>
+
+                <div class="subtitle">
+                    派遣、採集、料理，與大家慢慢成為朋友
+                </div>
+
+            </div>
+
+            <div class="currency">
+                💰 <span id="gardenCoins">0</span>
+            </div>
+
+        </div>
+
+
+        <div class="garden-scene">
+
+            <div class="sun"></div>
+
+            <div class="cloud c1"></div>
+            <div class="cloud c2"></div>
+
+            <div class="flower f1">🌷</div>
+            <div class="flower f2">🌼</div>
+            <div class="flower f3">🌻</div>
+            <div class="flower f4">🌷</div>
+
+            <img
+                id="gardenCharacter"
+                class="garden-character"
+                alt="花園角色"
+            >
+
+        </div>
+
+
+        <!-- 派遣 -->
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <span>🧭 地區派遣</span>
+
+                <small id="dispatchStatus">
+                    尚未派遣
+                </small>
+
+            </div>
+
+            <div
+                id="activeExpedition"
+                style="display:none"
+            ></div>
+
+            <div id="dispatchSetup">
+
+                <div class="region-list" id="regionList"></div>
+
+                <div style="height:10px"></div>
+
+                <div id="selectedRegionInfo"></div>
+
+                <div style="height:8px"></div>
+
+                <div
+                    style="
+                        font-size:12px;
+                        font-weight:900;
+                        color:#765b45;
+                    "
+                >
+                    🍱 要帶料理嗎？
+                </div>
+
+                <div
+                    id="dispatchFoodList"
+                    class="food-choice"
+                ></div>
+
+                <div style="height:9px"></div>
+
+                <button
+                    id="dispatchButton"
+                    class="btn btn-green"
+                    onclick="startDispatch()"
+                >
+                    🧭 開始派遣
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- 食材 -->
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <span>🧺 食材倉庫</span>
+
+                <small>派遣帶回</small>
+
+            </div>
+
+            <div
+                id="ingredientGrid"
+                class="ingredient-grid"
+            ></div>
+
+        </div>
+
+
+        <!-- 角色 -->
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <span>💗 朋友小隊</span>
+
+                <small id="teamCount"></small>
+
+            </div>
+
+            <div
+                id="characterGrid"
+                class="character-grid"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         料理
+    ====================================================== -->
+
+    <section id="kitchenPage" class="page">
+
+        <div class="topbar">
+
+            <div class="title-area">
+
+                <h1 class="title">🍳 料理工房</h1>
+
+                <div class="subtitle">
+                    把派遣帶回來的食材變成料理
+                </div>
+
+            </div>
+
+            <div class="currency">
+                💰 <span id="kitchenCoins">0</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <span>🍳 料理線</span>
+
+                <small>
+                    <span id="lineCount"></span> 條
+                </small>
+
+            </div>
+
+            <div
+                id="cookingLines"
+                class="cooking-lines"
+            ></div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <span>💰 擴充料理線</span>
+
+            </div>
+
+            <div
+                id="upgradeLineArea"
+            ></div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <span>🍱 已完成料理</span>
+
+                <small>可以派遣或販售</small>
+
+            </div>
+
+            <div id="dishInventory"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         餐車
+    ====================================================== -->
+
+    <section id="truckPage" class="page">
+
+        <div class="topbar">
+
+            <div class="title-area">
+
+                <h1 class="title">🚚 餐車</h1>
+
+                <div class="subtitle">
+                    把料理變成錢幣
+                </div>
+
+            </div>
+
+            <div class="currency">
+                💰 <span id="truckCoins">0</span>
+            </div>
+
+        </div>
+
+
+        <div class="truck-stage">
+
+            <div
+                id="customerArea"
+                class="customer-area"
+            ></div>
+
+            <div
+                id="soldMessage"
+                class="sold-message"
+            >
+                💰 賣出一份料理！
+            </div>
+
+            <div
+                id="foodTruck"
+                class="food-truck truck-spring"
+            >
+
+                <div class="truck-roof"></div>
+
+                <div class="truck-window"></div>
+
+                <div class="truck-counter"></div>
+
+                <div class="truck-sign">
+                    今日料理小餐車
+                </div>
+
+                <div class="wheel left"></div>
+                <div class="wheel right"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 餐車操作 -->
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <span>🍱 補貨</span>
+
+                <small id="truckStatus">
+                    營業中
+                </small>
+
+            </div>
+
+            <div id="truckStock"></div>
+
+            <div style="height:10px"></div>
+
+            <button
+                class="btn btn-orange"
+                onclick="openTruckFoodModal()"
+            >
+                🍱 選擇料理補貨
+            </button>
+
+        </div>
+
+
+        <!-- 外型 -->
+
+        <div class="card">
+
+            <div class="section-title">
+
+                <span>🎨 餐車外型</span>
+
+                <small>用錢幣購買</small>
+
+            </div>
+
+            <div
+                id="skinGrid"
+                class="skin-grid"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         底部導覽
+    ====================================================== -->
+
+    <nav class="bottom-nav">
+
+        <button
+            id="navGarden"
+            class="nav-btn active"
+            onclick="showPage('garden')"
+        >
+            <span class="nav-icon">🌿</span>
+            花園
+        </button>
+
+        <button
+            id="navKitchen"
+            class="nav-btn"
+            onclick="showPage('kitchen')"
+        >
+            <span class="nav-icon">🍳</span>
+            料理
+        </button>
+
+        <button
+            id="navTruck"
+            class="nav-btn"
+            onclick="showPage('truck')"
+        >
+            <span class="nav-icon">🚚</span>
+            餐車
+        </button>
+
+    </nav>
+
+</div>
+
+
+<!-- =========================================================
+     Modal
+========================================================= -->
+
+<div
+    id="modalLayer"
+    class="modal-layer"
+    onclick="closeModalByBackground(event)"
+>
+
+    <div
+        id="modal"
+        class="modal"
+        onclick="event.stopPropagation()"
+    ></div>
+
+</div>
+
+
+<div id="toast"></div>
+
+
+<script>
+
+/* =========================================================
+   基本資料
+========================================================= */
+
+const STORAGE_KEY = "secretGardenTruck_v1";
+
+
+const CHARACTERS = [
+
+    {
+        id:"BOBO",
+        name:"BOBO",
+        file:"BOBO.gif"
+    },
+
+    {
+        id:"FATTY",
+        name:"FATTY",
+        file:"FATTY.gif"
+    },
+
+    {
+        id:"GRANDPA_QUOKKA",
+        name:"GRANDPA QUOKKA",
+        file:"GRANDPA%20QUOKKA.gif"
+    },
+
+    {
+        id:"HATTY",
+        name:"HATTY",
+        file:"HATTY.gif"
+    },
+
+    {
+        id:"MAMA_QUOKKA",
+        name:"MAMA QUOKKA",
+        file:"MAMA%20QUOKKA.gif"
+    },
+
+    {
+        id:"MARSH",
+        name:"MARSH",
+        file:"MARSH.gif"
+    },
+
+    {
+        id:"MR_BURNT",
+        name:"MR.BURNT",
+        file:"MR.BURNT.gif"
+    },
+
+    {
+        id:"PAPA_QUOKKA",
+        name:"PAPA QUOKKA",
+        file:"PAPA%20QUOKKA.gif"
+    },
+
+    {
+        id:"QUOKKA",
+        name:"QUOKKA",
+        file:"QUOKKA.gif"
+    },
+
+    {
+        id:"QUOKKA1",
+        name:"QUOKKA",
+        file:"QUOKKA1.gif"
+    },
+
+    {
+        id:"QUOKKA2",
+        name:"QUOKKA",
+        file:"QUOKKA2.gif"
+    },
+
+    {
+        id:"QUOKKA3",
+        name:"QUOKKA",
+        file:"QUOKKA3.gif"
+    },
+
+    {
+        id:"QUOKKA4",
+        name:"QUOKKA",
+        file:"QUOKKA4.gif"
+    },
+
+    {
+        id:"QUOKKA5",
+        name:"QUOKKA",
+        file:"QUOKKA5.gif"
+    },
+
+    {
+        id:"QUOKKA6",
+        name:"QUOKKA",
+        file:"QUOKKA6.gif"
+    },
+
+    {
+        id:"QUOKKA7",
+        name:"QUOKKA",
+        file:"QUOKKA7.gif"
+    },
+
+    {
+        id:"QUOKKA8",
+        name:"QUOKKA",
+        file:"QUOKKA8.gif"
+    },
+
+    {
+        id:"QUOKKA9",
+        name:"QUOKKA",
+        file:"QUOKKA9.gif"
+    },
+
+    {
+        id:"QUOKKA10",
+        name:"QUOKKA",
+        file:"QUOKKA10.gif"
+    },
+
+    {
+        id:"QUOKKA11",
+        name:"QUOKKA",
+        file:"QUOKKA11.gif"
+    }
+
+];
+
+
+const MEMBER_BASE =
+    "https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/";
+
+
+function characterImage(character){
+
+    return MEMBER_BASE + character.file;
+
+}
+
+
+/* =========================================================
+   地區
+========================================================= */
+
+const REGIONS = [
+
+    {
+        id:"forest",
+        name:"青翠森林",
+        icon:"🌳",
+        desc:"森林裡藏著新鮮的蔬菜",
+        ingredients:["🌾","🥗"]
+    },
+
+    {
+        id:"coast",
+        name:"蔚藍海岸",
+        icon:"🌊",
+        desc:"海風帶來豐富的海鮮",
+        ingredients:["🐟","🦐"]
+    },
+
+    {
+        id:"village",
+        name:"暖陽村莊",
+        icon:"🏡",
+        desc:"村莊裡有香噴噴的食材",
+        ingredients:["🥩","🥚"]
+    },
+
+    {
+        id:"mountain",
+        name:"雲霧山地",
+        icon:"⛰️",
+        desc:"山裡有珍貴的天然食材",
+        ingredients:["🌾","🥩","🥚"]
+    },
+
+    {
+        id:"lake",
+        name:"月光湖畔",
+        icon:"🌙",
+        desc:"湖邊可以找到水產與蔬菜",
+        ingredients:["🐟","🥗","🦐"]
+    },
+
+    {
+        id:"town",
+        name:"夕陽小鎮",
+        icon:"🌇",
+        desc:"小鎮附近有各種料理材料",
+        ingredients:["🥩","🥚","🌾","🥗"]
+    }
+
+];
+
+
+/* =========================================================
+   食材
+========================================================= */
+
+const INGREDIENTS = {
+
+    "🌾":{
+        name:"穀物",
+        icon:"🌾"
+    },
+
+    "🥗":{
+        name:"蔬菜",
+        icon:"🥗"
+    },
+
+    "🐟":{
+        name:"鮮魚",
+        icon:"🐟"
+    },
+
+    "🦐":{
+        name:"蝦子",
+        icon:"🦐"
+    },
+
+    "🥩":{
+        name:"肉品",
+        icon:"🥩"
+    },
+
+    "🥚":{
+        name:"雞蛋",
+        icon:"🥚"
+    }
+
+};
+
+
+/* =========================================================
+   料理
+   直接沿用原本秘密花園的料理組合概念
+========================================================= */
+
+const RECIPES = [
+
+    {
+        id:"rice_meat_fish",
+        name:"陸海空豪華便當",
+        icon:"🍱",
+        ingredients:["🌾","🐟","🥩"],
+        price:18
+    },
+
+    {
+        id:"fish_egg",
+        name:"滑蛋鮮魚粥",
+        icon:"🥣",
+        ingredients:["🌾","🐟","🥚"],
+        price:16
+    },
+
+    {
+        id:"shrimp_meat",
+        name:"鮮蝦燒肉飯",
+        icon:"🍛",
+        ingredients:["🌾","🦐","🥩"],
+        price:20
+    },
+
+    {
+        id:"shrimp_egg",
+        name:"黃金蝦仁炒飯",
+        icon:"🍤",
+        ingredients:["🌾","🦐","🥚"],
+        price:19
+    },
+
+    {
+        id:"salad_meat",
+        name:"海陸健身沙拉",
+        icon:"🥗",
+        ingredients:["🥗","🐟","🥩"],
+        price:18
+    },
+
+    {
+        id:"salad_egg",
+        name:"時蔬魚排歐姆蛋",
+        icon:"🍳",
+        ingredients:["🥗","🐟","🥚"],
+        price:17
+    },
+
+    {
+        id:"vegetable_shrimp",
+        name:"鮮蝦時蔬快炒",
+        icon:"🥘",
+        ingredients:["🥗","🦐","🥩"],
+        price:21
+    },
+
+    {
+        id:"steam_egg",
+        name:"嫩蝦蔬菜蒸蛋",
+        icon:"🍮",
+        ingredients:["🥗","🦐","🥚"],
+        price:17
+    }
+
+];
+
+
+/* =========================================================
+   餐車外型
+========================================================= */
+
+const TRUCK_SKINS = [
+
+    {
+        id:"spring",
+        name:"春日花園",
+        price:0,
+        css:"truck-spring",
+        roof:"#8ccf78"
+    },
+
+    {
+        id:"ocean",
+        name:"海風藍",
+        price:80,
+        css:"truck-ocean",
+        roof:"#73b8d6"
+    },
+
+    {
+        id:"cafe",
+        name:"溫暖咖啡",
+        price:120,
+        css:"truck-cafe",
+        roof:"#9a6f52"
+    },
+
+    {
+        id:"sunset",
+        name:"夕陽橘",
+        price:160,
+        css:"truck-sunset",
+        roof:"#e68a4b"
+    },
+
+    {
+        id:"lavender",
+        name:"薰衣草",
+        price:220,
+        css:"truck-lavender",
+        roof:"#9d8bc4"
+    },
+
+    {
+        id:"night",
+        name:"夜空",
+        price:300,
+        css:"truck-night",
+        roof:"#44546f"
+    }
+
+];
+
+
+/* =========================================================
+   派遣時間
+   目前設定 3 分鐘。
+   若正式營運要改成 8 小時，只要改成：
+   const DISPATCH_TIME = 8 * 60 * 60 * 1000;
+========================================================= */
+
+const DISPATCH_TIME = 3 * 60 * 1000;
+
+
+/* =========================================================
+   料理時間
+========================================================= */
+
+const COOK_TIME = 60 * 1000;
+
+
+/* =========================================================
+   餐車販售時間
+   沿用原餐車「每份固定時間出售」概念
+========================================================= */
+
+const SALE_TIME = 5 * 60 * 1000;
+
+
+/* =========================================================
+   初始資料
+========================================================= */
+
+const DEFAULT_STATE = {
+
+    coins:100,
+
+    ingredients:{
+        "🌾":2,
+        "🥗":2,
+        "🐟":2,
+        "🦐":2,
+        "🥩":2,
+        "🥚":2
+    },
+
+    dishes:{},
+
+    cookingLines:1,
+
+    cooking:[
+        {
+            recipeId:null,
+            endTime:0
+        }
+    ],
+
+    friendship:{},
+
+    joined:[],
+
+    expedition:{
+
+        region:null,
+
+        selectedDish:null,
+
+        active:false,
+
+        startTime:0,
+
+        endTime:0,
+
+        targetCharacter:null
+
+    },
+
+    truck:{
+
+        skin:"spring",
+
+        stock:[],
+
+        lastSaleTime:Date.now(),
+
+        totalSales:0
+
+    }
+
+};
+
+
+let state = loadState();
+
+
+/* =========================================================
+   讀檔
+========================================================= */
+
+function loadState(){
+
+    try{
+
+        const raw =
+            localStorage.getItem(STORAGE_KEY);
+
+        if(!raw){
+
+            return structuredClone
+                ? structuredClone(DEFAULT_STATE)
+                : JSON.parse(
+                    JSON.stringify(DEFAULT_STATE)
+                );
+
+        }
+
+        const saved = JSON.parse(raw);
+
+        const merged =
+            Object.assign(
+                {},
+                JSON.parse(
+                    JSON.stringify(DEFAULT_STATE)
+                ),
+                saved
+            );
+
+        merged.ingredients =
+            Object.assign(
+                {},
+                DEFAULT_STATE.ingredients,
+                saved.ingredients || {}
+            );
+
+        merged.dishes =
+            Object.assign(
+                {},
+                saved.dishes || {}
+            );
+
+        merged.friendship =
+            Object.assign(
+                {},
+                saved.friendship || {}
+            );
+
+        merged.expedition =
+            Object.assign(
+                {},
+                DEFAULT_STATE.expedition,
+                saved.expedition || {}
+            );
+
+        merged.truck =
+            Object.assign(
+                {},
+                DEFAULT_STATE.truck,
+                saved.truck || {}
+            );
+
+        merged.cooking =
+            Array.isArray(saved.cooking)
+                ? saved.cooking
+                : [];
+
+        while(
+            merged.cooking.length <
+            merged.cookingLines
+        ){
+
+            merged.cooking.push({
+                recipeId:null,
+                endTime:0
+            });
+
+        }
+
+        return merged;
+
+    }catch(e){
+
+        console.error(e);
+
+        return JSON.parse(
+            JSON.stringify(DEFAULT_STATE)
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   儲存
+========================================================= */
+
+function save(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(state)
+    );
+
+}
+
+
+/* =========================================================
+   Toast
+========================================================= */
+
+let toastTimer=null;
+
+function toast(message){
+
+    const el =
+        document.getElementById("toast");
+
+    el.textContent = message;
+
+    el.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(
+            ()=>{
+                el.classList.remove("show");
+            },
+            2200
+        );
+
+}
+
+
+/* =========================================================
+   頁面切換
+========================================================= */
+
+function showPage(page){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(
+            el=>el.classList.remove("active")
+        );
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(
+            el=>el.classList.remove("active")
+        );
+
+
+    if(page==="garden"){
+
+        document
+            .getElementById("gardenPage")
+            .classList.add("active");
+
+        document
+            .getElementById("navGarden")
+            .classList.add("active");
+
+        renderGarden();
+
+    }
+
+
+    if(page==="kitchen"){
+
+        document
+            .getElementById("kitchenPage")
+            .classList.add("active");
+
+        document
+            .getElementById("navKitchen")
+            .classList.add("active");
+
+        renderKitchen();
+
+    }
+
+
+    if(page==="truck"){
+
+        document
+            .getElementById("truckPage")
+            .classList.add("active");
+
+        document
+            .getElementById("navTruck")
+            .classList.add("active");
+
+        renderTruck();
+
+    }
+
+}
+
+
+/* =========================================================
+   地區角色分配
+   讓每個地區都有自己的角色池
+========================================================= */
+
+const REGION_CHARACTERS = {
+
+    forest:[
+        "BOBO",
+        "QUOKKA",
+        "QUOKKA1",
+        "HATTY"
+    ],
+
+    coast:[
+        "FATTY",
+        "MARSH",
+        "QUOKKA2"
+    ],
+
+    village:[
+        "MAMA_QUOKKA",
+        "PAPA_QUOKKA",
+        "QUOKKA3"
+    ],
+
+    mountain:[
+        "GRANDPA_QUOKKA",
+        "QUOKKA4",
+        "QUOKKA5"
+    ],
+
+    lake:[
+        "QUOKKA6",
+        "QUOKKA7",
+        "QUOKKA8"
+    ],
+
+    town:[
+        "MR_BURNT",
+        "QUOKKA9",
+        "QUOKKA10",
+        "QUOKKA11"
+    ]
+
+};
+
+
+/* =========================================================
+   找人物
+========================================================= */
+
+function getCharacter(id){
+
+    return CHARACTERS.find(
+        c=>c.id===id
+    );
+
+}
+
+
+/* =========================================================
+   初始化角色好感
+========================================================= */
+
+function getFriendship(id){
+
+    return Number(
+        state.friendship[id] || 0
+    );
+
+}
+
+
+/* =========================================================
+   愛心
+========================================================= */
+
+function hearts(id){
+
+    const value =
+        Math.min(
+            3,
+            getFriendship(id)
+        );
+
+    return (
+        "❤️".repeat(value) +
+        "🤍".repeat(3-value)
+    );
+
+}
+
+
+/* =========================================================
+   花園
+========================================================= */
+
+function renderGarden(){
+
+    document.getElementById(
+        "gardenCoins"
+    ).textContent =
+        state.coins;
+
+
+    document.getElementById(
+        "kitchenCoins"
+    ).textContent =
+        state.coins;
+
+
+    document.getElementById(
+        "truckCoins"
+    ).textContent =
+        state.coins;
+
+
+    renderGardenCharacter();
+
+    renderRegions();
+
+    renderDispatchFood();
+
+    renderIngredients();
+
+    renderCharacters();
+
+    renderExpedition();
+
+}
+
+
+/* =========================================================
+   花園角色
+========================================================= */
+
+function renderGardenCharacter(){
+
+    const joined =
+        state.joined;
+
+    let character = null;
+
+    if(joined.length){
+
+        const id =
+            joined[
+                Math.floor(
+                    Date.now()/5000
+                ) % joined.length
+            ];
+
+        character =
+            getCharacter(id);
+
+    }
+
+    if(!character){
+
+        character =
+            CHARACTERS[0];
+
+    }
+
+    const img =
+        document.getElementById(
+            "gardenCharacter"
+        );
+
+    img.src =
+        characterImage(character);
+
+}
+
+
+/* =========================================================
+   地區
+========================================================= */
+
+function renderRegions(){
+
+    const container =
+        document.getElementById(
+            "regionList"
+        );
+
+    container.innerHTML =
+        REGIONS.map(
+            region=>{
+
+                const selected =
+                    state.expedition.region ===
+                    region.id;
+
+                return `
+
+                    <div
+                        class="region-card ${selected ? "selected":""}"
+                        onclick="selectRegion('${region.id}')"
+                    >
+
+                        <div class="region-icon">
+                            ${region.icon}
+                        </div>
+
+                        <div class="region-name">
+                            ${region.name}
+                        </div>
+
+                        <div class="region-desc">
+                            ${region.desc}
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+
+    const region =
+        REGIONS.find(
+            r=>r.id===state.expedition.region
+        );
+
+
+    const info =
+        document.getElementById(
+            "selectedRegionInfo"
+        );
+
+
+    if(!region){
+
+        info.innerHTML = `
+            <div class="empty">
+                請先選擇要前往的地區
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    info.innerHTML = `
+
+        <div class="dispatch-region">
+
+            <div class="dispatch-region-icon">
+                ${region.icon}
+            </div>
+
+            <div>
+
+                <div class="dispatch-region-name">
+                    ${region.name}
+                </div>
+
+                <div class="dispatch-region-desc">
+                    ${region.desc}
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   選擇地區
+========================================================= */
+
+function selectRegion(id){
+
+    if(state.expedition.active){
+
+        toast("目前正在派遣中");
+
+        return;
+
+    }
+
+    state.expedition.region=id;
+
+    state.expedition.selectedDish=null;
+
+    save();
+
+    renderGarden();
+
+}
+
+
+/* =========================================================
+   派遣料理選擇
+========================================================= */
+
+function renderDispatchFood(){
+
+    const container =
+        document.getElementById(
+            "dispatchFoodList"
+        );
+
+    if(state.expedition.active){
+
+        container.innerHTML = `
+            <div class="food-option selected">
+                <div class="food-left">
+                    <div class="food-icon">
+                        🍱
+                    </div>
+
+                    <div>
+                        <div class="food-name">
+                            ${state.expedition.selectedDish || "不帶料理"}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    let html = `
+
+        <div
+            class="
+                food-option
+                ${!state.expedition.selectedDish ? "selected":""}
+            "
+            onclick="selectDispatchDish(null)"
+        >
+
+            <div class="food-left">
+
+                <div class="food-icon">
+                    🚫
+                </div>
+
+                <div>
+
+                    <div class="food-name">
+                        不帶料理
+                    </div>
+
+                    <div class="food-count">
+                        可以獲得食材，但不增加好感
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    for(
+        const recipe of RECIPES
+    ){
+
+        const count =
+            Number(
+                state.dishes[recipe.id] || 0
+            );
+
+
+        if(count<=0){
+
+            continue;
+
+        }
+
+
+        const selected =
+            state.expedition.selectedDish ===
+            recipe.id;
+
+
+        html += `
+
+            <div
+                class="
+                    food-option
+                    ${selected ? "selected":""}
+                "
+                onclick="selectDispatchDish('${recipe.id}')"
+            >
+
+                <div class="food-left">
+
+                    <div class="food-icon">
+                        ${recipe.icon}
+                    </div>
+
+                    <div>
+
+                        <div class="food-name">
+                            ${recipe.name}
+                        </div>
+
+                        <div class="food-count">
+                            持有 ${count} 份
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div>
+                    ${selected ? "✓":""}
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    container.innerHTML=html;
+
+}
+
+
+/* =========================================================
+   選擇派遣料理
+========================================================= */
+
+function selectDispatchDish(id){
+
+    if(state.expedition.active){
+
+        return;
+
+    }
+
+    state.expedition.selectedDish=id;
+
+    renderDispatchFood();
+
+}
+
+
+/* =========================================================
+   開始派遣
+========================================================= */
+
+function startDispatch(){
+
+    if(state.expedition.active){
+
+        return;
+
+    }
+
+
+    if(!state.expedition.region){
+
+        toast("請選擇一個地區");
+
+        return;
+
+    }
+
+
+    const dish =
+        state.expedition.selectedDish;
+
+
+    if(dish){
+
+        const count =
+            Number(
+                state.dishes[dish] || 0
+            );
+
+
+        if(count<=0){
+
+            toast("料理數量不足");
+
+            state.expedition.selectedDish=null;
+
+            renderGarden();
+
+            return;
+
+        }
+
+
+        state.dishes[dish] =
+            count-1;
+
+    }
+
+
+    const region =
+        REGIONS.find(
+            r=>r.id===state.expedition.region
+        );
+
+
+    const pool =
+        REGION_CHARACTERS[
+            region.id
+        ];
+
+
+    /*
+       不提前決定好感結果。
+       派遣開始時決定遇到誰，
+       完成時才增加好感。
+    */
+
+    const target =
+        pool[
+            Math.floor(
+                Math.random()*pool.length
+            )
+        ];
+
+
+    const now =
+        Date.now();
+
+
+    state.expedition.active=true;
+
+    state.expedition.startTime=
+        now;
+
+    state.expedition.endTime=
+        now + DISPATCH_TIME;
+
+    state.expedition.targetCharacter=
+        target;
+
+
+    save();
+
+    renderGarden();
+
+    toast(
+        dish
+            ? "🍱 帶著料理出發了！"
+            : "🧭 出發前往 " + region.name
+    );
+
+}
+
+
+/* =========================================================
+   派遣畫面
+========================================================= */
+
+function renderExpedition(){
+
+    const setup =
+        document.getElementById(
+            "dispatchSetup"
+        );
+
+    const active =
+        document.getElementById(
+            "activeExpedition"
+        );
+
+
+    if(!state.expedition.active){
+
+        setup.style.display="block";
+
+        active.style.display="none";
+
+        document.getElementById(
+            "dispatchStatus"
+        ).textContent =
+            "尚未派遣";
+
+        return;
+
+    }
+
+
+    setup.style.display="none";
+
+    active.style.display="block";
+
+
+    const end =
+        state.expedition.endTime;
+
+    const remaining =
+        Math.max(
+            0,
+            end-Date.now()
+        );
+
+
+    const seconds =
+        Math.ceil(
+            remaining/1000
+        );
+
+
+    const mins =
+        Math.floor(
+            seconds/60
+        );
+
+    const secs =
+        seconds%60;
+
+
+    const character =
+        getCharacter(
+            state.expedition.targetCharacter
+        );
+
+
+    const region =
+        REGIONS.find(
+            r=>r.id===state.expedition.region
+        );
+
+
+    const progress =
+        Math.min(
+            100,
+            Math.max(
+                0,
+                (
+                    (Date.now() -
+                    state.expedition.startTime)
+                    /
+                    DISPATCH_TIME
+                )*100
+            )
+        );
+
+
+    active.innerHTML = `
+
+        <div class="expedition-active">
+
+            <div
+                style="
+                    font-size:13px;
+                    font-weight:900;
+                "
+            >
+                ${region?.icon || "🧭"}
+                正在前往 ${region?.name || ""}
+            </div>
+
+            <img
+                class="expedition-character"
+                src="${characterImage(character)}"
+                alt="${character?.name || ""}"
+            >
+
+            <div
+                style="
+                    font-weight:900;
+                    color:#765b45;
+                "
+            >
+                ${character?.name || ""}
+            </div>
+
+            <div
+                style="
+                    margin-top:4px;
+                    font-size:11px;
+                    color:#9a8775;
+                "
+            >
+                ${state.expedition.selectedDish
+                    ? "🍱 有帶料理"
+                    : "🚫 沒有帶料理"}
+            </div>
+
+            <div class="progress-track">
+
+                <div
+                    class="progress-fill"
+                    style="width:${progress}%"
+                ></div>
+
+            </div>
+
+            ${
+                remaining<=0
+                ?
+                `
+                    <button
+                        class="btn btn-orange"
+                        onclick="completeDispatch()"
+                    >
+                        🎁 派遣完成，領取成果
+                    </button>
+                `
+                :
+                `
+                    <div
+                        style="
+                            padding:10px;
+                            border-radius:12px;
+                            background:#fff;
+                            font-size:14px;
+                            font-weight:900;
+                        "
+                    >
+                        ⏳
+                        ${mins}:
+                        ${String(secs).padStart(2,"0")}
+                    </div>
+                `
+            }
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "dispatchStatus"
+    ).textContent =
+        remaining<=0
+            ? "可以領取"
+            : "派遣中";
+
+}
+
+
+/* =========================================================
+   派遣完成
+========================================================= */
+
+function completeDispatch(){
+
+    if(!state.expedition.active){
+
+        return;
+
+    }
+
+
+    if(
+        Date.now() <
+        state.expedition.endTime
+    ){
+
+        toast("派遣還沒完成");
+
+        return;
+
+    }
+
+
+    const region =
+        REGIONS.find(
+            r=>r.id===state.expedition.region
+        );
+
+
+    if(!region){
+
+        resetExpedition();
+
+        return;
+
+    }
+
+
+    /*
+       每次派遣帶回 3~5 個食材。
+    */
+
+    const amount =
+        3 +
+        Math.floor(
+            Math.random()*3
+        );
+
+
+    const reward = {};
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        const icon =
+            region.ingredients[
+                Math.floor(
+                    Math.random() *
+                    region.ingredients.length
+                )
+            ];
+
+
+        state.ingredients[icon] =
+            (
+                state.ingredients[icon] || 0
+            ) + 1;
+
+
+        reward[icon] =
+            (
+                reward[icon] || 0
+            ) + 1;
+
+    }
+
+
+    let friendshipMessage="";
+
+
+    /*
+       帶料理才增加好感。
+    */
+
+    if(
+        state.expedition.selectedDish
+    ){
+
+        const id =
+            state.expedition.targetCharacter;
+
+
+        if(
+            !state.joined.includes(id)
+        ){
+
+            state.friendship[id] =
+                Math.min(
+                    3,
+                    getFriendship(id)+1
+                );
+
+
+            const current =
+                getFriendship(id);
+
+
+            if(current>=3){
+
+                state.joined.push(id);
+
+                friendshipMessage =
+                    `💗 ${getCharacter(id).name} 加入小隊了！`;
+
+            }else{
+
+                friendshipMessage =
+                    `💗 ${getCharacter(id).name} 好感 +1（${current}/3）`;
+
+            }
+
+        }
+
+    }else{
+
+        friendshipMessage =
+            "🚫 沒有帶料理，因此沒有增加好感";
+
+    }
+
+
+    const rewardText =
+        Object.entries(reward)
+            .map(
+                ([icon,count])=>
+                    `${icon}×${count}`
+            )
+            .join("  ");
+
+
+    toast(
+        `🎁 ${rewardText}\n${friendshipMessage}`
+    );
+
+
+    resetExpedition();
+
+}
+
+
+/* =========================================================
+   重置派遣
+========================================================= */
+
+function resetExpedition(){
+
+    state.expedition.active=false;
+
+    state.expedition.startTime=0;
+
+    state.expedition.endTime=0;
+
+    state.expedition.targetCharacter=null;
+
+    state.expedition.selectedDish=null;
+
+    save();
+
+    renderGarden();
+
+}
+
+
+/* =========================================================
+   食材
+========================================================= */
+
+function renderIngredients(){
+
+    const container =
+        document.getElementById(
+            "ingredientGrid"
+        );
+
+
+    container.innerHTML =
+        Object.entries(
+            INGREDIENTS
+        )
+        .map(
+            ([id,data])=>`
+
+                <div class="ingredient">
+
+                    <div class="ingredient-icon">
+                        ${data.icon}
+                    </div>
+
+                    <div class="ingredient-name">
+                        ${data.name}
+                    </div>
+
+                    <div class="ingredient-count">
+                        ${state.ingredients[id] || 0}
+                    </div>
+
+                </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+/* =========================================================
+   角色
+========================================================= */
+
+function renderCharacters(){
+
+    const container =
+        document.getElementById(
+            "characterGrid"
+        );
+
+
+    container.innerHTML =
+        CHARACTERS.map(
+            character=>{
+
+                const joined =
+                    state.joined.includes(
+                        character.id
+                    );
+
+
+                return `
+
+                    <div class="character-card">
+
+                        <img
+                            class="character-img"
+                            src="${characterImage(character)}"
+                            alt="${character.name}"
+                        >
+
+                        <div class="character-name">
+                            ${character.name}
+                        </div>
+
+                        ${
+                            joined
+                            ?
+                            `
+                                <div class="hearts">
+                                    ❤️❤️❤️
+                                </div>
+
+                                <div class="joined">
+                                    ✓ 已加入小隊
+                                </div>
+                            `
+                            :
+                            `
+                                <div class="hearts">
+                                    ${hearts(character.id)}
+                                </div>
+                            `
+                        }
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+
+    document.getElementById(
+        "teamCount"
+    ).textContent =
+        `${state.joined.length}/${CHARACTERS.length}`;
+
+}
+
+
+/* =========================================================
+   料理頁面
+========================================================= */
+
+function renderKitchen(){
+
+    document.getElementById(
+        "kitchenCoins"
+    ).textContent =
+        state.coins;
+
+    document.getElementById(
+        "gardenCoins"
+    ).textContent =
+        state.coins;
+
+    document.getElementById(
+        "truckCoins"
+    ).textContent =
+        state.coins;
+
+
+    renderCookingLines();
+
+    renderUpgradeLine();
+
+    renderDishInventory();
+
+}
+
+
+/* =========================================================
+   料理線
+========================================================= */
+
+function renderCookingLines(){
+
+    const container =
+        document.getElementById(
+            "cookingLines"
+        );
+
+
+    document.getElementById(
+        "lineCount"
+    ).textContent =
+        state.cookingLines;
+
+
+    let html="";
+
+
+    for(
+        let i=0;
+        i<state.cookingLines;
+        i++
+    ){
+
+        if(!state.cooking[i]){
+
+            state.cooking[i]={
+                recipeId:null,
+                endTime:0
+            };
+
+        }
+
+
+        const line =
+            state.cooking[i];
+
+
+        const cooking =
+            line.recipeId &&
+            line.endTime > Date.now();
+
+
+        const recipe =
+            RECIPES.find(
+                r=>r.id===line.recipeId
+            );
+
+
+        html += `
+
+            <div class="line-card">
+
+                <div class="line-header">
+
+                    <div class="line-name">
+                        🍳 料理線 ${i+1}
+                    </div>
+
+                    <div class="line-status">
+                        ${
+                            cooking
+                            ? "料理中"
+                            : "待機中"
+                        }
+                    </div>
+
+                </div>
+
+                ${
+                    cooking
+                    ?
+                    renderCookingProgress(
+                        line,
+                        recipe
+                    )
+                    :
+                    renderRecipeSelector(
+                        i,
+                        line
+                    )
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    container.innerHTML=html;
+
+}
+
+
+/* =========================================================
+   料理選擇
+========================================================= */
+
+function renderRecipeSelector(
+    lineIndex,
+    line
+){
+
+    return `
+
+        <div
+            style="
+                font-size:10px;
+                color:#9a8775;
+                margin-bottom:7px;
+            "
+        >
+            選擇三種食材開始料理
+        </div>
+
+        <div class="recipe-select">
+
+            ${
+                RECIPES.map(
+                    recipe=>`
+
+                        <div
+                            class="
+                                recipe-mini
+                                ${
+                                    line.recipeId ===
+                                    recipe.id
+                                    ? "selected"
+                                    : ""
+                                }
+                            "
+                            onclick="
+                                startCooking(
+                                    ${lineIndex},
+                                    '${recipe.id}'
+                                )
+                            "
+                        >
+
+                            <div class="recipe-mini-icon">
+                                ${recipe.icon}
+                            </div>
+
+                            <div class="recipe-mini-name">
+                                ${recipe.name}
+                            </div>
+
+                        </div>
+
+                    `
+                ).join("")
+            }
+
+        </div>
+
+        ${
+            line.recipeId
+            ?
+            `
+                <div class="recipe-result">
+
+                    <div class="recipe-result-icon">
+                        ${
+                            RECIPES.find(
+                                r=>r.id===line.recipeId
+                            )?.icon
+                        }
+                    </div>
+
+                    <div>
+
+                        <div class="recipe-result-name">
+                            ${
+                                RECIPES.find(
+                                    r=>r.id===line.recipeId
+                                )?.name
+                            }
+                        </div>
+
+                        <div
+                            style="
+                                font-size:10px;
+                                color:#998675;
+                            "
+                        >
+                            點擊料理即可開始製作
+                        </div>
+
+                    </div>
+
+                </div>
+            `
+            :
+            ""
+        }
+
+    `;
+
+}
+
+
+/* =========================================================
+   檢查材料
+========================================================= */
+
+function canCook(recipe){
+
+    return recipe.ingredients.every(
+        ingredient=>
+            Number(
+                state.ingredients[ingredient] || 0
+            ) >= 1
+    );
+
+}
+
+
+/* =========================================================
+   開始料理
+========================================================= */
+
+function startCooking(
+    lineIndex,
+    recipeId
+){
+
+    const line =
+        state.cooking[lineIndex];
+
+
+    if(
+        line.recipeId &&
+        line.endTime > Date.now()
+    ){
+
+        toast("這條料理線正在製作中");
+
+        return;
+
+    }
+
+
+    const recipe =
+        RECIPES.find(
+            r=>r.id===recipeId
+        );
+
+
+    if(!recipe){
+
+        return;
+
+    }
+
+
+    if(!canCook(recipe)){
+
+        toast(
+            "食材不足，需要：" +
+            recipe.ingredients.join(" ")
+        );
+
+        return;
+
+    }
+
+
+    /*
+       扣除三種食材。
+    */
+
+    recipe.ingredients.forEach(
+        ingredient=>{
+            state.ingredients[ingredient]--;
+        }
+    );
+
+
+    line.recipeId =
+        recipe.id;
+
+    line.endTime =
+        Date.now()+COOK_TIME;
+
+
+    save();
+
+    renderKitchen();
+
+    toast(
+        `🍳 ${recipe.name} 開始料理`
+    );
+
+}
+
+
+/* =========================================================
+   料理進度
+========================================================= */
+
+function renderCookingProgress(
+    line,
+    recipe
+){
+
+    const remaining =
+        Math.max(
+            0,
+            line.endTime-Date.now()
+        );
+
+
+    const percent =
+        Math.min(
+            100,
+            (
+                (COOK_TIME-remaining) /
+                COOK_TIME
+            )*100
+        );
+
+
+    if(remaining<=0){
+
+        return `
+
+            <div class="recipe-result">
+
+                <div class="recipe-result-icon">
+                    ${recipe?.icon || "🍱"}
+                </div>
+
+                <div style="flex:1">
+
+                    <div class="recipe-result-name">
+                        ${recipe?.name || "料理"}
+                    </div>
+
+                    <div
+                        style="
+                            color:#6c9b5c;
+                            font-size:11px;
+                            font-weight:900;
+                        "
+                    >
+                        ✓ 已完成
+                    </div>
+
+                </div>
+
+                <button
+                    class="btn btn-green"
+                    style="width:auto;min-height:38px"
+                    onclick="
+                        collectCooking(
+                            ${state.cooking.indexOf(line)}
+                        )
+                    "
+                >
+                    收取
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+
+    const seconds =
+        Math.ceil(
+            remaining/1000
+        );
+
+
+    return `
+
+        <div class="recipe-result">
+
+            <div class="recipe-result-icon">
+                ${recipe?.icon || "🍱"}
+            </div>
+
+            <div style="flex:1">
+
+                <div class="recipe-result-name">
+                    ${recipe?.name || "料理"}
+                </div>
+
+                <div class="cook-progress">
+
+                    <div class="progress-track">
+
+                        <div
+                            class="progress-fill"
+                            style="
+                                width:${percent}%
+                            "
+                        ></div>
+
+                    </div>
+
+                </div>
+
+                <div class="cook-time">
+                    ⏳ ${seconds} 秒
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   收取料理
+========================================================= */
+
+function collectCooking(index){
+
+    const line =
+        state.cooking[index];
+
+
+    if(!line || !line.recipeId){
+
+        return;
+
+    }
+
+
+    if(
+        Date.now() <
+        line.endTime
+    ){
+
+        toast("還沒完成");
+
+        return;
+
+    }
+
+
+    const recipe =
+        RECIPES.find(
+            r=>r.id===line.recipeId
+        );
+
+
+    if(recipe){
+
+        state.dishes[recipe.id] =
+            (
+                state.dishes[recipe.id] || 0
+            ) + 1;
+
+    }
+
+
+    line.recipeId=null;
+
+    line.endTime=0;
+
+
+    save();
+
+    renderKitchen();
+
+    toast(
+        `🍱 ${recipe.name} 完成！`
+    );
+
+}
+
+
+/* =========================================================
+   擴充料理線
+========================================================= */
+
+function getUpgradeCost(){
+
+    const next =
+        state.cookingLines;
+
+    if(next===1){
+
+        return 100;
+
+    }
+
+    if(next===2){
+
+        return 200;
+
+    }
+
+    if(next===3){
+
+        return 400;
+
+    }
+
+    return null;
+
+}
+
+
+function renderUpgradeLine(){
+
+    const container =
+        document.getElementById(
+            "upgradeLineArea"
+        );
+
+
+    const cost =
+        getUpgradeCost();
+
+
+    if(!cost){
+
+        container.innerHTML = `
+
+            <div class="empty">
+                🌟 所有料理線都已開放
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+
+        <div
+            style="
+                font-size:12px;
+                line-height:1.6;
+                margin-bottom:10px;
+            "
+        >
+            每增加一條料理線，
+            就可以同時製作更多料理。
+        </div>
+
+        <button
+            class="btn btn-orange"
+            onclick="upgradeCookingLine()"
+            ${state.coins < cost ? "disabled":""}
+        >
+            💰 解鎖料理線 ${state.cookingLines+1}
+            ・${cost} 錢幣
+        </button>
+
+    `;
+
+}
+
+
+function upgradeCookingLine(){
+
+    const cost =
+        getUpgradeCost();
+
+
+    if(!cost){
+
+        return;
+
+    }
+
+
+    if(state.coins<cost){
+
+        toast("錢幣不足");
+
+        return;
+
+    }
+
+
+    state.coins -= cost;
+
+    state.cookingLines++;
+
+
+    state.cooking.push({
+
+        recipeId:null,
+        endTime:0
+
+    });
+
+
+    save();
+
+    renderKitchen();
+
+    toast(
+        "🍳 新料理線已解鎖！"
+    );
+
+}
+
+
+/* =========================================================
+   已完成料理
+========================================================= */
+
+function renderDishInventory(){
+
+    const container =
+        document.getElementById(
+            "dishInventory"
+        );
+
+
+    const list =
+        RECIPES.filter(
+            recipe=>
+                Number(
+                    state.dishes[recipe.id] || 0
+                ) > 0
+        );
+
+
+    if(!list.length){
+
+        container.innerHTML = `
+            <div class="empty">
+                還沒有完成的料理
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        list.map(
+            recipe=>`
+
+                <div
+                    style="
+                        display:flex;
+                        align-items:center;
+                        gap:10px;
+                        padding:10px;
+                        margin-bottom:7px;
+                        border-radius:13px;
+                        background:#fff;
+                    "
+                >
+
+                    <div style="font-size:28px">
+                        ${recipe.icon}
+                    </div>
+
+                    <div style="flex:1">
+
+                        <div
+                            style="
+                                font-size:12px;
+                                font-weight:900;
+                            "
+                        >
+                            ${recipe.name}
+                        </div>
+
+                        <div
+                            style="
+                                font-size:10px;
+                                color:#998675;
+                            "
+                        >
+                            持有 ${state.dishes[recipe.id]} 份
+                            ・餐車售價 ${recipe.price} 💰
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+/* =========================================================
+   餐車
+========================================================= */
+
+function renderTruck(){
+
+    document.getElementById(
+        "truckCoins"
+    ).textContent =
+        state.coins;
+
+
+    document.getElementById(
+        "gardenCoins"
+    ).textContent =
+        state.coins;
+
+
+    document.getElementById(
+        "kitchenCoins"
+    ).textContent =
+        state.coins;
+
+
+    applyTruckSkin();
+
+    renderTruckStock();
+
+    renderSkins();
+
+}
+
+
+/* =========================================================
+   套用餐車外型
+========================================================= */
+
+function applyTruckSkin(){
+
+    const truck =
+        document.getElementById(
+            "foodTruck"
+        );
+
+
+    const skin =
+        TRUCK_SKINS.find(
+            s=>s.id===state.truck.skin
+        ) ||
+        TRUCK_SKINS[0];
+
+
+    TRUCK_SKINS.forEach(
+        s=>{
+            truck.classList.remove(
+                s.css
+            );
+        }
+    );
+
+
+    truck.classList.add(
+        skin.css
+    );
+
+}
+
+
+/* =========================================================
+   餐車庫存
+========================================================= */
+
+function renderTruckStock(){
+
+    const container =
+        document.getElementById(
+            "truckStock"
+        );
+
+
+    const stock =
+        state.truck.stock
+            .filter(
+                item=>
+                    item &&
+                    Number(item.qty)>0
+            );
+
+
+    state.truck.stock=stock;
+
+
+    if(!stock.length){
+
+        container.innerHTML = `
+
+            <div class="empty">
+                🚚 餐車目前沒有料理
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        stock.map(
+            item=>{
+
+                const recipe =
+                    RECIPES.find(
+                        r=>r.id===item.recipeId
+                    );
+
+
+                return `
+
+                    <div class="stock-row">
+
+                        <div class="stock-icon">
+                            ${recipe?.icon || "🍱"}
+                        </div>
+
+                        <div class="stock-info">
+
+                            <div class="stock-name">
+                                ${recipe?.name || "料理"}
+                            </div>
+
+                            <div class="stock-amount">
+                                剩餘 ${item.qty} 份
+                                ・每份 ${recipe?.price || 0} 💰
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+}
+
+
+/* =========================================================
+   開啟餐車補貨
+========================================================= */
+
+function openTruckFoodModal(){
+
+    const recipes =
+        RECIPES.filter(
+            recipe=>
+                Number(
+                    state.dishes[recipe.id] || 0
+                )>0
+        );
+
+
+    if(!recipes.length){
+
+        toast(
+            "沒有料理可以補貨，先去料理工房製作吧！"
+        );
+
+        return;
+
+    }
+
+
+    const modal =
+        document.getElementById(
+            "modal"
+        );
+
+
+    modal.innerHTML = `
+
+        <div class="modal-title">
+            🍱 餐車補貨
+        </div>
+
+        <div
+            style="
+                font-size:11px;
+                color:#998675;
+                margin-bottom:10px;
+            "
+        >
+            選擇料理與補貨數量。
+            放入餐車後會依序販售。
+        </div>
+
+        ${
+            recipes.map(
+                recipe=>`
+
+                    <div
+                        style="
+                            display:flex;
+                            align-items:center;
+                            gap:10px;
+                            padding:10px;
+                            margin-bottom:8px;
+                            border-radius:13px;
+                            background:#fff;
+                        "
+                    >
+
+                        <div style="font-size:30px">
+                            ${recipe.icon}
+                        </div>
+
+                        <div style="flex:1">
+
+                            <div
+                                style="
+                                    font-size:12px;
+                                    font-weight:900;
+                                "
+                            >
+                                ${recipe.name}
+                            </div>
+
+                            <div
+                                style="
+                                    margin-top:2px;
+                                    font-size:10px;
+                                    color:#998675;
+                                "
+                            >
+                                持有
+                                ${state.dishes[recipe.id]}
+                                份
+                                ・售價
+                                ${recipe.price} 💰
+                            </div>
+
+                        </div>
+
+                        <input
+                            id="stock_${recipe.id}"
+                            type="number"
+                            min="0"
+                            max="${state.dishes[recipe.id]}"
+                            value="0"
+                            style="
+                                width:60px;
+                                padding:8px;
+                                border-radius:9px;
+                                border:1px solid #ddd;
+                                text-align:center;
+                            "
+                        >
+
+                    </div>
+
+                `
+            ).join("")
+        }
+
+        <div style="height:6px"></div>
+
+        <button
+            class="btn btn-orange"
+            onclick="confirmTruckRefill()"
+        >
+            🚚 確認補貨
+        </button>
+
+        <div style="height:7px"></div>
+
+        <button
+            class="btn btn-light"
+            onclick="closeModal()"
+        >
+            取消
+        </button>
+
+    `;
+
+
+    openModal();
+
+}
+
+
+/* =========================================================
+   確認餐車補貨
+========================================================= */
+
+function confirmTruckRefill(){
+
+    let added=0;
+
+
+    for(
+        const recipe of RECIPES
+    ){
+
+        const input =
+            document.getElementById(
+                "stock_"+recipe.id
+            );
+
+
+        if(!input){
+
+            continue;
+
+        }
+
+
+        let amount =
+            Number(input.value || 0);
+
+
+        if(amount<=0){
+
+            continue;
+
+        }
+
+
+        const owned =
+            Number(
+                state.dishes[recipe.id] || 0
+            );
+
+
+        amount =
+            Math.min(
+                amount,
+                owned
+            );
+
+
+        if(amount<=0){
+
+            continue;
+
+        }
+
+
+        state.dishes[recipe.id] =
+            owned-amount;
+
+
+        let batch =
+            state.truck.stock.find(
+                item=>
+                    item.recipeId===recipe.id &&
+                    item.qty>0
+            );
+
+
+        /*
+           與原餐車 salesQueue 類似：
+           新補貨直接排到隊伍最後。
+        */
+
+        if(!batch){
+
+            batch={
+                recipeId:recipe.id,
+                qty:amount,
+                listedAt:Date.now()
+            };
+
+            state.truck.stock.push(batch);
+
+        }else{
+
+            batch.qty += amount;
+
+        }
+
+
+        added += amount;
+
+    }
+
+
+    if(!added){
+
+        toast("沒有新增任何料理");
+
+        return;
+
+    }
+
+
+    save();
+
+    closeModal();
+
+    renderTruck();
+
+    toast(
+        `🚚 已補貨 ${added} 份料理`
+    );
+
+}
+
+
+/* =========================================================
+   餐車外型商店
+========================================================= */
+
+function renderSkins(){
+
+    const container =
+        document.getElementById(
+            "skinGrid"
+        );
+
+
+    container.innerHTML =
+        TRUCK_SKINS.map(
+            skin=>{
+
+                const owned =
+                    skin.price===0 ||
+                    (
+                        state.truck.ownedSkins &&
+                        state.truck.ownedSkins.includes(
+                            skin.id
+                        )
+                    );
+
+
+                const current =
+                    state.truck.skin ===
+                    skin.id;
+
+
+                return `
+
+                    <div
+                        class="
+                            skin-card
+                            ${owned ? "owned":""}
+                            ${current ? "current":""}
+                        "
+                        onclick="
+                            selectTruckSkin(
+                                '${skin.id}'
+                            )
+                        "
+                    >
+
+                        <div
+                            class="skin-preview"
+                        >
+
+                            <div
+                                class="mini-truck"
+                            >
+
+                                <div
+                                    class="mini-roof"
+                                    style="
+                                        background:${skin.roof}
+                                    "
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="skin-name">
+                            ${skin.name}
+                        </div>
+
+                        <div class="skin-price">
+
+                            ${
+                                current
+                                ? "✓ 使用中"
+                                :
+                                owned
+                                ? "✓ 已擁有"
+                                :
+                                `💰 ${skin.price}`
+                            }
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+}
+
+
+/* =========================================================
+   購買／使用外型
+========================================================= */
+
+function selectTruckSkin(id){
+
+    const skin =
+        TRUCK_SKINS.find(
+            s=>s.id===id
+        );
+
+
+    if(!skin){
+
+        return;
+
+    }
+
+
+    if(!state.truck.ownedSkins){
+
+        state.truck.ownedSkins=[
+            "spring"
+        ];
+
+    }
+
+
+    const owned =
+        state.truck.ownedSkins.includes(
+            id
+        );
+
+
+    if(!owned){
+
+        if(state.coins<skin.price){
+
+            toast("錢幣不足");
+
+            return;
+
+        }
+
+
+        state.coins -= skin.price;
+
+        state.truck.ownedSkins.push(id);
+
+        toast(
+            `🎨 已購買「${skin.name}」`
+        );
+
+    }
+
+
+    state.truck.skin=id;
+
+
+    save();
+
+    renderTruck();
+
+}
+
+
+/* =========================================================
+   餐車販售系統
+========================================================= */
+
+function processTruckSales(){
+
+    const now =
+        Date.now();
+
+
+    /*
+       確保離線期間也可以計算販售。
+    */
+
+    if(
+        !state.truck.lastSaleTime
+    ){
+
+        state.truck.lastSaleTime=
+            now;
+
+    }
+
+
+    let changed=false;
+
+
+    while(
+        now -
+        state.truck.lastSaleTime
+        >= SALE_TIME
+    ){
+
+        const batch =
+            state.truck.stock.find(
+                item=>
+                    item &&
+                    Number(item.qty)>0
+            );
+
+
+        if(!batch){
+
+            state.truck.lastSaleTime=
+                now;
+
+            break;
+
+        }
+
+
+        const recipe =
+            RECIPES.find(
+                r=>r.id===batch.recipeId
+            );
+
+
+        if(!recipe){
+
+            batch.qty=0;
+
+            changed=true;
+
+            continue;
+
+        }
+
+
+        batch.qty--;
+
+        state.coins +=
+            recipe.price;
+
+        state.truck.totalSales++;
+
+        state.truck.lastSaleTime +=
+            SALE_TIME;
+
+        changed=true;
+
+
+        showSoldMessage(
+            recipe
+        );
+
+    }
+
+
+    state.truck.stock =
+        state.truck.stock.filter(
+            item=>
+                item &&
+                Number(item.qty)>0
+        );
+
+
+    if(changed){
+
+        save();
+
+    }
+
+}
+
+
+/* =========================================================
+   販售提示
+========================================================= */
+
+function showSoldMessage(recipe){
+
+    const el =
+        document.getElementById(
+            "soldMessage"
+        );
+
+
+    if(!el){
+
+        return;
+
+    }
+
+
+    el.textContent =
+        `💰 ${recipe.name} ×1  +${recipe.price}`;
+
+
+    el.classList.remove("show");
+
+
+    void el.offsetWidth;
+
+
+    el.classList.add("show");
+
+}
+
+
+/* =========================================================
+   餐車顧客動畫
+========================================================= */
+
+function renderCustomer(){
+
+    const area =
+        document.getElementById(
+            "customerArea"
+        );
+
+
+    if(!area){
+
+        return;
+
+    }
+
+
+    const stock =
+        state.truck.stock.some(
+            item=>
+                item.qty>0
+        );
+
+
+    if(!stock){
+
+        area.innerHTML = `
+
+            <div class="customer">
+                💤 今天沒有料理可以販售
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    area.innerHTML = `
+
+        <div class="customer">
+
+            <span class="customer-dot"></span>
+
+            😊 有客人正在等料理
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   Modal
+========================================================= */
+
+function openModal(){
+
+    document
+        .getElementById(
+            "modalLayer"
+        )
+        .classList.add("show");
+
+}
+
+
+function closeModal(){
+
+    document
+        .getElementById(
+            "modalLayer"
+        )
+        .classList.remove("show");
+
+}
+
+
+function closeModalByBackground(event){
+
+    if(
+        event.target.id===
+        "modalLayer"
+    ){
+
+        closeModal();
+
+    }
+
+}
+
+
+/* =========================================================
+   全域更新
+========================================================= */
+
+function gameTick(){
+
+    /*
+       料理完成
+    */
+
+    let cookingChanged=false;
+
+
+    for(
+        const line of state.cooking
+    ){
+
+        if(
+            line &&
+            line.recipeId &&
+            line.endTime &&
+            line.endTime<=Date.now()
+        ){
+
+            cookingChanged=true;
+
+        }
+
+    }
+
+
+    /*
+       派遣完成
+    */
+
+    if(
+        state.expedition.active &&
+        Date.now() >=
+        state.expedition.endTime
+    ){
+
+        const status =
+            document.getElementById(
+                "dispatchStatus"
+            );
+
+
+        if(status){
+
+            status.textContent =
+                "可以領取";
+
+        }
+
+    }
+
+
+    /*
+       餐車販售
+    */
+
+    processTruckSales();
+
+
+    if(cookingChanged){
+
+        save();
+
+    }
+
+
+    /*
+       依照目前頁面重新渲染。
+    */
+
+    const garden =
+        document
+            .getElementById("gardenPage")
+            .classList.contains("active");
+
+
+    const kitchen =
+        document
+            .getElementById("kitchenPage")
+            .classList.contains("active");
+
+
+    const truck =
+        document
+            .getElementById("truckPage")
+            .classList.contains("active");
+
+
+    if(garden){
+
+        renderGarden();
+
+    }
+
+
+    if(kitchen){
+
+        renderKitchen();
+
+    }
+
+
+    if(truck){
+
+        renderTruck();
+
+        renderCustomer();
+
+    }
+
+}
+
+
+/* =========================================================
+   初始化
+========================================================= */
+
+function init(){
+
+    /*
+       舊存檔相容
+    */
+
+    if(!state.truck){
+
+        state.truck =
+            JSON.parse(
+                JSON.stringify(
+                    DEFAULT_STATE.truck
+                )
+            );
+
+    }
+
+
+    if(
+        !Array.isArray(
+            state.truck.stock
+        )
+    ){
+
+        state.truck.stock=[];
+
+    }
+
+
+    if(
+        !Array.isArray(
+            state.truck.ownedSkins
+        )
+    ){
+
+        state.truck.ownedSkins=[
+            "spring"
+        ];
+
+    }
+
+
+    if(
+        !Array.isArray(
+            state.joined
+        )
+    ){
+
+        state.joined=[];
+
+    }
+
+
+    if(
+        !Array.isArray(
+            state.cooking
+        )
+    ){
+
+        state.cooking=[];
+
+    }
+
+
+    while(
+        state.cooking.length <
+        state.cookingLines
+    ){
+
+        state.cooking.push({
+
+            recipeId:null,
+
+            endTime:0
+
+        });
+
+    }
+
+
+    save();
+
+
+    renderGarden();
+
+
+    /*
+       每秒更新
+    */
+
+    setInterval(
+        gameTick,
+        1000
+    );
+
+}
+
+
+init();
+
+
+/* =========================================================
+   防止手機長按選取／拖曳圖片
+========================================================= */
+
+document.addEventListener(
+    "dragstart",
+    event=>{
+
+        if(
+            event.target.tagName===
+            "IMG"
+        ){
+
+            event.preventDefault();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   防止部分手機瀏覽器雙擊放大
+========================================================= */
+
+let lastTouchEnd=0;
+
+document.addEventListener(
+    "touchend",
+    event=>{
+
+        const now =
+            Date.now();
+
+
+        if(
+            now-lastTouchEnd<=300
+        ){
+
+            event.preventDefault();
+
+        }
+
+
+        lastTouchEnd=now;
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/* =========================================================
+   防止頁面橡皮筋效果
+========================================================= */
+
+document.addEventListener(
+    "touchmove",
+    event=>{
+
+        const page =
+            event.target.closest(
+                ".page"
+            );
+
+
+        if(!page){
+
+            return;
+
+        }
+
+    },
+    {
+        passive:true
+    }
+);
+
+</script>
+
+</body>
+</html>
