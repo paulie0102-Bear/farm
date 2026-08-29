@@ -892,456 +892,64 @@ button,
    餐車
 ========================================================= */
 
-.truck-stage{
-    position:relative;
-
-    min-height:255px;
-
-    margin-bottom:12px;
-
-    overflow:hidden;
-
-    border-radius:22px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #dceef4 0%,
-            #eef1df 58%,
-            #b9c59b 59%,
-            #919e76 100%
-        );
-
-    box-shadow:var(--shadow);
-}
-
-/* 餐車本體 */
-
-.food-truck{
-    position:absolute;
-
-    left:50%;
-    bottom:30px;
-
-    transform:translateX(-50%);
-
-    width:235px;
-    height:125px;
-
-    border-radius:25px 25px 15px 15px;
-
-    background:#fff;
-
-    border:5px solid #5b5148;
-
-    box-shadow:
-        0 10px 0 rgba(0,0,0,.08),
-        0 10px 20px rgba(0,0,0,.15);
-
-    transition:.25s;
-}
-
-.truck-roof{
-    position:absolute;
-
-    left:-8px;
-    right:-8px;
-    top:-17px;
-
-    height:24px;
-
-    border-radius:20px 20px 5px 5px;
-
-    background:#e98c9d;
-
-    border:4px solid #5b5148;
-}
-
-.truck-window{
-    position:absolute;
-
-    left:35px;
-    top:25px;
-
-    width:72px;
-    height:48px;
-
-    border-radius:10px;
-
-    background:#b9dce5;
-
-    border:4px solid #5b5148;
-}
-
-.truck-window::after{
-    content:"";
-
-    position:absolute;
-
-    top:50%;
-    left:50%;
-
-    width:4px;
-    height:100%;
-
-    transform:translate(-50%,-50%);
-
-    background:#5b5148;
-}
-
-.truck-counter{
-    position:absolute;
-
-    right:23px;
-    top:35px;
-
-    width:78px;
-    height:30px;
-
-    border-radius:8px;
-
-    background:#fff0ca;
-
-    border:3px solid #5b5148;
-}
-
-.truck-sign{
-    position:absolute;
-
-    left:20px;
-    right:20px;
-    bottom:11px;
-
-    padding:4px;
-
-    border-radius:8px;
-
-    text-align:center;
-
-    font-weight:900;
-    font-size:11px;
-
-    background:#fffaf0;
-}
-
-.wheel{
-    position:absolute;
-
-    bottom:-18px;
-
-    width:39px;
-    height:39px;
-
-    border-radius:50%;
-
-    background:#403a35;
-
-    border:6px solid #fff;
-
-    box-shadow:0 0 0 3px #403a35;
-}
-
-.wheel.left{
-    left:27px;
-}
-
-.wheel.right{
-    right:27px;
-}
-
-/* =========================================================
-   餐車外型 CSS
-========================================================= */
-
-.truck-spring .truck-roof{
-    background:#8ccf78;
-}
-
-.truck-spring .truck-window{
-    background:#c9edbc;
-}
-
-.truck-spring .truck-counter{
-    background:#fff8c9;
-}
-
-.truck-ocean .truck-roof{
-    background:#73b8d6;
-}
-
-.truck-ocean .truck-window{
-    background:#bce7ef;
-}
-
-.truck-ocean .truck-counter{
-    background:#e8f9ff;
-}
-
-.truck-cafe .truck-roof{
-    background:#9a6f52;
-}
-
-.truck-cafe .truck-window{
-    background:#d8c1a9;
-}
-
-.truck-cafe .truck-counter{
-    background:#f2dfc5;
-}
-
-.truck-sunset .truck-roof{
-    background:#e68a4b;
-}
-
-.truck-sunset .truck-window{
-    background:#f5c79d;
-}
-
-.truck-sunset .truck-counter{
-    background:#fff0d6;
-}
-
-.truck-lavender .truck-roof{
-    background:#9d8bc4;
-}
-
-.truck-lavender .truck-window{
-    background:#d8d0ee;
-}
-
-.truck-lavender .truck-counter{
-    background:#f2effb;
-}
-
-.truck-night .truck-roof{
-    background:#44546f;
-}
-
-.truck-night .truck-window{
-    background:#91a5c7;
-}
-
-.truck-night .truck-counter{
-    background:#e1e5ee;
-}
-
-/* =========================================================
-   客人
-========================================================= */
-
-.customer-area{
-    position:absolute;
-
-    left:10px;
-    right:10px;
-    top:12px;
-
-    display:flex;
-    justify-content:center;
-
-    pointer-events:none;
-}
-
-.customer{
-    display:flex;
-    align-items:center;
-    gap:5px;
-
-    padding:7px 10px;
-
-    border-radius:20px;
-
-    background:rgba(255,255,255,.85);
-
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-
-    font-size:11px;
-}
-
-.customer-dot{
-    width:7px;
-    height:7px;
-
-    border-radius:50%;
-
-    background:#76ad68;
-}
-
-.sold-message{
-    position:absolute;
-
-    left:50%;
-    bottom:190px;
-
-    transform:translateX(-50%);
-
-    padding:7px 12px;
-
-    border-radius:20px;
-
-    background:rgba(255,255,255,.95);
-
-    color:#c27a21;
-
-    font-size:12px;
-    font-weight:900;
-
-    opacity:0;
-    pointer-events:none;
-}
-
-.sold-message.show{
-    animation:soldUp 1.5s ease-out;
-}
-
-@keyframes soldUp{
-    0%{
-        opacity:0;
-        transform:translate(-50%,10px);
-    }
-
-    20%{
-        opacity:1;
-        transform:translate(-50%,0);
-    }
-
-    100%{
-        opacity:0;
-        transform:translate(-50%,-25px);
-    }
-}
-
-/* =========================================================
-   餐車庫存
-========================================================= */
-
-.truck-stock{
-    display:grid;
-    gap:8px;
-}
-
-.stock-row{
-    display:flex;
-    align-items:center;
-    gap:9px;
-
-    padding:10px;
-
-    border-radius:12px;
-
-    background:#fff;
-}
-
-.stock-icon{
-    font-size:27px;
-}
-
-.stock-info{
-    flex:1;
-}
-
-.stock-name{
-    font-weight:900;
-    font-size:12px;
-}
-
-.stock-amount{
-    margin-top:2px;
-
-    font-size:10px;
-    color:#998777;
-}
-
-/* =========================================================
-   外型商店
-========================================================= */
-
-.skin-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-}
-
-.skin-card{
-    padding:10px;
-
-    border-radius:16px;
-
-    background:#fff;
-
-    border:2px solid transparent;
-
-    cursor:pointer;
-}
-
-.skin-card.owned{
-    border-color:#d8cdbb;
-}
-
-.skin-card.current{
-    border-color:var(--green);
-    background:#f2faef;
-}
-
-.skin-preview{
-    position:relative;
-
-    height:82px;
-
-    margin-bottom:8px;
-
-    overflow:hidden;
-
-    border-radius:12px;
-
-    background:#dcebd8;
-}
-
-.mini-truck{
-    position:absolute;
-
-    left:50%;
-    bottom:12px;
-
-    width:100px;
-    height:48px;
-
-    transform:translateX(-50%);
-
-    border-radius:10px;
-
-    background:#fff;
-
-    border:3px solid #554b43;
-}
-
-.mini-roof{
-    position:absolute;
-
-    top:-8px;
-    left:-3px;
-    right:-3px;
-
-    height:12px;
-
-    border-radius:8px 8px 3px 3px;
-
-    border:2px solid #554b43;
-}
-
-.skin-name{
-    font-size:12px;
-    font-weight:900;
-}
-
-.skin-price{
-    margin-top:3px;
-
-    color:#a07726;
-
-    font-size:11px;
-}
-
+.truck-page-wrap{position:relative;width:100%;margin-bottom:12px}
+.truck-stage{position:relative;width:100%;height:560px;overflow:hidden;border-radius:22px;background:linear-gradient(180deg,#dceef4 0%,#eef1df 48%,#b9c59b 49%,#919e76 100%);box-shadow:var(--shadow)}
+.truck-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:60;width:42px;height:70px;border:0;border-radius:15px;background:rgba(255,255,255,.9);color:#765b45;font-size:42px;font-weight:900;line-height:1;box-shadow:0 3px 10px rgba(0,0,0,.15);cursor:pointer}
+.truck-nav-left{left:7px}
+.truck-nav-right{right:7px}
+.truck-nav:active{transform:translateY(-50%) scale(.94)}
+.truck-counter-title{position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:6px 14px;border-radius:18px;background:rgba(255,255,255,.92);font-size:11px;font-weight:900;color:#765b45;z-index:50;white-space:nowrap}
+.truck-scene{position:absolute;inset:0;overflow:hidden;cursor:pointer}
+.truck-environment{position:absolute;left:15px;right:15px;bottom:7px;height:65px;display:flex;align-items:center;justify-content:space-between;font-size:38px;opacity:.85;pointer-events:none}
+.food-truck{position:absolute;left:50%;bottom:250px;transform:translateX(-50%);width:190px;height:105px;border-radius:22px 22px 12px 12px;background:#fff;border:5px solid #5b5148;box-shadow:0 9px 0 rgba(0,0,0,.08),0 10px 20px rgba(0,0,0,.14)}
+.truck-roof{position:absolute;left:-7px;right:-7px;top:-17px;height:23px;border-radius:16px 16px 5px 5px;background:#e98c9d;border:4px solid #5b5148}
+.truck-window{position:absolute;left:28px;top:24px;width:59px;height:40px;border-radius:8px;background:#b9dce5;border:3px solid #5b5148}
+.truck-window:after{content:"";position:absolute;top:50%;left:50%;width:3px;height:100%;transform:translate(-50%,-50%);background:#5b5148}
+.truck-counter{position:absolute;right:18px;top:32px;width:63px;height:25px;border-radius:7px;background:#fff0ca;border:3px solid #5b5148}
+.truck-sign{position:absolute;left:55px;right:55px;top:-50px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:13px 13px 6px 6px;background:#fffaf0;border:4px solid #5b5148;font-size:30px;z-index:5;box-shadow:0 4px 8px rgba(0,0,0,.12)}
+.sign-light{animation:signBlink .8s ease-in-out infinite alternate;box-shadow:0 0 16px #ffe66d}
+.sign-flower:before{content:"🌸";position:absolute;left:-19px;top:-15px;font-size:20px}
+.sign-flower:after{content:"🌸";position:absolute;right:-19px;top:-15px;font-size:20px}
+.sign-star:before{content:"⭐";position:absolute;left:-19px;top:-15px;font-size:18px}
+.sign-star:after{content:"⭐";position:absolute;right:-19px;top:-15px;font-size:18px}
+@keyframes signBlink{from{filter:brightness(1)}to{filter:brightness(1.6)}}
+.wheel{position:absolute;bottom:-18px;width:36px;height:36px;border-radius:50%;background:#403a35;border:5px solid #fff;box-shadow:0 0 0 2px #403a35}
+.wheel.left{left:23px}.wheel.right{right:23px}
+.truck-spring .truck-roof{background:#8ccf78}.truck-spring .truck-window{background:#c9edbc}.truck-spring .truck-counter{background:#fff8c9}
+.truck-ocean .truck-roof{background:#73b8d6}.truck-ocean .truck-window{background:#bce7ef}.truck-ocean .truck-counter{background:#e8f9ff}
+.truck-cafe .truck-roof{background:#9a6f52}.truck-cafe .truck-window{background:#d8c1a9}.truck-cafe .truck-counter{background:#f2dfc5}
+.truck-sunset .truck-roof{background:#e68a4b}.truck-sunset .truck-window{background:#f5c79d}.truck-sunset .truck-counter{background:#fff0d6}
+.truck-lavender .truck-roof{background:#9d8bc4}.truck-lavender .truck-window{background:#d8d0ee}.truck-lavender .truck-counter{background:#f2effb}
+.truck-night .truck-roof{background:#44546f}.truck-night .truck-window{background:#91a5c7}.truck-night .truck-counter{background:#e1e5ee}
+.truck-stand{position:absolute;bottom:72px;width:61px;height:75px;padding:6px 3px;border-radius:8px;background:#6b4634;border:3px solid #4a3025;color:#fff;text-align:center;z-index:8;box-shadow:0 4px 7px rgba(0,0,0,.2)}
+.truck-stand-left{left:15px}.truck-stand-right{right:15px}
+.truck-stand div{font-size:9px}.truck-stand strong{display:block;margin-top:5px;font-size:13px;color:#ffe66d;line-height:1.1}
+.truck-stand-right strong{font-size:30px;color:#fff;margin-top:10px}
+.truck-customer-layer{position:absolute;inset:0;z-index:20;pointer-events:none;overflow:hidden}
+.truck-customer{position:absolute;bottom:-100px;width:80px;height:90px;display:flex;align-items:center;justify-content:center;transform:translate(-50%,0);transition:bottom 6s linear;z-index:25}
+.truck-customer img{width:75px;height:75px;object-fit:contain;filter:drop-shadow(0 4px 3px rgba(0,0,0,.15))}
+.truck-customer-bubble{position:absolute;top:-3px;right:-3px;padding:3px 6px;border-radius:10px;background:#fff;color:#765b45;font-size:10px}
+.truck-customer.walk-in{bottom:135px}
+.truck-customer.walk-out{bottom:-100px}
+.truck-locked{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:22px;background:rgba(75,64,53,.78);color:#fff;cursor:pointer}
+.truck-lock-name{margin-top:7px;font-size:15px;font-weight:900}.truck-lock-price{margin-top:5px;font-size:12px;color:#ffe38b}
+.sold-message{position:absolute;left:50%;top:65px;transform:translateX(-50%);padding:8px 14px;border-radius:20px;background:rgba(255,255,255,.95);color:#c27a21;font-size:12px;font-weight:900;opacity:0;pointer-events:none;z-index:40}
+.sold-message.show{animation:soldUp 1.5s ease-out}
+@keyframes soldUp{0%{opacity:0;transform:translate(-50%,10px)}20%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-25px)}}
+.truck-edit-section{margin-bottom:12px;padding:11px;border-radius:14px;background:#fff;border:1px solid #eee2d4}
+.truck-edit-title{font-size:13px;font-weight:900;color:#765b45;margin-bottom:8px}
+.truck-edit-hint{font-size:9px;color:#998675;margin:5px 0 8px}
+.truck-empty{text-align:center;padding:10px;color:#aaa;font-size:10px}
+.truck-queue-row{display:flex;align-items:center;gap:7px;padding:7px;border-radius:10px;background:#f8f5ef;margin-bottom:5px}
+.truck-queue-row>span{width:18px;text-align:center;font-size:10px;font-weight:900;color:#998675}
+.truck-queue-row>b{font-size:23px}.truck-queue-row>div{min-width:0}.truck-queue-row strong{display:block;font-size:10px}.truck-queue-row small{display:block;margin-top:2px;font-size:9px;color:#998675}
+.truck-food-row{display:flex;align-items:center;gap:8px;padding:8px;margin-bottom:6px;border-radius:11px;background:#fffaf2}
+.truck-food-icon{font-size:25px}.truck-food-info{flex:1;min-width:0}.truck-food-info b{display:block;font-size:10px}.truck-food-info small{display:block;margin-top:2px;font-size:9px;color:#998675}.truck-food-row input{width:52px;padding:7px;border:1px solid #ddd;border-radius:8px;text-align:center}
+.truck-option-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.truck-option{min-height:58px;border:2px solid #eee2d4;border-radius:10px;background:#fff;font-size:9px;font-weight:900;color:#765b45;cursor:pointer}
+.truck-option.selected{border-color:var(--green);background:#edf7e9}
+.truck-option small{display:block;margin-top:3px;color:#998675;font-size:8px}
+@media(max-width:390px){.truck-stage{min-height:500px}.food-truck{transform:translateX(-50%) scale(.85)}.truck-stand{transform:scale(.9);transform-origin:bottom}.truck-sign{transform:scale(.9)}}
 /* =========================================================
    Modal
 ========================================================= */
@@ -1719,111 +1327,23 @@ button,
     ====================================================== -->
 
     <section id="truckPage" class="page">
-
-        <div class="topbar">
-
-            <div class="title-area">
-
-                <h1 class="title">🚚 餐車</h1>
-
-                <div class="subtitle">
-                    把料理變成錢幣
-                </div>
-
-            </div>
-
-            <div class="currency">
-                💰 <span id="truckCoins">0</span>
-            </div>
-
-        </div>
-
-
-        <div class="truck-stage">
-
-            <div
-                id="customerArea"
-                class="customer-area"
-            ></div>
-
-            <div
-                id="soldMessage"
-                class="sold-message"
-            >
-                💰 賣出一份料理！
-            </div>
-
-            <div
-                id="foodTruck"
-                class="food-truck truck-spring"
-            >
-
-                <div class="truck-roof"></div>
-
-                <div class="truck-window"></div>
-
-                <div class="truck-counter"></div>
-
-                <div class="truck-sign">
-                    今日料理小餐車
-                </div>
-
-                <div class="wheel left"></div>
-                <div class="wheel right"></div>
-
-            </div>
-
-        </div>
-
-
-        <!-- 餐車操作 -->
-
-        <div class="card">
-
-            <div class="section-title">
-
-                <span>🍱 補貨</span>
-
-                <small id="truckStatus">
-                    營業中
-                </small>
-
-            </div>
-
-            <div id="truckStock"></div>
-
-            <div style="height:10px"></div>
-
-            <button
-                class="btn btn-orange"
-                onclick="openTruckFoodModal()"
-            >
-                🍱 選擇料理補貨
-            </button>
-
-        </div>
-
-
-        <!-- 外型 -->
-
-        <div class="card">
-
-            <div class="section-title">
-
-                <span>🎨 餐車外型</span>
-
-                <small>用錢幣購買</small>
-
-            </div>
-
-            <div
-                id="skinGrid"
-                class="skin-grid"
-            ></div>
-
-        </div>
-
-    </section>
+<div class="topbar">
+<div class="title-area">
+<h1 class="title">🚚 餐車</h1>
+<div class="subtitle">把料理變成錢幣</div>
+</div>
+<div class="currency">💰 <span id="truckCoins">0</span></div>
+</div>
+<div class="truck-page-wrap">
+<button class="truck-nav truck-nav-left" onclick="changeTruck(-1)">‹</button>
+<div id="truckStage" class="truck-stage"></div>
+<button class="truck-nav truck-nav-right" onclick="changeTruck(1)">›</button>
+</div>
+<div class="card">
+<div class="section-title"><span>🚚 餐車說明</span><small>最多4台</small></div>
+<div style="font-size:11px;color:#998675;line-height:1.7">點擊已解鎖的餐車可以編輯販賣列表、餐車顏色、周遭環境與招牌。每份料理統一售價 💰20，顧客只負責演出，不影響實際販售。</div>
+</div>
+</section>
 
 
     <!-- =====================================================
@@ -2041,123 +1561,38 @@ function characterImage(character){
 ========================================================= */
 
 const REGIONS=[
-{id:"forest",name:"青翠森林",icon:"🌳",desc:"森林裡藏著新鮮的食材",ingredients:["🌾","🥚","🥩"]},
-{id:"coast",name:"蔚藍海岸",icon:"🌊",desc:"海風帶來豐富的海鮮",ingredients:["🥗","🐟","🦐"]},
-{id:"village",name:"暖陽村莊",icon:"🏡",desc:"村莊裡有香噴噴的食材",ingredients:["🌾","🥗","🥚"]},
-{id:"mountain",name:"雲霧山地",icon:"⛰️",desc:"山裡有珍貴的天然食材",ingredients:["🦐","🥩","🐟"]}
+{id:"forest",name:"青翠森林",icon:"🌳",desc:"森林裡盛產新鮮水果與天然食材",ingredients:["🍎","🍓","🍯"]},
+{id:"coast",name:"蔚藍海岸",icon:"🌊",desc:"海風帶來清爽的水果與乳製品",ingredients:["🍓","🥛","🥚"]},
+{id:"village",name:"暖陽村莊",icon:"🏡",desc:"村莊裡有製作甜點不可缺少的食材",ingredients:["🌾","🍎","🥚"]},
+{id:"mountain",name:"雲霧山地",icon:"⛰️",desc:"山間盛產麵粉、牛奶與香甜蜂蜜",ingredients:["🌾","🥛","🍯"]}
 ];
-
 
 /* =========================================================
    食材
 ========================================================= */
 
-const INGREDIENTS = {
-
-    "🌾":{
-        name:"穀物",
-        icon:"🌾"
-    },
-
-    "🥗":{
-        name:"蔬菜",
-        icon:"🥗"
-    },
-
-    "🐟":{
-        name:"鮮魚",
-        icon:"🐟"
-    },
-
-    "🦐":{
-        name:"蝦子",
-        icon:"🦐"
-    },
-
-    "🥩":{
-        name:"肉品",
-        icon:"🥩"
-    },
-
-    "🥚":{
-        name:"雞蛋",
-        icon:"🥚"
-    }
-
+const INGREDIENTS={
+"🌾":{name:"麵粉",icon:"🌾"},
+"🍎":{name:"蘋果",icon:"🍎"},
+"🥚":{name:"雞蛋",icon:"🥚"},
+"🍓":{name:"草莓",icon:"🍓"},
+"🥛":{name:"牛奶",icon:"🥛"},
+"🍯":{name:"蜂蜜",icon:"🍯"}
 };
-
 
 /* =========================================================
    料理
-   直接沿用原本秘密花園的料理組合概念
 ========================================================= */
 
-const RECIPES = [
-
-    {
-        id:"rice_meat_fish",
-        name:"陸海空豪華便當",
-        icon:"🍱",
-        ingredients:["🌾","🐟","🥩"],
-        price:18
-    },
-
-    {
-        id:"fish_egg",
-        name:"滑蛋鮮魚粥",
-        icon:"🥣",
-        ingredients:["🌾","🐟","🥚"],
-        price:16
-    },
-
-    {
-        id:"shrimp_meat",
-        name:"鮮蝦燒肉飯",
-        icon:"🍛",
-        ingredients:["🌾","🦐","🥩"],
-        price:20
-    },
-
-    {
-        id:"shrimp_egg",
-        name:"黃金蝦仁炒飯",
-        icon:"🍤",
-        ingredients:["🌾","🦐","🥚"],
-        price:19
-    },
-
-    {
-        id:"salad_meat",
-        name:"海陸健身沙拉",
-        icon:"🥗",
-        ingredients:["🥗","🐟","🥩"],
-        price:18
-    },
-
-    {
-        id:"salad_egg",
-        name:"時蔬魚排歐姆蛋",
-        icon:"🍳",
-        ingredients:["🥗","🐟","🥚"],
-        price:17
-    },
-
-    {
-        id:"vegetable_shrimp",
-        name:"鮮蝦時蔬快炒",
-        icon:"🥘",
-        ingredients:["🥗","🦐","🥩"],
-        price:21
-    },
-
-    {
-        id:"steam_egg",
-        name:"嫩蝦蔬菜蒸蛋",
-        icon:"🍮",
-        ingredients:["🥗","🦐","🥚"],
-        price:17
-    }
-
+const RECIPES=[
+{id:"apple_pie",name:"香甜蘋果派",icon:"🥧",ingredients:["🌾","🍎","🥚"],price:30},
+{id:"strawberry_cake",name:"草莓鮮奶蛋糕",icon:"🍰",ingredients:["🌾","🍓","🥛"],price:30},
+{id:"honey_pancake",name:"蜂蜜鬆餅",icon:"🥞",ingredients:["🌾","🍯","🥚"],price:30},
+{id:"strawberry_pudding",name:"草莓牛奶布丁",icon:"🍮",ingredients:["🍓","🥛","🥚"],price:30},
+{id:"apple_tart",name:"蘋果蜂蜜塔",icon:"🥧",ingredients:["🌾","🍎","🍯"],price:30},
+{id:"strawberry_cookie",name:"草莓奶香餅乾",icon:"🍪",ingredients:["🌾","🍓","🥚"],price:30},
+{id:"honey_milk",name:"蜂蜜牛奶甜點",icon:"🍨",ingredients:["🥛","🍯","🍎"],price:30},
+{id:"strawberry_honey",name:"蜂蜜草莓聖代",icon:"🍧",ingredients:["🍓","🍯","🥛"],price:30}
 ];
 
 
@@ -2242,7 +1677,37 @@ const COOK_TIME = 60 * 1000;
 
 const SALE_TIME = 5 * 60 * 1000;
 
-
+const TRUCK_ENVIRONMENTS=[
+{id:"grass",name:"草地",price:0,css:"env-grass",icon:"🌱"},
+{id:"forest",name:"森林",price:100,css:"env-forest",icon:"🌳"},
+{id:"flower",name:"花園",price:180,css:"env-flower",icon:"🌸"},
+{id:"pond",name:"池畔",price:260,css:"env-pond",icon:"💧"}
+];
+const TRUCK_SIGNS=[
+{id:"plain",name:"普通招牌",price:0,css:"sign-plain"},
+{id:"light",name:"閃爍燈光",price:150,css:"sign-light"},
+{id:"flower",name:"花朵招牌",price:250,css:"sign-flower"},
+{id:"star",name:"星星招牌",price:350,css:"sign-star"}
+];
+const SALE_PRICE=20;
+const TRUCK_MAX=4;
+const TRUCK_UNLOCK_COST=[0,300,600,1000];
+function createDefaultTruck(id){
+return{
+id,
+unlocked:id===0,
+unlockCost:TRUCK_UNLOCK_COST[id]||1000,
+skin:"spring",
+ownedSkins:["spring"],
+environment:"grass",
+ownedEnvironments:["grass"],
+sign:"plain",
+ownedSigns:["plain"],
+stock:[],
+lastSaleTime:Date.now(),
+totalSales:0
+};
+}
 /* =========================================================
    初始資料
 ========================================================= */
@@ -2289,12 +1754,7 @@ const DEFAULT_STATE={
         endTime:0,
         targetCharacter:null
     },
-    truck:{
-        skin:"spring",
-        stock:[],
-        lastSaleTime:Date.now(),
-        totalSales:0
-    }
+    trucks:Array.from({length:4},(_,i)=>createDefaultTruck(i))
 };
 
 
@@ -2612,108 +2072,52 @@ async function loadState(){
 /* =========================================================
    合併存檔
 ========================================================= */
-
 function mergeState(saved){
-
-    const base =
-        cloneDefaultState();
-
-
-    const merged =
-        Object.assign(
-            base,
-            saved || {}
-        );
-
-    merged.dishes=Object.assign({},saved?.dishes||{});
-merged.helper=Object.assign({
-    date:"",
-    requests:[],
-    served:{},
-    jobs:{}
-},saved?.helper||{});
+const base=cloneDefaultState();
+const merged=Object.assign(base,saved||{});
+merged.dishes=Object.assign({},saved?.dishes||{});
+merged.helper=Object.assign({date:"",requests:[],served:{},jobs:{}},saved?.helper||{});
 merged.helper.requests=Array.isArray(merged.helper.requests)?merged.helper.requests:[];
 merged.helper.served=merged.helper.served||{};
 merged.helper.jobs=merged.helper.jobs||{};
-
-
-    merged.ingredients =
-        Object.assign(
-            {},
-            DEFAULT_STATE.ingredients,
-            saved?.ingredients || {}
-        );
-
-
-    merged.dishes =
-        Object.assign(
-            {},
-            saved?.dishes || {}
-        );
-
-
-    merged.friendship =
-        Object.assign(
-            {},
-            saved?.friendship || {}
-        );
-
-
-    merged.expedition =
-        Object.assign(
-            {},
-            DEFAULT_STATE.expedition,
-            saved?.expedition || {}
-        );
-
-
-    merged.truck =
-        Object.assign(
-            {},
-            DEFAULT_STATE.truck,
-            saved?.truck || {}
-        );
-
-
-    merged.cooking =
-        Array.isArray(
-            saved?.cooking
-        )
-        ?
-        saved.cooking
-        :
-        [];
-
-
-    while(
-        merged.cooking.length <
-        merged.cookingLines
-    ){
-
-        merged.cooking.push({
-
-            recipeId:null,
-
-            endTime:0
-
-        });
-
-    }
-
-
-    if(
-        !Array.isArray(
-            merged.joined
-        )
-    ){
-
-        merged.joined=[];
-
-    }
-
-
-    return merged;
-
+merged.ingredients=Object.assign({},DEFAULT_STATE.ingredients,saved?.ingredients||{});
+merged.friendship=Object.assign({},saved?.friendship||{});
+merged.expedition=Object.assign({},DEFAULT_STATE.expedition,saved?.expedition||{});
+merged.trucks=Array.isArray(saved?.trucks)?saved.trucks:[];
+if(!merged.trucks.length&&saved?.truck){
+const old=saved.truck;
+merged.trucks=[{
+...createDefaultTruck(0),
+...old,
+id:0,
+unlocked:true,
+stock:Array.isArray(old.stock)?old.stock:[],
+ownedSkins:Array.isArray(old.ownedSkins)&&old.ownedSkins.length?old.ownedSkins:["spring"],
+ownedEnvironments:["grass"],
+ownedSigns:["plain"]
+}];
+}
+while(merged.trucks.length<TRUCK_MAX)merged.trucks.push(createDefaultTruck(merged.trucks.length));
+merged.trucks.length=TRUCK_MAX;
+merged.trucks.forEach((t,i)=>{
+Object.assign(t,{id:i,unlockCost:TRUCK_UNLOCK_COST[i]||1000});
+if(!Array.isArray(t.stock))t.stock=[];
+if(!Array.isArray(t.ownedSkins)||!t.ownedSkins.length)t.ownedSkins=["spring"];
+if(!t.ownedSkins.includes("spring"))t.ownedSkins.unshift("spring");
+if(!Array.isArray(t.ownedEnvironments)||!t.ownedEnvironments.length)t.ownedEnvironments=["grass"];
+if(!t.ownedEnvironments.includes("grass"))t.ownedEnvironments.unshift("grass");
+if(!Array.isArray(t.ownedSigns)||!t.ownedSigns.length)t.ownedSigns=["plain"];
+if(!t.ownedSigns.includes("plain"))t.ownedSigns.unshift("plain");
+if(!t.skin)t.skin="spring";
+if(!t.environment)t.environment="grass";
+if(!t.sign)t.sign="plain";
+if(!t.lastSaleTime)t.lastSaleTime=Date.now();
+if(!Number.isFinite(Number(t.totalSales)))t.totalSales=0;
+});
+merged.cooking=Array.isArray(saved?.cooking)?saved.cooking:[];
+while(merged.cooking.length<merged.cookingLines)merged.cooking.push({recipeId:null,endTime:0,helperEnabled:false});
+if(!Array.isArray(merged.joined))merged.joined=[];
+return merged;
 }
 
 
@@ -4307,767 +3711,228 @@ toast(`🎁 已領取 ${total} 份${recipe.name}`);
 /* =========================================================
    餐車
 ========================================================= */
-
+let truckCustomerBusy=false,truckCustomerTimer=null,truckCustomerGeneration=0,truckDraftIndex=0;
+function ensureTruckData(){
+if(!Array.isArray(state.trucks))state.trucks=[];
+if(!state.trucks.length&&state.truck){
+const old=state.truck;
+state.trucks=[{...createDefaultTruck(0),...old,unlocked:true,stock:Array.isArray(old.stock)?old.stock:[],ownedSkins:Array.isArray(old.ownedSkins)&&old.ownedSkins.length?old.ownedSkins:["spring"],ownedEnvironments:["grass"],ownedSigns:["plain"]}];
+}
+while(state.trucks.length<TRUCK_MAX)state.trucks.push(createDefaultTruck(state.trucks.length));
+state.trucks.length=TRUCK_MAX;
+state.trucks.forEach((t,i)=>{
+Object.assign(t,{id:i,unlockCost:TRUCK_UNLOCK_COST[i]||1000});
+if(!Array.isArray(t.stock))t.stock=[];
+if(!Array.isArray(t.ownedSkins)||!t.ownedSkins.length)t.ownedSkins=["spring"];
+if(!t.ownedSkins.includes("spring"))t.ownedSkins.unshift("spring");
+if(!Array.isArray(t.ownedEnvironments)||!t.ownedEnvironments.length)t.ownedEnvironments=["grass"];
+if(!t.ownedEnvironments.includes("grass"))t.ownedEnvironments.unshift("grass");
+if(!Array.isArray(t.ownedSigns)||!t.ownedSigns.length)t.ownedSigns=["plain"];
+if(!t.ownedSigns.includes("plain"))t.ownedSigns.unshift("plain");
+if(!t.skin)t.skin="spring";
+if(!t.environment)t.environment="grass";
+if(!t.sign)t.sign="plain";
+if(!t.lastSaleTime)t.lastSaleTime=Date.now();
+if(!Number.isFinite(Number(t.totalSales)))t.totalSales=0;
+});
+}
+function formatTruckTime(ms){
+const s=Math.max(0,Math.ceil(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;
+return h>0?`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`;
+}
+function calcTruckSellout(truck){
+if(!truck?.stock?.length)return 0;
+const now=Date.now();
+let end=0;
+for(const batch of truck.stock){
+const qty=Math.max(0,Math.floor(Number(batch?.qty)||0));
+if(!batch||qty<=0)continue;
+const sold=Math.max(0,Math.floor(Number(batch.soldUnits)||0));
+const listed=Number(batch.listedAt)||now;
+const original=qty+sold;
+const start=Math.max(listed,end);
+end=start+original*SALE_TIME;
+}
+return Math.max(0,end-now);
+}
+function currentTruckRecipe(truck){
+return truck?.stock?.find(x=>x&&Number(x.qty)>0)?.recipeId||null;
+}
+let currentTruckIndex=0;
+function ensureTruckScene(){
+const stage=document.getElementById("truckStage");
+if(!stage)return;
+stage.innerHTML=`<div id="customerArea" class="truck-customer-layer"></div><div id="soldMessage" class="sold-message"></div><div id="truckScene"></div>`;
+}
+function changeTruck(direction){
+ensureTruckData();
+let next=currentTruckIndex+direction;
+if(next<0)next=TRUCK_MAX-1;
+if(next>=TRUCK_MAX)next=0;
+currentTruckIndex=next;
+renderTruck();
+}
 function renderTruck(){
-
-    document.getElementById(
-        "truckCoins"
-    ).textContent =
-        state.coins;
-
-
-    document.getElementById(
-        "gardenCoins"
-    ).textContent =
-        state.coins;
-
-
-    document.getElementById(
-        "kitchenCoins"
-    ).textContent =
-        state.coins;
-
-
-    applyTruckSkin();
-
-    renderTruckStock();
-
-    renderSkins();
-
+ensureTruckData();
+const coins=document.getElementById("truckCoins");
+if(coins)coins.textContent=state.coins;
+const stage=document.getElementById("truckStage");
+if(!stage)return;
+if(!stage.querySelector("#truckScene"))ensureTruckScene();
+const scene=document.getElementById("truckScene");
+if(!scene)return;
+const truck=state.trucks[currentTruckIndex];
+if(!truck)return;
+if(!truck.unlocked){
+scene.innerHTML=`<div class="truck-locked" onclick="unlockTruck(${currentTruckIndex})"><div style="font-size:55px">🔒</div><div class="truck-lock-name">餐車 ${currentTruckIndex+1}</div><div class="truck-lock-price">💰 ${truck.unlockCost}</div></div>`;
+return;
 }
-
-
-/* =========================================================
-   套用餐車外型
-========================================================= */
-
-function applyTruckSkin(){
-
-    const truck =
-        document.getElementById(
-            "foodTruck"
-        );
-
-
-    const skin =
-        TRUCK_SKINS.find(
-            s=>s.id===state.truck.skin
-        ) ||
-        TRUCK_SKINS[0];
-
-
-    TRUCK_SKINS.forEach(
-        s=>{
-            truck.classList.remove(
-                s.css
-            );
-        }
-    );
-
-
-    truck.classList.add(
-        skin.css
-    );
-
+const skin=TRUCK_SKINS.find(x=>x.id===truck.skin)||TRUCK_SKINS[0];
+const env=TRUCK_ENVIRONMENTS.find(x=>x.id===truck.environment)||TRUCK_ENVIRONMENTS[0];
+const sign=TRUCK_SIGNS.find(x=>x.id===truck.sign)||TRUCK_SIGNS[0];
+const recipe=RECIPES.find(x=>x.id===currentTruckRecipe(truck));
+const remaining=calcTruckSellout(truck);
+scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="openTruckEditor(${currentTruckIndex})"><div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span></div><div class="truck-stand truck-stand-left"><div>全部完售</div><strong>${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div><div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
 }
-
-
-/* =========================================================
-   餐車庫存
-========================================================= */
-
-function renderTruckStock(){
-
-    const container =
-        document.getElementById(
-            "truckStock"
-        );
-
-
-    const stock =
-        state.truck.stock
-            .filter(
-                item=>
-                    item &&
-                    Number(item.qty)>0
-            );
-
-
-    state.truck.stock=stock;
-
-
-    if(!stock.length){
-
-        container.innerHTML = `
-
-            <div class="empty">
-                🚚 餐車目前沒有料理
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        stock.map(
-            item=>{
-
-                const recipe =
-                    RECIPES.find(
-                        r=>r.id===item.recipeId
-                    );
-
-
-                return `
-
-                    <div class="stock-row">
-
-                        <div class="stock-icon">
-                            ${recipe?.icon || "🍱"}
-                        </div>
-
-                        <div class="stock-info">
-
-                            <div class="stock-name">
-                                ${recipe?.name || "料理"}
-                            </div>
-
-                            <div class="stock-amount">
-                                剩餘 ${item.qty} 份
-                                ・每份 ${recipe?.price || 0} 💰
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            }
-        )
-        .join("");
-
+function unlockTruck(index){
+ensureTruckData();
+const truck=state.trucks[index];
+if(!truck||truck.unlocked)return;
+if(state.coins<truck.unlockCost){toast("錢幣不足");return;}
+if(!confirm(`花費 ${truck.unlockCost} 金幣解鎖第 ${index+1} 台餐車？`))return;
+state.coins-=truck.unlockCost;
+truck.unlocked=true;
+save();
+renderTruck();
+toast(`🚚 餐車 ${index+1} 已解鎖`);
 }
-
-
-/* =========================================================
-   開啟餐車補貨
-========================================================= */
-
-function openTruckFoodModal(){
-
-    const recipes =
-        RECIPES.filter(
-            recipe=>
-                Number(
-                    state.dishes[recipe.id] || 0
-                )>0
-        );
-
-
-    if(!recipes.length){
-
-        toast(
-            "沒有料理可以補貨，先去料理工房製作吧！"
-        );
-
-        return;
-
-    }
-
-
-    const modal =
-        document.getElementById(
-            "modal"
-        );
-
-
-    modal.innerHTML = `
-
-        <div class="modal-title">
-            🍱 餐車補貨
-        </div>
-
-        <div
-            style="
-                font-size:11px;
-                color:#998675;
-                margin-bottom:10px;
-            "
-        >
-            選擇料理與補貨數量。
-            放入餐車後會依序販售。
-        </div>
-
-        ${
-            recipes.map(
-                recipe=>`
-
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            gap:10px;
-                            padding:10px;
-                            margin-bottom:8px;
-                            border-radius:13px;
-                            background:#fff;
-                        "
-                    >
-
-                        <div style="font-size:30px">
-                            ${recipe.icon}
-                        </div>
-
-                        <div style="flex:1">
-
-                            <div
-                                style="
-                                    font-size:12px;
-                                    font-weight:900;
-                                "
-                            >
-                                ${recipe.name}
-                            </div>
-
-                            <div
-                                style="
-                                    margin-top:2px;
-                                    font-size:10px;
-                                    color:#998675;
-                                "
-                            >
-                                持有
-                                ${state.dishes[recipe.id]}
-                                份
-                                ・售價
-                                ${recipe.price} 💰
-                            </div>
-
-                        </div>
-
-                        <input
-                            id="stock_${recipe.id}"
-                            type="number"
-                            min="0"
-                            max="${state.dishes[recipe.id]}"
-                            value="0"
-                            style="
-                                width:60px;
-                                padding:8px;
-                                border-radius:9px;
-                                border:1px solid #ddd;
-                                text-align:center;
-                            "
-                        >
-
-                    </div>
-
-                `
-            ).join("")
-        }
-
-        <div style="height:6px"></div>
-
-        <button
-            class="btn btn-orange"
-            onclick="confirmTruckRefill()"
-        >
-            🚚 確認補貨
-        </button>
-
-        <div style="height:7px"></div>
-
-        <button
-            class="btn btn-light"
-            onclick="closeModal()"
-        >
-            取消
-        </button>
-
-    `;
-
-
-    openModal();
-
+function openTruckEditor(index){
+ensureTruckData();
+const truck=state.trucks[index];
+if(!truck?.unlocked)return;
+truckDraftIndex=index;
+const modal=document.getElementById("modal");
+const recipes=RECIPES.filter(r=>Number(state.dishes[r.id]||0)>0);
+modal.innerHTML=`<div class="modal-title">🚚 編輯餐車 ${index+1}</div><div class="truck-edit-section"><div class="truck-edit-title">🍱 販賣列表</div><div id="truckEditQueue">${renderTruckEditQueue(truck)}</div><div class="truck-edit-hint">新加入的料理會排在列表最後。</div>${recipes.map(r=>`<div class="truck-food-row"><div class="truck-food-icon">${r.icon}</div><div class="truck-food-info"><b>${r.name}</b><small>持有 ${Number(state.dishes[r.id]||0)} 份・每份 💰${SALE_PRICE}</small></div><input id="refill_${r.id}" type="number" min="0" max="${Number(state.dishes[r.id]||0)}" value="0"></div>`).join("")}</div><div class="truck-edit-section"><div class="truck-edit-title">🎨 餐車顏色</div><div class="truck-option-grid">${TRUCK_SKINS.map(s=>`<button class="truck-option ${truck.skin===s.id?"selected":""}" onclick="buyTruckSkin(${index},'${s.id}')"><span style="display:block;width:28px;height:18px;margin:auto;border-radius:8px;background:${s.roof}"></span>${s.name}<small>${truck.ownedSkins.includes(s.id)?"✓":`💰${s.price}`}</small></button>`).join("")}</div></div><div class="truck-edit-section"><div class="truck-edit-title">🌿 周遭環境</div><div class="truck-option-grid">${TRUCK_ENVIRONMENTS.map(e=>`<button class="truck-option ${truck.environment===e.id?"selected":""}" onclick="buyTruckEnvironment(${index},'${e.id}')">${e.icon}<br>${e.name}<small>${truck.ownedEnvironments.includes(e.id)?"✓":`💰${e.price}`}</small></button>`).join("")}</div></div><div class="truck-edit-section"><div class="truck-edit-title">🏷️ 招牌</div><div class="truck-option-grid">${TRUCK_SIGNS.map(s=>`<button class="truck-option ${truck.sign===s.id?"selected":""}" onclick="buyTruckSign(${index},'${s.id}')">${s.id==="light"?"💡":s.id==="flower"?"🌸":s.id==="star"?"⭐":"🏷️"}<br>${s.name}<small>${truck.ownedSigns.includes(s.id)?"✓":`💰${s.price}`}</small></button>`).join("")}</div></div><button class="btn btn-orange" onclick="confirmTruckEditor()">💾 儲存並關閉</button><div style="height:7px"></div><button class="btn btn-light" onclick="closeModal()">取消</button>`;
+openModal();
 }
-
-
-/* =========================================================
-   確認餐車補貨
-========================================================= */
-
-function confirmTruckRefill(){
-
-    let added=0;
-
-
-    for(
-        const recipe of RECIPES
-    ){
-
-        const input =
-            document.getElementById(
-                "stock_"+recipe.id
-            );
-
-
-        if(!input){
-
-            continue;
-
-        }
-
-
-        let amount =
-            Number(input.value || 0);
-
-
-        if(amount<=0){
-
-            continue;
-
-        }
-
-
-        const owned =
-            Number(
-                state.dishes[recipe.id] || 0
-            );
-
-
-        amount =
-            Math.min(
-                amount,
-                owned
-            );
-
-
-        if(amount<=0){
-
-            continue;
-
-        }
-
-
-        state.dishes[recipe.id] =
-            owned-amount;
-
-
-        let batch =
-            state.truck.stock.find(
-                item=>
-                    item.recipeId===recipe.id &&
-                    item.qty>0
-            );
-
-
-        /*
-           與原餐車 salesQueue 類似：
-           新補貨直接排到隊伍最後。
-        */
-
-        if(!batch){
-
-            batch={
-                recipeId:recipe.id,
-                qty:amount,
-                listedAt:Date.now()
-            };
-
-            state.truck.stock.push(batch);
-
-        }else{
-
-            batch.qty += amount;
-
-        }
-
-
-        added += amount;
-
-    }
-
-
-    if(!added){
-
-        toast("沒有新增任何料理");
-
-        return;
-
-    }
-
-
-    save();
-
-    closeModal();
-
-    renderTruck();
-
-    toast(
-        `🚚 已補貨 ${added} 份料理`
-    );
-
+function renderTruckEditQueue(truck){
+if(!truck.stock?.length)return`<div class="truck-empty">目前沒有待販售料理</div>`;
+return truck.stock.filter(x=>Number(x?.qty)>0).map((b,i)=>{const r=RECIPES.find(x=>x.id===b.recipeId);return`<div class="truck-queue-row"><span>${i+1}</span><b>${r?.icon||"🍱"}</b><div><strong>${r?.name||"料理"}</strong><small>剩餘 ${b.qty} 份</small></div></div>`;}).join("");
 }
-
-
-/* =========================================================
-   餐車外型商店
-========================================================= */
-
-function renderSkins(){
-
-    const container =
-        document.getElementById(
-            "skinGrid"
-        );
-
-
-    container.innerHTML =
-        TRUCK_SKINS.map(
-            skin=>{
-
-                const owned =
-                    skin.price===0 ||
-                    (
-                        state.truck.ownedSkins &&
-                        state.truck.ownedSkins.includes(
-                            skin.id
-                        )
-                    );
-
-
-                const current =
-                    state.truck.skin ===
-                    skin.id;
-
-
-                return `
-
-                    <div
-                        class="
-                            skin-card
-                            ${owned ? "owned":""}
-                            ${current ? "current":""}
-                        "
-                        onclick="
-                            selectTruckSkin(
-                                '${skin.id}'
-                            )
-                        "
-                    >
-
-                        <div
-                            class="skin-preview"
-                        >
-
-                            <div
-                                class="mini-truck"
-                            >
-
-                                <div
-                                    class="mini-roof"
-                                    style="
-                                        background:${skin.roof}
-                                    "
-                                ></div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="skin-name">
-                            ${skin.name}
-                        </div>
-
-                        <div class="skin-price">
-
-                            ${
-                                current
-                                ? "✓ 使用中"
-                                :
-                                owned
-                                ? "✓ 已擁有"
-                                :
-                                `💰 ${skin.price}`
-                            }
-
-                        </div>
-
-                    </div>
-
-                `;
-
-            }
-        )
-        .join("");
-
+function buyTruckSkin(index,id){
+const t=state.trucks[index],s=TRUCK_SKINS.find(x=>x.id===id);
+if(!t||!s)return;
+if(!t.ownedSkins.includes(id)){if(state.coins<s.price){toast("錢幣不足");return;}state.coins-=s.price;t.ownedSkins.push(id);}
+t.skin=id;save();openTruckEditor(index);renderTruck();
 }
-
-
-/* =========================================================
-   購買／使用外型
-========================================================= */
-
-function selectTruckSkin(id){
-
-    const skin =
-        TRUCK_SKINS.find(
-            s=>s.id===id
-        );
-
-
-    if(!skin){
-
-        return;
-
-    }
-
-
-    if(!state.truck.ownedSkins){
-
-        state.truck.ownedSkins=[
-            "spring"
-        ];
-
-    }
-
-
-    const owned =
-        state.truck.ownedSkins.includes(
-            id
-        );
-
-
-    if(!owned){
-
-        if(state.coins<skin.price){
-
-            toast("錢幣不足");
-
-            return;
-
-        }
-
-
-        state.coins -= skin.price;
-
-        state.truck.ownedSkins.push(id);
-
-        toast(
-            `🎨 已購買「${skin.name}」`
-        );
-
-    }
-
-
-    state.truck.skin=id;
-
-
-    save();
-
-    renderTruck();
-
+function buyTruckEnvironment(index,id){
+const t=state.trucks[index],e=TRUCK_ENVIRONMENTS.find(x=>x.id===id);
+if(!t||!e)return;
+if(!t.ownedEnvironments.includes(id)){if(state.coins<e.price){toast("錢幣不足");return;}state.coins-=e.price;t.ownedEnvironments.push(id);}
+t.environment=id;save();openTruckEditor(index);renderTruck();
 }
-
-
-/* =========================================================
-   餐車販售系統
-========================================================= */
-
+function buyTruckSign(index,id){
+const t=state.trucks[index],s=TRUCK_SIGNS.find(x=>x.id===id);
+if(!t||!s)return;
+if(!t.ownedSigns.includes(id)){if(state.coins<s.price){toast("錢幣不足");return;}state.coins-=s.price;t.ownedSigns.push(id);}
+t.sign=id;save();openTruckEditor(index);renderTruck();
+}
+function confirmTruckEditor(){
+const t=state.trucks[truckDraftIndex];
+if(!t)return;
+let added=0;
+for(const r of RECIPES){
+const input=document.getElementById(`refill_${r.id}`);
+if(!input)continue;
+let amount=Math.max(0,Math.floor(Number(input.value)||0));
+amount=Math.min(amount,Number(state.dishes[r.id]||0));
+if(amount<=0)continue;
+state.dishes[r.id]=Number(state.dishes[r.id]||0)-amount;
+t.stock.push({recipeId:r.id,qty:amount,listedAt:Date.now(),soldUnits:0});
+added+=amount;
+}
+save();
+closeModal();
+renderTruck();
+toast(added?`🚚 已加入 ${added} 份料理`:`🚚 餐車設定已更新`);
+}
 function processTruckSales(){
-
-    const now =
-        Date.now();
-
-
-    /*
-       確保離線期間也可以計算販售。
-    */
-
-    if(
-        !state.truck.lastSaleTime
-    ){
-
-        state.truck.lastSaleTime=
-            now;
-
-    }
-
-
-    let changed=false;
-
-
-    while(
-        now -
-        state.truck.lastSaleTime
-        >= SALE_TIME
-    ){
-
-        const batch =
-            state.truck.stock.find(
-                item=>
-                    item &&
-                    Number(item.qty)>0
-            );
-
-
-        if(!batch){
-
-            state.truck.lastSaleTime=
-                now;
-
-            break;
-
-        }
-
-
-        const recipe =
-            RECIPES.find(
-                r=>r.id===batch.recipeId
-            );
-
-
-        if(!recipe){
-
-            batch.qty=0;
-
-            changed=true;
-
-            continue;
-
-        }
-
-
-        batch.qty--;
-
-        state.coins +=
-            recipe.price;
-
-        state.truck.totalSales++;
-
-        state.truck.lastSaleTime +=
-            SALE_TIME;
-
-        changed=true;
-
-
-        showSoldMessage(
-            recipe
-        );
-
-    }
-
-
-    state.truck.stock =
-        state.truck.stock.filter(
-            item=>
-                item &&
-                Number(item.qty)>0
-        );
-
-
-    if(changed){
-
-        save();
-
-    }
-
+ensureTruckData();
+const now=Date.now();
+let changed=false;
+for(const t of state.trucks){
+if(!t.unlocked||!Array.isArray(t.stock))continue;
+let previousEnd=0;
+const newQueue=[];
+for(const b of t.stock){
+if(!b||Number(b.qty)<=0)continue;
+const qty=Math.max(0,Math.floor(Number(b.qty)||0));
+const sold=Math.max(0,Math.floor(Number(b.soldUnits)||0));
+const original=qty+sold;
+const listed=Number(b.listedAt)||now;
+const start=Math.max(listed,previousEnd);
+const theoretical=Math.floor(Math.max(0,now-start)/SALE_TIME);
+const available=Math.max(0,theoretical-sold);
+const sales=Math.min(available,qty);
+if(sales>0){
+b.qty-=sales;
+b.soldUnits+=sales;
+state.coins+=sales*SALE_PRICE;
+t.totalSales+=sales;
+changed=true;
+const r=RECIPES.find(x=>x.id===b.recipeId);
+if(r)showSoldMessage(r);
 }
-
-
-/* =========================================================
-   販售提示
-========================================================= */
-
+previousEnd=start+original*SALE_TIME;
+if(b.qty>0)newQueue.push(b);
+}
+t.stock=newQueue;
+if(!t.stock.length)t.lastSaleTime=now;
+}
+if(changed)save();
+}
 function showSoldMessage(recipe){
-
-    const el =
-        document.getElementById(
-            "soldMessage"
-        );
-
-
-    if(!el){
-
-        return;
-
-    }
-
-
-    el.textContent =
-        `💰 ${recipe.name} ×1  +${recipe.price}`;
-
-
-    el.classList.remove("show");
-
-
-    void el.offsetWidth;
-
-
-    el.classList.add("show");
-
+const el=document.getElementById("soldMessage");
+if(!el)return;
+el.textContent=`💰 ${recipe.name} ×1 +${SALE_PRICE}`;
+el.classList.remove("show");
+void el.offsetWidth;
+el.classList.add("show");
 }
-
-
-/* =========================================================
-   餐車顧客動畫
-========================================================= */
-
+function renderTruckCustomerLoop(){
+if(!document.getElementById("customerArea"))return;
+if(truckCustomerTimer)return;
+truckCustomerTimer=setTimeout(spawnTruckCustomer,2500);
+}
+function spawnTruckCustomer(){
+truckCustomerTimer=null;
+ensureTruckData();
+const truck=state.trucks[currentTruckIndex];
+if(!truck?.unlocked){
+truckCustomerTimer=setTimeout(spawnTruckCustomer,3000);
+return;
+}
+if(truckCustomerBusy){
+truckCustomerTimer=setTimeout(spawnTruckCustomer,3000);
+return;
+}
+const area=document.getElementById("customerArea");
+if(!area)return;
+truckCustomerBusy=true;
+const character=CHARACTERS[Math.floor(Math.random()*CHARACTERS.length)];
+const customer=document.createElement("div");
+customer.className="truck-customer";
+customer.style.left=`${25+Math.random()*50}%`;
+customer.innerHTML=`<img src="${characterImage(character)}"><div class="truck-customer-bubble">🍱</div>`;
+area.appendChild(customer);
+requestAnimationFrame(()=>customer.classList.add("walk-in"));
+setTimeout(()=>{if(customer.isConnected)customer.classList.add("walk-out");},6500);
+setTimeout(()=>{if(customer.isConnected)customer.remove();truckCustomerBusy=false;truckCustomerTimer=setTimeout(spawnTruckCustomer,2500);},12000);
+}
 function renderCustomer(){
-
-    const area =
-        document.getElementById(
-            "customerArea"
-        );
-
-
-    if(!area){
-
-        return;
-
-    }
-
-
-    const stock =
-        state.truck.stock.some(
-            item=>
-                item.qty>0
-        );
-
-
-    if(!stock){
-
-        area.innerHTML = `
-
-            <div class="customer">
-                💤 今天沒有料理可以販售
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    area.innerHTML = `
-
-        <div class="customer">
-
-            <span class="customer-dot"></span>
-
-            😊 有客人正在等料理
-
-        </div>
-
-    `;
-
+renderTruckCustomerLoop();
 }
-
 
 /* =========================================================
    Modal
@@ -5553,115 +4418,17 @@ function gameTick(){
 
 async function init(){
 
-    /*
-       先從 IndexedDB 讀取存檔。
-    */
-
-    state =
-        await loadState();
-
-
-    /*
-       舊存檔相容
-    */
-
-    if(!state.truck){
-
-        state.truck =
-            cloneDefaultState().truck;
-
-    }
-
-
-    if(
-        !Array.isArray(
-            state.truck.stock
-        )
-    ){
-
-        state.truck.stock=[];
-
-    }
-
-
-    if(
-        !Array.isArray(
-            state.truck.ownedSkins
-        )
-    ){
-
-        state.truck.ownedSkins=[
-            "spring"
-        ];
-
-    }
-
-
-    if(
-        !Array.isArray(
-            state.joined
-        )
-    ){
-
-        state.joined=[];
-
-    }
-
-
-    if(
-        !Array.isArray(
-            state.cooking
-        )
-    ){
-
-        state.cooking=[];
-
-    }
-
-
-    while(
-        state.cooking.length <
-        state.cookingLines
-    ){
-
-        state.cooking.push({
-recipeId:null,
-endTime:0,
-helperEnabled:false
-});
-
-    }
-
-
-    /*
-       標記存檔系統已準備完成。
-    */
-
-    saveReady=true;
-
-
-    /*
-       確保目前資料寫入 IndexedDB。
-    */
-
-    await save();
-
-
-    /*
-       第一次顯示遊戲。
-    */
-
-    renderGarden();
-
-
-    /*
-       每秒更新。
-    */
-
-    setInterval(
-        gameTick,
-        1000
-    );
+    state=await loadState();
+ensureTruckData();
+if(!Array.isArray(state.joined))state.joined=[];
+if(!Array.isArray(state.cooking))state.cooking=[];
+while(state.cooking.length<state.cookingLines){
+state.cooking.push({recipeId:null,endTime:0,helperEnabled:false});
+}
+saveReady=true;
+await save();
+renderGarden();
+setInterval(gameTick,1000);
 
 }
 
