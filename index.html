@@ -1954,7 +1954,7 @@ button,
     bottom:72px;
     width:88px;
     height:48px;
-    padding:5px 6px;
+    padding:0 6px;
     border-radius:7px;
     background:
         linear-gradient(
@@ -1983,6 +1983,10 @@ button,
     box-shadow:
         0 3px 0 #4d3022,
         0 4px 7px rgba(0,0,0,.2);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
 }
 
 .truck-stand::before{
@@ -2012,8 +2016,9 @@ button,
 .truck-stand div{
     position:relative;
     z-index:2;
+    margin:0;
     font-size:8px;
-    line-height:1.1;
+    line-height:1;
     text-shadow:0 1px 1px rgba(60,35,20,.45);
 }
 
@@ -2021,7 +2026,7 @@ button,
     position:relative;
     z-index:2;
     display:block;
-    margin-top:3px;
+    margin:2px 0 0;
     font-size:11px;
     line-height:1;
     color:#ffe88a;
@@ -2029,8 +2034,9 @@ button,
 }
 
 .truck-stand-right strong{
+    margin:0;
     font-size:21px;
-    margin-top:3px;
+    line-height:1;
     color:#fff8df;
 }
 
@@ -2039,7 +2045,7 @@ button,
     .truck-stand{
         width:78px;
         height:44px;
-        padding:5px;
+        padding:0 5px;
         transform:scale(.9);
         transform-origin:bottom;
     }
