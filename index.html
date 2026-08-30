@@ -5497,6 +5497,25 @@ ${staff?`<div style="display:flex;align-items:center;gap:10px;padding:9px;border
 <button class="btn btn-light" onclick="closeModal()">取消</button>`;
 openModal();
 }
+function getTruckStaffOwner(characterId,excludeIndex=-1){
+    ensureTruckData();
+
+    for(let i=0;i<state.trucks.length;i++){
+        if(i===excludeIndex)continue;
+
+        const truck=state.trucks[i];
+
+        if(
+            truck?.unlocked &&
+            truck.staffId &&
+            String(truck.staffId)===String(characterId)
+        ){
+            return i;
+        }
+    }
+
+    return -1;
+}
 function openTruckStaffModal(index){
 ensureTruckData();
 const truck=state.trucks[index];
@@ -5513,15 +5532,28 @@ const index=truckDraftIndex;
 const truck=state.trucks[index];
 const character=getCharacter(id);
 if(!truck||!character)return;
+
 const friendship=Math.min(3,Number(state.friendship?.[id]||0));
+
 if(friendship<3){
 toast(`❤️ ${character.name} 的好感度尚未滿，無法選擇`);
 return;
 }
+
+// 檢查店員是否已經在其他餐車
+const owner=getTruckStaffOwner(id,index);
+
+if(owner!==-1){
+toast(`🚚 ${character.name} 已經在餐車 ${owner+1} 上班`);
+return;
+}
+
 truck.staffId=id;
+
 save();
 renderTruck();
 openTruckEditor(index);
+
 toast(`🧑‍🍳 ${character.name} 已成為餐車 ${index+1} 的店員`);
 }
 
