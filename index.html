@@ -4198,66 +4198,307 @@ function startDispatch(){
 /* =========================================================
    派遣畫面
 ========================================================= */
+
+let expeditionCountdownTimer=null;
+
 function renderExpedition(){
-const setup=document.getElementById("dispatchSetup");
-const active=document.getElementById("activeExpedition");
-if(!setup||!active)return;
-if(!state.expedition.active){
-setup.style.display="block";
-active.style.display="none";
-const status=document.getElementById("dispatchStatus");
-if(status)status.textContent="尚未派遣";
-return;
-}
-setup.style.display="none";
-active.style.display="block";
-const end=state.expedition.endTime;
-const remaining=Math.max(0,end-Date.now());
-const seconds=Math.ceil(remaining/1000);
-const mins=Math.floor(seconds/60);
-const secs=seconds%60;
-const character=getCharacter(state.expedition.targetCharacter);
-const region=REGIONS.find(r=>r.id===state.expedition.region);
-let content=active.querySelector(".expedition-active");
-if(!content){
-active.innerHTML=`<div class="expedition-active">
-<div class="expedition-region"></div>
-<img class="expedition-character">
-<div class="expedition-character-name"></div>
-<div class="expedition-food"></div>
-<div class="progress-track"><div class="progress-fill"></div></div>
-<div class="expedition-countdown"></div>
-</div>`;
-content=active.querySelector(".expedition-active");
-}
-const regionEl=content.querySelector(".expedition-region");
-const img=content.querySelector(".expedition-character");
-const nameEl=content.querySelector(".expedition-character-name");
-const foodEl=content.querySelector(".expedition-food");
-const progressFill=content.querySelector(".progress-fill");
-const countdown=content.querySelector(".expedition-countdown");
-if(regionEl)regionEl.textContent=`${region?.icon||"🧭"} 正在前往 ${region?.name||""}`;
-if(img){
-const src=characterImage(character);
-if(img.getAttribute("src")!==src)img.src=src;
-img.alt=character?.name||"";
-}
-if(nameEl)nameEl.textContent=character?.name||"";
-if(foodEl)foodEl.textContent=state.expedition.selectedDish?"🍱 有帶料理":"🚫 沒有帶料理";
-const progress=Math.min(100,Math.max(0,((Date.now()-state.expedition.startTime)/DISPATCH_TIME)*100));
-if(progressFill)progressFill.style.width=`${progress}%`;
-if(remaining<=0){
-if(!countdown||countdown.tagName!=="BUTTON"){
-const old=content.querySelector(".expedition-countdown");
-if(old)old.outerHTML=`<button class="btn btn-orange expedition-countdown" onclick="completeDispatch()">🎁 派遣完成，領取成果</button>`;
-}else{
-countdown.textContent="🎁 派遣完成，領取成果";
-}
-}else{
-if(countdown)countdown.textContent=`⏳ ${mins}:${String(secs).padStart(2,"0")}`;
-}
-const status=document.getElementById("dispatchStatus");
-if(status)status.textContent=remaining<=0?"可以領取":"派遣中";
+
+    const setup=document.getElementById("dispatchSetup");
+    const active=document.getElementById("activeExpedition");
+
+    if(!setup||!active)return;
+
+    /* 沒有派遣 */
+    if(!state.expedition.active){
+
+        setup.style.display="block";
+        active.style.display="none";
+
+        const status=document.getElementById("dispatchStatus");
+        if(status)status.textContent="尚未派遣";
+
+        if(expeditionCountdownTimer){
+            clearInterval(expeditionCountdownTimer);
+            expeditionCountdownTimer=null;
+        }
+
+        return;
+    }
+
+    setup.style.display="none";
+    active.style.display="block";
+
+    /* 清除舊計時器，避免重複倒數 */
+    if(expeditionCountdownTimer){
+        clearInterval(expeditionCountdownTimer);
+        expeditionCountdownTimer=null;
+    }
+
+    /*
+       建立派遣畫面
+       只有這裡處理角色 GIF
+    */
+
+    let content=
+        active.querySelector(".expedition-active");
+
+    if(!content){
+
+        content=document.createElement("div");
+        content.className="expedition-active";
+
+        content.innerHTML=`
+            <div class="expedition-region"></div>
+            <img class="expedition-character">
+            <div class="expedition-character-name"></div>
+            <div class="expedition-food"></div>
+            <div class="progress-track">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="expedition-countdown"></div>
+        `;
+
+        active.innerHTML="";
+        active.appendChild(content);
+    }
+
+    /* =========================
+       固定資料，只設定一次
+    ========================= */
+
+    const character=
+        getCharacter(
+            state.expedition.targetCharacter
+        );
+
+    const region=
+        REGIONS.find(
+            r=>r.id===state.expedition.region
+        );
+
+    const regionEl=
+        content.querySelector(
+            ".expedition-region"
+        );
+
+    const img=
+        content.querySelector(
+            ".expedition-character"
+        );
+
+    const nameEl=
+        content.querySelector(
+            ".expedition-character-name"
+        );
+
+    const foodEl=
+        content.querySelector(
+            ".expedition-food"
+        );
+
+    const progressFill=
+        content.querySelector(
+            ".progress-fill"
+        );
+
+    const countdown=
+        content.querySelector(
+            ".expedition-countdown"
+        );
+
+    /* 地區 */
+    if(regionEl){
+        regionEl.textContent=
+            `${region?.icon||"🧭"} 正在前往 ${region?.name||""}`;
+    }
+
+    /* =========================
+       GIF
+       只設定一次
+    ========================= */
+
+    if(img){
+
+        const src=
+            characterImage(character);
+
+        if(
+            !img.getAttribute("src") ||
+            img.getAttribute("src")!==src
+        ){
+            img.src=src;
+        }
+
+        img.alt=
+            character?.name||"";
+    }
+
+    /* 名字 */
+    if(nameEl){
+        nameEl.textContent=
+            character?.name||"";
+    }
+
+    /* 料理 */
+    if(foodEl){
+        foodEl.textContent=
+            state.expedition.selectedDish
+                ?"🍱 有帶料理"
+                :"🚫 沒有帶料理";
+    }
+
+    /* =========================
+       倒數更新
+       這裡只碰文字和進度條
+    ========================= */
+
+    function updateExpeditionTime(){
+
+        if(!state.expedition.active){
+
+            if(expeditionCountdownTimer){
+                clearInterval(
+                    expeditionCountdownTimer
+                );
+
+                expeditionCountdownTimer=null;
+            }
+
+            return;
+        }
+
+        const now=Date.now();
+
+        const remaining=
+            Math.max(
+                0,
+                state.expedition.endTime-now
+            );
+
+        /* =========================
+           進度條
+        ========================= */
+
+        const progress=
+            Math.min(
+                100,
+                Math.max(
+                    0,
+                    (
+                        (
+                            now-
+                            state.expedition.startTime
+                        )
+                        /DISPATCH_TIME
+                    )*100
+                )
+            );
+
+        if(progressFill){
+            progressFill.style.width=
+                `${progress}%`;
+        }
+
+        /* =========================
+           完成
+        ========================= */
+
+        if(remaining<=0){
+
+            /*
+               直接把倒數區域變成領取按鈕
+            */
+
+            const old=
+                content.querySelector(
+                    ".expedition-countdown"
+                );
+
+            if(old){
+
+                const button=
+                    document.createElement("button");
+
+                button.className=
+                    "btn btn-orange expedition-countdown";
+
+                button.textContent=
+                    "🎁 派遣完成，領取成果";
+
+                button.onclick=
+                    completeDispatch;
+
+                old.replaceWith(button);
+            }
+
+            const status=
+                document.getElementById(
+                    "dispatchStatus"
+                );
+
+            if(status){
+                status.textContent=
+                    "可以領取";
+            }
+
+            /* 停止計時器 */
+            if(expeditionCountdownTimer){
+
+                clearInterval(
+                    expeditionCountdownTimer
+                );
+
+                expeditionCountdownTimer=null;
+            }
+
+            return;
+        }
+
+        /* =========================
+           正常倒數
+        ========================= */
+
+        const timeText=
+            formatTimeHMS(remaining);
+
+        const countdownEl=
+            content.querySelector(
+                ".expedition-countdown"
+            );
+
+        /*
+           只修改文字
+           不重新建立 GIF
+        */
+
+        if(
+            countdownEl &&
+            countdownEl.tagName!=="BUTTON"
+        ){
+            countdownEl.textContent=
+                `⏳ ${timeText}`;
+        }
+
+        const status=
+            document.getElementById(
+                "dispatchStatus"
+            );
+
+        if(status){
+            status.textContent=
+                "派遣中";
+        }
+    }
+
+    /* 立即更新一次 */
+    updateExpeditionTime();
+
+    /* 每秒更新一次 */
+    expeditionCountdownTimer=
+        setInterval(
+            updateExpeditionTime,
+            1000
+        );
 }
 
 
@@ -4447,6 +4688,14 @@ if(team)team.textContent=`${state.joined.length}/${CHARACTERS.length}`;
 /* =========================================================
    料理頁面
 ========================================================= */
+function formatTimeHMS(ms){
+    const sec=Math.max(0,Math.ceil(ms/1000));
+    const h=Math.floor(sec/3600);
+    const m=Math.floor((sec%3600)/60);
+    const s=sec%60;
+    return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+
 
 function renderKitchen(){
 document.getElementById("kitchenCoins").textContent=state.coins;
@@ -4503,13 +4752,12 @@ content.innerHTML=renderCookingProgress(line,recipe);
 card.dataset.recipeId=recipeId;
 card.dataset.done=String(done);
 }else{
-const remaining=Math.max(0,line.endTime-now);
-const seconds=Math.ceil(remaining/1000);
-const progress=Math.min(100,Math.max(0,((COOK_TIME-remaining)/COOK_TIME)*100));
-const timeEl=content.querySelector(".cook-time");
-const fill=content.querySelector(".progress-fill");
-if(timeEl&&remaining>0)timeEl.textContent=`⏳ ${seconds} 秒`;
-if(fill&&remaining>0)fill.style.width=`${progress}%`;
+    const remaining=Math.max(0,line.endTime-now);
+    const progress=Math.min(100,Math.max(0,((COOK_TIME-remaining)/COOK_TIME)*100));
+    const timeEl=content.querySelector(".cook-time");
+    const fill=content.querySelector(".progress-fill");
+    if(timeEl&&remaining>0)timeEl.textContent=`⏳ ${formatTimeHMS(remaining)}`;
+    if(fill&&remaining>0)fill.style.width=`${progress}%`;
 }
 }
 while(container.children.length>state.cookingLines)container.removeChild(container.lastChild);
@@ -4639,10 +4887,7 @@ return `
 }
 
 
-    const seconds =
-        Math.ceil(
-            remaining/1000
-        );
+    const timeText=formatTimeHMS(remaining);
 
 
     return `
@@ -4675,8 +4920,8 @@ return `
                 </div>
 
                 <div class="cook-time">
-                    ⏳ ${seconds} 秒
-                </div>
+    ⏳ ${timeText}
+</div>
 
             </div>
 
