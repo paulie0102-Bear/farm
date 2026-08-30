@@ -1117,6 +1117,27 @@ button,
     z-index:5;
 }
 
+/* =========================================================
+   餐車店員
+========================================================= */
+
+.truck-staff{
+    position:absolute;
+    left:27%;
+    bottom:145px;
+    transform:translateX(-50%);
+    width:105px;
+    height:105px;
+    z-index:24;
+    pointer-events:none;
+}
+
+.truck-staff img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    filter:drop-shadow(0 5px 4px rgba(0,0,0,.18));
+}
 
 /* =========================================================
    餐車場景
@@ -1418,7 +1439,7 @@ button,
 
 .food-truck{
     position:absolute;
-    left:50%;
+    left:58%;
     bottom:220px;
     transform:translateX(-50%);
     width:210px;
@@ -1432,6 +1453,7 @@ button,
         0 10px 20px rgba(0,0,0,.14);
     z-index:20;
 }
+
 
 
 /* =========================================================
@@ -2067,9 +2089,9 @@ button,
 
 .truck-customer{
     position:absolute;
-    bottom:-100px;
-    width:80px;
-    height:90px;
+    bottom:-115px;
+    width:105px;
+    height:115px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -2079,21 +2101,21 @@ button,
 }
 
 .truck-customer img{
-    width:75px;
-    height:75px;
+    width:100px;
+    height:100px;
     object-fit:contain;
-    filter:drop-shadow(0 4px 3px rgba(0,0,0,.15));
+    filter:drop-shadow(0 5px 4px rgba(0,0,0,.18));
 }
 
 .truck-customer-bubble{
     position:absolute;
-    top:-3px;
-    right:-3px;
-    padding:3px 6px;
+    top:-5px;
+    right:-5px;
+    padding:3px 7px;
     border-radius:10px;
     background:#fff;
     color:#765b45;
-    font-size:10px;
+    font-size:11px;
 }
 
 .truck-customer.walk-in{
@@ -2101,7 +2123,7 @@ button,
 }
 
 .truck-customer.walk-out{
-    bottom:-100px;
+    bottom:-115px;
 }
 
 .truck-customer-layer{
@@ -2603,8 +2625,20 @@ button,
         min-height:500px;
     }
 
+    /* 餐車偏右 */
     .food-truck{
+        left:56%;
         transform:translateX(-50%) scale(.88);
+        transform-origin:center bottom;
+    }
+
+    /* 店員保持較大 */
+    .truck-staff{
+        left:25%;
+        bottom:140px;
+        width:105px;
+        height:105px;
+        transform:translateX(-50%) scale(.92);
         transform-origin:center bottom;
     }
 
@@ -2617,6 +2651,7 @@ button,
         transform:scale(.9);
     }
 }
+
 </style>
 </head>
 
@@ -3183,6 +3218,7 @@ environment:"grass",
 ownedEnvironments:["grass"],
 sign:"plain",
 ownedSigns:["plain"],
+staffId:null,
 stock:[],
 lastSaleTime:Date.now(),
 totalSales:0
@@ -3831,15 +3867,19 @@ const src=characterImage(character);
 if(img.getAttribute("src")!==src)img.src=src;
 }
 
+function renderCharacterPicker(selectedId,onSelect){
+return`<div style="font-size:11px;color:#998675;margin-bottom:12px;">角色好感度達到 ❤️❤️❤️ 後即可解鎖。</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:55vh;overflow-y:auto;padding:2px;">${CHARACTERS.map(character=>{
+const selected=selectedId===character.id;
+const friendship=Math.min(3,Number(state.friendship?.[character.id]||0));
+const unlocked=friendship>=3;
+return`<div onclick="${unlocked?`${onSelect}('${character.id}')`:`toast('❤️ ${character.name} 的好感度尚未滿，無法選擇')`}" style="padding:8px 4px;border-radius:14px;text-align:center;cursor:${unlocked?"pointer":"not-allowed"};background:${selected?"#edf7e9":"#fff"};border:2px solid ${selected?"#5f8f55":"#eee2d4"};opacity:${unlocked?1:.55};position:relative;">${unlocked?`<img src="${characterImage(character)}" style="width:65px;height:65px;object-fit:contain;">`:`<div style="width:65px;height:65px;margin:auto;display:flex;align-items:center;justify-content:center;font-size:30px;">🔒</div>`}<div style="margin-top:3px;font-size:10px;font-weight:900;color:#765b45;">${character.name}</div><div style="margin-top:3px;font-size:9px;color:${unlocked?"#5f8f55":"#aaa"};font-weight:900;">${unlocked?"❤️❤️❤️ 已解鎖":`❤️`.repeat(friendship)}${friendship<3?"🤍".repeat(3-friendship):""}</div>${selected?`<div style="margin-top:3px;font-size:9px;color:#5f8f55;font-weight:900;">✓ 使用中</div>`:""}</div>`;
+}).join("")}</div>`;
+}
+
 function openGardenCharacterModal(){
 const modal=document.getElementById("modal");
 if(!modal)return;
-modal.innerHTML=`<div class="modal-title">🌿 選擇花園角色</div><div style="font-size:11px;color:#998675;margin-bottom:12px;">角色好感度達到 ❤️❤️❤️ 後即可解鎖。</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:55vh;overflow-y:auto;padding:2px;">${CHARACTERS.map(character=>{
-const selected=state.playerCharacter===character.id;
-const friendship=Math.min(3,Number(state.friendship?.[character.id]||0));
-const unlocked=friendship>=3;
-return `<div onclick="${unlocked?`selectGardenCharacter('${character.id}')`:`toast('❤️ ${character.name} 的好感度尚未滿，無法選擇')`}" style="padding:8px 4px;border-radius:14px;text-align:center;cursor:${unlocked?"pointer":"not-allowed"};background:${selected?"#edf7e9":"#fff"};border:2px solid ${selected?"#5f8f55":"#eee2d4"};opacity:${unlocked?1:.55};position:relative;">${unlocked?`<img src="${characterImage(character)}" style="width:65px;height:65px;object-fit:contain;">`:`<div style="width:65px;height:65px;margin:auto;display:flex;align-items:center;justify-content:center;font-size:30px;">🔒</div>`}<div style="margin-top:3px;font-size:10px;font-weight:900;color:#765b45;">${character.name}</div><div style="margin-top:3px;font-size:9px;color:${unlocked?"#5f8f55":"#aaa"};font-weight:900;">${unlocked?"❤️❤️❤️ 已解鎖":`❤️`.repeat(friendship)}${friendship<3?"🤍".repeat(3-friendship):""}</div>${selected?`<div style="margin-top:3px;font-size:9px;color:#5f8f55;font-weight:900;">✓ 使用中</div>`:""}</div>`;
-}).join("")}</div><div style="height:10px"></div><button class="btn btn-light" onclick="closeModal()">關閉</button>`;
+modal.innerHTML=`<div class="modal-title">🌿 選擇花園角色</div>${renderCharacterPicker(state.playerCharacter,"selectGardenCharacter")}<div style="height:10px"></div><button class="btn btn-light" onclick="closeModal()">關閉</button>`;
 openModal();
 }
 
@@ -5079,6 +5119,7 @@ if(!t.ownedSigns.includes("plain"))t.ownedSigns.unshift("plain");
 if(!t.skin)t.skin="spring";
 if(!t.environment)t.environment="grass";
 if(!t.sign)t.sign="plain";
+if(!("staffId" in t))t.staffId=null;
 if(!t.lastSaleTime)t.lastSaleTime=Date.now();
 if(!Number.isFinite(Number(t.totalSales)))t.totalSales=0;
 });
@@ -5138,8 +5179,9 @@ const skin=TRUCK_SKINS.find(x=>x.id===truck.skin)||TRUCK_SKINS[0];
 const env=TRUCK_ENVIRONMENTS.find(x=>x.id===truck.environment)||TRUCK_ENVIRONMENTS[0];
 const sign=TRUCK_SIGNS.find(x=>x.id===truck.sign)||TRUCK_SIGNS[0];
 const recipe=RECIPES.find(x=>x.id===currentTruckRecipe(truck));
+const staff=truck.staffId?getCharacter(truck.staffId):null;
 const remaining=calcTruckSellout(truck);
-scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="openTruckEditor(${currentTruckIndex})"><div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span><span>${env.icon}</span></div><div class="truck-stand truck-stand-left"><div>全部完售</div><strong id="truckSelloutTime">${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div><div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}" id="truckCurrentRecipeIcon">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
+scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="openTruckEditor(${currentTruckIndex})"><div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span><span>${env.icon}</span></div><div class="truck-stand truck-stand-left"><div>全部完售</div><strong id="truckSelloutTime">${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div>${staff?`<div class="truck-staff"><img src="${characterImage(staff)}"></div>`:""}<div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}" id="truckCurrentRecipeIcon">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
 }
 
 function updateTruckDisplay(){
@@ -5174,9 +5216,80 @@ if(!truck?.unlocked)return;
 truckDraftIndex=index;
 const modal=document.getElementById("modal");
 const recipes=RECIPES.filter(r=>Number(state.dishes[r.id]||0)>0);
-modal.innerHTML=`<div class="modal-title">🚚 編輯餐車 ${index+1}</div><div class="truck-edit-section"><div class="truck-edit-title">🍱 販賣列表</div><div id="truckEditQueue">${renderTruckEditQueue(truck)}</div><div class="truck-edit-hint">新加入的料理會排在列表最後。</div>${recipes.map(r=>`<div class="truck-food-row"><div class="truck-food-icon">${r.icon}</div><div class="truck-food-info"><b>${r.name}</b><small>持有 ${Number(state.dishes[r.id]||0)} 份・每份 💰${SALE_PRICE}</small></div><input id="refill_${r.id}" type="number" min="0" max="${Number(state.dishes[r.id]||0)}" value="0"></div>`).join("")}</div><div class="truck-edit-section"><div class="truck-edit-title">🎨 餐車顏色</div><div class="truck-option-grid">${TRUCK_SKINS.map(s=>`<button class="truck-option ${truck.skin===s.id?"selected":""}" onclick="buyTruckSkin(${index},'${s.id}')"><span style="display:block;width:28px;height:18px;margin:auto;border-radius:8px;background:${s.roof}"></span>${s.name}<small>${truck.ownedSkins.includes(s.id)?"✓":`💰${s.price}`}</small></button>`).join("")}</div></div><div class="truck-edit-section"><div class="truck-edit-title">🌿 周遭環境</div><div class="truck-option-grid">${TRUCK_ENVIRONMENTS.map(e=>`<button class="truck-option ${truck.environment===e.id?"selected":""}" onclick="buyTruckEnvironment(${index},'${e.id}')">${e.icon}<br>${e.name}<small>${truck.ownedEnvironments.includes(e.id)?"✓":`💰${e.price}`}</small></button>`).join("")}</div></div><div class="truck-edit-section"><div class="truck-edit-title">🏷️ 招牌</div><div class="truck-option-grid">${TRUCK_SIGNS.map(s=>`<button class="truck-option ${truck.sign===s.id?"selected":""}" onclick="buyTruckSign(${index},'${s.id}')">${s.id==="light"?"💡":s.id==="flower"?"🌸":s.id==="star"?"⭐":"🏷️"}<br>${s.name}<small>${truck.ownedSigns.includes(s.id)?"✓":`💰${s.price}`}</small></button>`).join("")}</div></div><button class="btn btn-orange" onclick="confirmTruckEditor()">💾 儲存並關閉</button><div style="height:7px"></div><button class="btn btn-light" onclick="closeModal()">取消</button>`;
+const staff=truck.staffId?getCharacter(truck.staffId):null;
+modal.innerHTML=`<div class="modal-title">🚚 編輯餐車 ${index+1}</div>
+
+<div class="truck-edit-section">
+<div class="truck-edit-title">🍱 販賣列表</div>
+<div id="truckEditQueue">${renderTruckEditQueue(truck)}</div>
+<div class="truck-edit-hint">新加入的料理會排在列表最後。</div>
+${recipes.length?recipes.map(r=>`<div class="truck-food-row"><div class="truck-food-icon">${r.icon}</div><div class="truck-food-info"><b>${r.name}</b><small>持有 ${Number(state.dishes[r.id]||0)} 份・每份 💰${SALE_PRICE}</small></div><input id="refill_${r.id}" type="number" min="0" max="${Number(state.dishes[r.id]||0)}" value="0"></div>`).join(""):`<div class="truck-empty">目前沒有可以補充的料理</div>`}
+</div>
+
+<div class="truck-edit-section">
+<div class="truck-edit-title">🧑‍🍳 店員</div>
+${staff?`<div style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:12px;background:#fffaf2;margin-bottom:8px;"><img src="${characterImage(staff)}" style="width:58px;height:58px;object-fit:contain;"><div style="flex:1;"><div style="font-size:12px;font-weight:900;color:#765b45;">${staff.name}</div><div style="margin-top:3px;font-size:9px;color:#5f8f55;font-weight:900;">❤️❤️❤️ 已上班</div></div></div>`:`<div class="truck-empty">尚未安排店員</div>`}
+<button class="btn btn-light" onclick="openTruckStaffModal(${index})">${staff?"更換店員":"選擇店員"}</button>
+</div>
+
+<div class="truck-edit-section">
+<div class="truck-edit-title">🎨 餐車顏色</div>
+<div class="truck-option-grid">${TRUCK_SKINS.map(s=>`<button class="truck-option ${truck.skin===s.id?"selected":""}" onclick="buyTruckSkin(${index},'${s.id}')"><span style="display:block;width:28px;height:18px;margin:auto;border-radius:8px;background:${s.roof}"></span>${s.name}<small>${truck.ownedSkins.includes(s.id)?"✓":`💰${s.price}`}</small></button>`).join("")}</div>
+</div>
+
+<div class="truck-edit-section">
+<div class="truck-edit-title">🌿 周遭環境</div>
+<div class="truck-option-grid">${TRUCK_ENVIRONMENTS.map(e=>`<button class="truck-option ${truck.environment===e.id?"selected":""}" onclick="buyTruckEnvironment(${index},'${e.id}')">${e.icon}<br>${e.name}<small>${truck.ownedEnvironments.includes(e.id)?"✓":`💰${e.price}`}</small></button>`).join("")}</div>
+</div>
+
+<div class="truck-edit-section">
+<div class="truck-edit-title">🏷️ 招牌</div>
+<div class="truck-option-grid">${TRUCK_SIGNS.map(s=>`<button class="truck-option ${truck.sign===s.id?"selected":""}" onclick="buyTruckSign(${index},'${s.id}')">${s.id==="light"?"💡":s.id==="flower"?"🌸":s.id==="star"?"⭐":"🏷️"}<br>${s.name}<small>${truck.ownedSigns.includes(s.id)?"✓":`💰${s.price}`}</small></button>`).join("")}</div>
+</div>
+
+<button class="btn btn-orange" onclick="confirmTruckEditor()">💾 儲存並關閉</button>
+<div style="height:7px"></div>
+<button class="btn btn-light" onclick="closeModal()">取消</button>`;
 openModal();
 }
+function openTruckStaffModal(index){
+ensureTruckData();
+const truck=state.trucks[index];
+if(!truck?.unlocked)return;
+const modal=document.getElementById("modal");
+if(!modal)return;
+modal.innerHTML=`<div class="modal-title">🧑‍🍳 選擇餐車 ${index+1} 店員</div>${renderCharacterPicker(truck.staffId,"selectTruckStaff")}<div style="height:10px"></div>${truck.staffId?`<button class="btn btn-light" onclick="removeTruckStaff(${index})">取消店員</button><div style="height:7px"></div>`:""}<button class="btn btn-light" onclick="openTruckEditor(${index})">返回餐車編輯</button>`;
+truckDraftIndex=index;
+openModal();
+}
+
+function selectTruckStaff(id){
+const index=truckDraftIndex;
+const truck=state.trucks[index];
+const character=getCharacter(id);
+if(!truck||!character)return;
+const friendship=Math.min(3,Number(state.friendship?.[id]||0));
+if(friendship<3){
+toast(`❤️ ${character.name} 的好感度尚未滿，無法選擇`);
+return;
+}
+truck.staffId=id;
+save();
+renderTruck();
+openTruckEditor(index);
+toast(`🧑‍🍳 ${character.name} 已成為餐車 ${index+1} 的店員`);
+}
+
+function removeTruckStaff(index){
+const truck=state.trucks[index];
+if(!truck)return;
+truck.staffId=null;
+save();
+renderTruck();
+openTruckEditor(index);
+toast("已取消餐車店員");
+}
+
 function renderTruckEditQueue(truck){
 if(!truck.stock?.length)return`<div class="truck-empty">目前沒有待販售料理</div>`;
 return truck.stock.filter(x=>Number(x?.qty)>0).map((b,i)=>{const r=RECIPES.find(x=>x.id===b.recipeId);return`<div class="truck-queue-row"><span>${i+1}</span><b>${r?.icon||"🍱"}</b><div><strong>${r?.name||"料理"}</strong><small>剩餘 ${b.qty} 份</small></div></div>`;}).join("");
@@ -5267,32 +5380,87 @@ if(truckCustomerTimer)return;
 truckCustomerTimer=setTimeout(spawnTruckCustomer,2500);
 }
 function spawnTruckCustomer(){
-truckCustomerTimer=null;
-ensureTruckData();
-const truck=state.trucks[currentTruckIndex];
-if(!truck?.unlocked){
-truckCustomerTimer=setTimeout(spawnTruckCustomer,3000);
-return;
+    truckCustomerTimer=null;
+    ensureTruckData();
+
+    const truck=state.trucks[currentTruckIndex];
+
+    if(!truck?.unlocked){
+        truckCustomerTimer=setTimeout(spawnTruckCustomer,3000);
+        return;
+    }
+
+    if(truckCustomerBusy){
+        truckCustomerTimer=setTimeout(spawnTruckCustomer,3000);
+        return;
+    }
+
+    const area=document.getElementById("customerArea");
+
+    if(!area)return;
+
+    truckCustomerBusy=true;
+
+    /* 隨機選擇顧客 */
+    const character=
+        CHARACTERS[
+            Math.floor(
+                Math.random()*CHARACTERS.length
+            )
+        ];
+
+    /* 從 8 種料理隨機選擇一種 */
+    const recipe=
+        RECIPES[
+            Math.floor(
+                Math.random()*RECIPES.length
+            )
+        ];
+
+    const customer=document.createElement("div");
+
+    customer.className="truck-customer";
+
+    customer.style.left=
+        `${25+Math.random()*50}%`;
+
+    customer.innerHTML=`
+        <img src="${characterImage(character)}">
+        <div class="truck-customer-bubble">
+            ${recipe.icon}
+        </div>
+    `;
+
+    area.appendChild(customer);
+
+    requestAnimationFrame(()=>{
+        customer.classList.add("walk-in");
+    });
+
+    setTimeout(()=>{
+        if(customer.isConnected){
+            customer.classList.add("walk-out");
+        }
+    },6500);
+
+    setTimeout(()=>{
+        if(customer.isConnected){
+            customer.remove();
+        }
+
+        truckCustomerBusy=false;
+
+        truckCustomerTimer=
+            setTimeout(
+                spawnTruckCustomer,
+                2500
+            );
+
+    },12000);
 }
-if(truckCustomerBusy){
-truckCustomerTimer=setTimeout(spawnTruckCustomer,3000);
-return;
-}
-const area=document.getElementById("customerArea");
-if(!area)return;
-truckCustomerBusy=true;
-const character=CHARACTERS[Math.floor(Math.random()*CHARACTERS.length)];
-const customer=document.createElement("div");
-customer.className="truck-customer";
-customer.style.left=`${25+Math.random()*50}%`;
-customer.innerHTML=`<img src="${characterImage(character)}"><div class="truck-customer-bubble">🍱</div>`;
-area.appendChild(customer);
-requestAnimationFrame(()=>customer.classList.add("walk-in"));
-setTimeout(()=>{if(customer.isConnected)customer.classList.add("walk-out");},6500);
-setTimeout(()=>{if(customer.isConnected)customer.remove();truckCustomerBusy=false;truckCustomerTimer=setTimeout(spawnTruckCustomer,2500);},12000);
-}
+
 function renderCustomer(){
-renderTruckCustomerLoop();
+    renderTruckCustomerLoop();
 }
 
 /* =========================================================
