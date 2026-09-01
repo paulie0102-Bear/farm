@@ -5931,15 +5931,9 @@ function closeModalByBackground(event){
 ========================================================= */
 
 function openSaveModal(){
+    const modal=document.getElementById("modal");
 
-    const modal =
-        document.getElementById(
-            "modal"
-        );
-
-
-    modal.innerHTML = `
-
+    modal.innerHTML=`
         <div class="modal-title">
             💾 存檔管理
         </div>
@@ -5955,7 +5949,6 @@ function openSaveModal(){
             如果要換裝置或備份，請使用匯出存檔。
         </div>
 
-
         <button
             class="btn btn-green"
             onclick="exportSave()"
@@ -5963,9 +5956,7 @@ function openSaveModal(){
             📤 匯出存檔
         </button>
 
-
         <div style="height:8px"></div>
-
 
         <button
             class="btn btn-orange"
@@ -5973,7 +5964,6 @@ function openSaveModal(){
         >
             📥 匯入存檔
         </button>
-
 
         <input
             id="saveImportFile"
@@ -5983,9 +5973,22 @@ function openSaveModal(){
             onchange="importSaveFile(event)"
         >
 
-
         <div style="height:8px"></div>
 
+        <button
+    class="btn"
+    onclick="updateToLatest()"
+    style="
+        background:#3498db;
+        color:white;
+        border:1px solid #2980b9;
+        box-shadow:0 3px 0 #2471a3;
+    "
+>
+    🔃 更新到最新版本
+</button>
+
+        <div style="height:8px"></div>
 
         <button
             class="btn btn-light"
@@ -5993,12 +5996,9 @@ function openSaveModal(){
         >
             關閉
         </button>
-
     `;
 
-
     openModal();
-
 }
 
 
@@ -6392,6 +6392,18 @@ document.addEventListener(
         passive:true
     }
 );
+
+function updateToLatest(){
+    if(!confirm("將重新載入最新版本，遊戲存檔不會被刪除。")){
+        return;
+    }
+
+    const url=
+        window.location.pathname+
+        "?v="+Date.now();
+
+    window.location.replace(url);
+}
 
 </script>
 <script>
