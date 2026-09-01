@@ -4263,14 +4263,11 @@ function renderExpedition(){
        只有這裡處理角色 GIF
     */
 
-    let content=
-        active.querySelector(".expedition-active");
+        let content=active.querySelector(".expedition-active");
 
     if(!content){
-
         content=document.createElement("div");
         content.className="expedition-active";
-
         content.innerHTML=`
             <div class="expedition-region"></div>
             <img class="expedition-character">
@@ -4281,11 +4278,18 @@ function renderExpedition(){
             </div>
             <div class="expedition-countdown"></div>
         `;
-
         active.innerHTML="";
         active.appendChild(content);
     }
 
+    /* 上一次派遣完成後會留下領取按鈕
+       新派遣開始時恢復成倒數區域 */
+    const oldCountdown=content.querySelector(".expedition-countdown");
+    if(oldCountdown?.tagName==="BUTTON"){
+        const newCountdown=document.createElement("div");
+        newCountdown.className="expedition-countdown";
+        oldCountdown.replaceWith(newCountdown);
+    }
     /* =========================
        固定資料，只設定一次
     ========================= */
