@@ -163,9 +163,10 @@ button,
     top:0;
     z-index:20;
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    min-height:58px;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    row-gap:4px;
     margin-bottom:12px;
     padding:10px 13px;
     border-radius:18px;
@@ -174,19 +175,42 @@ button,
     box-shadow:var(--shadow);
 }
 
+.topbar-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:nowrap;
+    gap:8px;
+    width:100%;
+}
+
+.topbar-actions{
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap;
+    gap:6px;
+    flex-shrink:0;
+}
+
 .title-area{
     min-width:0;
+    flex:1 1 auto;
 }
 
 .title{
     margin:0;
+    min-width:0;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
     font-size:20px;
     font-weight:900;
     color:var(--green-dark);
 }
 
 .subtitle{
-    margin-top:2px;
+    margin-top:0;
+    width:100%;
     font-size:11px;
     color:#927f6d;
 }
@@ -202,6 +226,24 @@ button,
     font-size:13px;
     font-weight:900;
     white-space:nowrap;
+    flex-shrink:0;
+}
+
+@media(max-width:360px){
+
+    .title{
+        font-size:17px;
+    }
+
+    .currency{
+        padding:6px 8px;
+        font-size:12px;
+    }
+
+    .topbar-actions{
+        gap:4px;
+    }
+
 }
 
 
@@ -1714,6 +1756,87 @@ button,
     font-size:18px;
 }
 
+.sign-blossom{
+    background:linear-gradient(135deg,#ffe1e8,#fff);
+}
+
+.sign-blossom::before{
+    content:"🌸";
+    position:absolute;
+    left:-19px;
+    top:-15px;
+    font-size:18px;
+}
+
+.sign-blossom::after{
+    content:"🌸";
+    position:absolute;
+    right:-19px;
+    top:-15px;
+    font-size:18px;
+}
+
+.sign-icecream{
+    background:#eafcff;
+}
+
+.sign-icecream::before{
+    content:"🍧";
+    position:absolute;
+    left:-19px;
+    top:-15px;
+    font-size:19px;
+}
+
+.sign-icecream::after{
+    content:"🍨";
+    position:absolute;
+    right:-19px;
+    top:-15px;
+    font-size:19px;
+}
+
+.sign-pumpkin{
+    background:#3d2b52;
+    box-shadow:0 0 14px rgba(255,159,67,.5);
+}
+
+.sign-pumpkin::before{
+    content:"🎃";
+    position:absolute;
+    left:-19px;
+    top:-15px;
+    font-size:19px;
+}
+
+.sign-pumpkin::after{
+    content:"👻";
+    position:absolute;
+    right:-19px;
+    top:-15px;
+    font-size:18px;
+}
+
+.sign-xmas{
+    background:#fff0f0;
+}
+
+.sign-xmas::before{
+    content:"🔔";
+    position:absolute;
+    left:-18px;
+    top:-14px;
+    font-size:18px;
+}
+
+.sign-xmas::after{
+    content:"🎄";
+    position:absolute;
+    right:-18px;
+    top:-14px;
+    font-size:18px;
+}
+
 
 /* =========================================================
    招牌動畫
@@ -1964,6 +2087,115 @@ button,
             #c8eaf4,
             #ddd0f2
         );
+}
+
+
+/* =========================================================
+   季節限定造型：春櫻／夏日／萬聖節／聖誕
+========================================================= */
+
+.truck-sakura .truck-roof{
+    background:
+        radial-gradient(circle at 15px 10px,#fff 0 4px,transparent 5px),
+        radial-gradient(circle at 42px 15px,#fff 0 4px,transparent 5px),
+        radial-gradient(circle at 70px 9px,#fff 0 4px,transparent 5px),
+        #ffb7c5;
+}
+
+.truck-sakura .truck-window{
+    background:#ffe1e8;
+}
+
+.truck-sakura .truck-counter{
+    background:#fff5f7;
+}
+
+.truck-summer .truck-roof{
+    background:
+        linear-gradient(
+            90deg,
+            #4fc3d9 0 25%,
+            #fff 25% 50%,
+            #4fc3d9 50% 75%,
+            #fff 75% 100%
+        );
+}
+
+.truck-summer .truck-window{
+    background:#cdeff5;
+}
+
+.truck-summer .truck-counter{
+    background:#eafcff;
+}
+
+.truck-halloween .truck-roof{
+    background:
+        radial-gradient(circle at 20px 12px,#ff9f43 0 6px,transparent 7px),
+        radial-gradient(circle at 55px 9px,#ff9f43 0 5px,transparent 6px),
+        #6b4a8a;
+}
+
+.truck-halloween .truck-window{
+    background:#a889c9;
+}
+
+.truck-halloween .truck-counter{
+    background:#e4d7f2;
+}
+
+.truck-christmas .truck-roof{
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #c0392b 0 14px,
+            #fff 14px 28px
+        );
+}
+
+.truck-christmas .truck-window{
+    background:#d9ece0;
+}
+
+.truck-christmas .truck-counter{
+    background:#f3fbf5;
+}
+
+
+/* =========================================================
+   餐車擺設佈置（可自由拖曳的裝飾品）
+========================================================= */
+
+.deco-canvas-wrap{
+    position:relative;
+    width:100%;
+    height:300px;
+    overflow:hidden;
+    border-radius:16px;
+    margin-bottom:10px;
+    box-shadow:var(--shadow);
+    background:#dff3d5;
+}
+
+.deco-item{
+    position:absolute;
+    transform:translate(-50%,-100%);
+    line-height:1;
+    user-select:none;
+    -webkit-user-select:none;
+    filter:drop-shadow(0 3px 3px rgba(0,0,0,.18));
+}
+
+.deco-item.deco-editable{
+    cursor:grab;
+    touch-action:none;
+}
+
+.deco-item.deco-editable.dragging{
+    cursor:grabbing;
+    filter:
+        drop-shadow(0 3px 3px rgba(0,0,0,.18))
+        drop-shadow(0 0 6px rgba(255,255,255,.85));
 }
 
 
@@ -2667,39 +2899,50 @@ button,
 
         <div class="topbar">
 
-    <div class="title-area">
+    <div class="topbar-row">
 
-        <h1 class="title">🌿 秘密花園</h1>
+        <div class="title-area">
+            <h1 class="title">🌿 秘密花園</h1>
+        </div>
 
-        <div class="subtitle">
-            派遣、採集、料理，與大家慢慢成為朋友
+        <div class="topbar-actions">
+
+            <div class="currency">
+                💰 <span id="gardenCoins">0</span>
+            </div>
+
+            <button
+                class="btn btn-light"
+                style="
+                    width:auto;
+                    min-height:36px;
+                    padding:6px 9px;
+                    font-size:11px;
+                "
+                onclick="openDailyCheckin()"
+            >
+                🎁 簽到
+            </button>
+
+            <button
+                class="btn btn-light"
+                style="
+                    width:auto;
+                    min-height:36px;
+                    padding:6px 9px;
+                    font-size:11px;
+                "
+                onclick="openSaveModal()"
+            >
+                💾 存檔
+            </button>
+
         </div>
 
     </div>
 
-    <div style="
-        display:flex;
-        align-items:center;
-        gap:6px;
-    ">
-
-        <div class="currency">
-            💰 <span id="gardenCoins">0</span>
-        </div>
-
-        <button
-            class="btn btn-light"
-            style="
-                width:auto;
-                min-height:36px;
-                padding:6px 9px;
-                font-size:11px;
-            "
-            onclick="openSaveModal()"
-        >
-            💾 存檔
-        </button>
-
+    <div class="subtitle">
+        派遣、採集、料理，與大家慢慢成為朋友
     </div>
 
 </div>
@@ -2821,11 +3064,15 @@ button,
 
     <section id="kitchenPage" class="page">
 <div class="topbar">
+<div class="topbar-row">
 <div class="title-area">
 <h1 class="title">🍳 料理工房</h1>
-<div class="subtitle">把派遣帶回來的食材變成料理</div>
 </div>
+<div class="topbar-actions">
 <div class="currency">💰 <span id="kitchenCoins">0</span></div>
+</div>
+</div>
+<div class="subtitle">把派遣帶回來的食材變成料理</div>
 </div>
 
 <div class="card">
@@ -2847,6 +3094,12 @@ button,
 <div class="section-title"><span>🍱 料理倉庫</span><small>目前持有</small></div>
 <div id="dishInventory"></div>
 </div>
+
+<div class="card">
+<div class="section-title"><span>📖 料理圖鑑</span><small>收集紀念章</small></div>
+<div style="font-size:11px;color:#998675;line-height:1.6;margin-bottom:10px">每次完成一份料理，就會蓋上一個小紀念章，集集看吧！</div>
+<button class="btn btn-light" onclick="openRecipeBook()">📖 打開圖鑑</button>
+</div>
 </section>
 
 
@@ -2856,18 +3109,49 @@ button,
 
     <section id="truckPage" class="page">
 <div class="topbar">
+<div class="topbar-row">
 <div class="title-area">
 <h1 class="title">🚚 餐車</h1>
-<div class="subtitle">把料理變成錢幣</div>
 </div>
+<div class="topbar-actions">
 <div class="currency">💰 <span id="truckCoins">0</span></div>
+<button
+    id="decoModeToggleBtn"
+    class="btn btn-light"
+    style="
+        width:auto;
+        min-height:36px;
+        padding:6px 9px;
+        font-size:11px;
+    "
+    onclick="toggleDecorateMode()"
+>
+    🛋️ 佈置
+</button>
+</div>
+</div>
+<div class="subtitle">把料理變成錢幣</div>
 </div>
 <div class="truck-page-wrap">
 <button class="truck-nav truck-nav-left" onclick="changeTruck(-1)">‹</button>
 <div id="truckStage" class="truck-stage"></div>
 <button class="truck-nav truck-nav-right" onclick="changeTruck(1)">›</button>
 </div>
-<div class="card">
+<div class="card" id="decoModePanel" style="display:none">
+<div class="section-title"><span>🛋️ 佈置模式</span><small>直接拖曳畫面上的裝飾品</small></div>
+<div id="decoSelectedBar" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding:8px 10px;border-radius:12px;background:#fff3c9;">
+<span id="decoSelectedLabel" style="font-size:12px;font-weight:900;color:#9a6a15;flex:1;min-width:90px"></span>
+<button class="btn btn-light" style="width:auto;min-height:34px;padding:5px 10px;font-size:13px" onclick="resizeSelectedDeco(1.15)">🔍➕</button>
+<button class="btn btn-light" style="width:auto;min-height:34px;padding:5px 10px;font-size:13px" onclick="resizeSelectedDeco(0.87)">🔍➖</button>
+<button class="btn btn-light" style="width:auto;min-height:34px;padding:5px 10px;font-size:13px" onclick="flipSelectedDeco()">↔️ 翻轉</button>
+<button class="btn btn-light" style="width:auto;min-height:34px;padding:5px 10px;font-size:13px" onclick="deleteSelectedDeco()">🗑️ 刪除</button>
+</div>
+<div style="font-size:11px;color:#998675;line-height:1.6;margin-bottom:8px">點選下方項目可以收藏／新增到餐車上；拖曳畫面上的裝飾品能調整位置；點一下裝飾品可以放大、縮小、翻轉或刪除。</div>
+<div class="truck-option-grid" id="decoShopGrid"></div>
+<div style="height:8px"></div>
+<button class="btn btn-orange" onclick="exitDecorateMode()">✅ 完成佈置</button>
+</div>
+<div class="card" id="truckInfoCard">
 <div class="section-title"><span>🚚 餐車說明</span><small>最多4台</small></div>
 <div style="font-size:11px;color:#998675;line-height:1.7">點擊已解鎖的餐車可以編輯販賣列表、餐車顏色、周遭環境與招牌。每份料理統一售價 💰30，顧客只負責演出，不影響實際販售。</div>
 </div>
@@ -3248,7 +3532,11 @@ const TRUCK_SKINS=[
 {id:"candy",name:"糖果甜心",price:120,css:"truck-candy",roof:"#f29abb"},
 {id:"lemon",name:"檸檬奶油",price:120,css:"truck-lemon",roof:"#f4d76b"},
 {id:"chocolate",name:"巧克力甜點",price:120,css:"truck-chocolate",roof:"#795548"},
-{id:"rainbow",name:"彩虹樂園",price:120,css:"truck-rainbow",roof:"#f28b82"}
+{id:"rainbow",name:"彩虹樂園",price:120,css:"truck-rainbow",roof:"#f28b82"},
+{id:"sakura",name:"春櫻限定",price:150,css:"truck-sakura",roof:"#ffb7c5"},
+{id:"summer",name:"夏日海灘",price:150,css:"truck-summer",roof:"#4fc3d9"},
+{id:"halloween",name:"萬聖搗蛋",price:150,css:"truck-halloween",roof:"#6b4a8a"},
+{id:"christmas",name:"聖誕佳節",price:150,css:"truck-christmas",roof:"#c0392b"}
 ];
 
 
@@ -3299,7 +3587,30 @@ const TRUCK_SIGNS=[
 {id:"sparkle",name:"閃耀招牌",price:90,css:"sign-sparkle"},
 {id:"candy",name:"糖果招牌",price:90,css:"sign-candy"},
 {id:"moon",name:"月亮招牌",price:90,css:"sign-moon"},
-{id:"magic",name:"魔法招牌",price:90,css:"sign-magic"}
+{id:"magic",name:"魔法招牌",price:90,css:"sign-magic"},
+{id:"blossom",name:"櫻吹雪招牌",price:110,css:"sign-blossom"},
+{id:"icecream",name:"消暑冰淇淋",price:110,css:"sign-icecream"},
+{id:"pumpkin",name:"南瓜怪招牌",price:110,css:"sign-pumpkin"},
+{id:"xmas",name:"聖誕鈴鐺",price:110,css:"sign-xmas"}
+];
+
+
+/* =========================================================
+   餐車擺設裝飾品
+   x / y 為預設擺放位置的百分比座標（左上為 0,0）
+========================================================= */
+
+const TRUCK_DECORATIONS=[
+{id:"pot1",name:"陶土花盆",emoji:"🪴",price:60,size:34,defaultX:18,defaultY:80},
+{id:"stool",name:"小木凳",emoji:"🪑",price:60,size:32,defaultX:80,defaultY:84},
+{id:"lantern",name:"暖黃燈籠",emoji:"🏮",price:80,size:30,defaultX:12,defaultY:38},
+{id:"bench",name:"野餐長椅",emoji:"🛋️",price:90,size:34,defaultX:84,defaultY:70},
+{id:"umbrella",name:"陽傘",emoji:"⛱️",price:100,size:38,defaultX:86,defaultY:45},
+{id:"signboard",name:"迎賓小立牌",emoji:"🪧",price:50,size:26,defaultX:16,defaultY:90},
+{id:"basket",name:"野餐提籃",emoji:"🧺",price:55,size:26,defaultX:70,defaultY:92},
+{id:"bike",name:"復古腳踏車",emoji:"🚲",price:120,size:40,defaultX:10,defaultY:60},
+{id:"flowerbox",name:"花架",emoji:"💐",price:65,size:28,defaultX:90,defaultY:86},
+{id:"stringlight",name:"串燈",emoji:"✨",price:75,size:26,defaultX:50,defaultY:16}
 ];
 
 
@@ -3317,6 +3628,8 @@ environment:"grass",
 ownedEnvironments:["grass"],
 sign:"plain",
 ownedSigns:["plain"],
+ownedDecorations:[],
+decorations:[],
 staffId:null,
 stock:[],
 lastSaleTime:Date.now(),
@@ -3338,6 +3651,13 @@ ingredients:{
 "🥚":2
 },
 dishes:{},
+stats:{
+made:{}
+},
+dailyCheckin:{
+date:"",
+streak:0
+},
 cookingLines:1,
 cooking:[
 {recipeId:null,endTime:0,helperEnabled:false}
@@ -3693,6 +4013,9 @@ merged.helper.served=merged.helper.served||{};
 merged.helper.jobs=merged.helper.jobs||{};
 merged.ingredients=Object.assign({},DEFAULT_STATE.ingredients,saved?.ingredients||{});
 merged.friendship=Object.assign({},saved?.friendship||{});
+merged.stats=Object.assign({made:{}},saved?.stats||{});
+merged.stats.made=Object.assign({},saved?.stats?.made||{});
+merged.dailyCheckin=Object.assign({date:"",streak:0},saved?.dailyCheckin||{});
 merged.expedition=Object.assign({},DEFAULT_STATE.expedition,saved?.expedition||{});
 merged.trucks=Array.isArray(saved?.trucks)?saved.trucks:[];
 if(!merged.trucks.length&&saved?.truck){
@@ -3719,6 +4042,15 @@ if(!Array.isArray(t.ownedEnvironments)||!t.ownedEnvironments.length)t.ownedEnvir
 if(!t.ownedEnvironments.includes("grass"))t.ownedEnvironments.unshift("grass");
 if(!Array.isArray(t.ownedSigns)||!t.ownedSigns.length)t.ownedSigns=["plain"];
 if(!t.ownedSigns.includes("plain"))t.ownedSigns.unshift("plain");
+if(!Array.isArray(t.ownedDecorations))t.ownedDecorations=[];
+if(!Array.isArray(t.decorations))t.decorations=[];
+t.decorations=t.decorations.filter(x=>x&&typeof x.id==="string"&&TRUCK_DECORATIONS.some(d=>d.id===x.id));
+t.decorations.forEach(x=>{
+if(!Number.isFinite(Number(x.x)))x.x=50;
+if(!Number.isFinite(Number(x.y)))x.y=80;
+});
+t.ownedDecorations=t.ownedDecorations.filter(id=>TRUCK_DECORATIONS.some(d=>d.id===id));
+t.decorations.forEach(x=>{if(!t.ownedDecorations.includes(x.id))t.ownedDecorations.push(x.id);});
 if(!t.skin)t.skin="spring";
 if(!t.environment)t.environment="grass";
 if(!t.sign)t.sign="plain";
@@ -5444,6 +5776,9 @@ function finishCookingReward(recipeId){
 const recipe=RECIPES.find(r=>r.id===recipeId);
 if(!recipe)return false;
 state.dishes[recipe.id]=(Number(state.dishes[recipe.id])||0)+1;
+if(!state.stats)state.stats={made:{}};
+if(!state.stats.made)state.stats.made={};
+state.stats.made[recipe.id]=(Number(state.stats.made[recipe.id])||0)+1;
 return true;
 }
 
@@ -5462,6 +5797,96 @@ line.helperEnabled=false;
 save();
 renderKitchen();
 if(recipe)toast(`🍱 ${recipe.name} 完成！`);
+}
+
+
+/* =========================================================
+   料理圖鑑
+========================================================= */
+
+function openRecipeBook(){
+const madeTotal=RECIPES.reduce((sum,r)=>sum+Number(state.stats?.made?.[r.id]||0),0);
+document.getElementById("modal").innerHTML=`
+<div class="modal-title">📖 料理圖鑑</div>
+<div style="text-align:center;font-size:11px;color:#998675;margin-bottom:10px">累積完成 ${madeTotal} 份料理</div>
+<div class="recipe-select">
+${RECIPES.map(recipe=>{
+const count=Number(state.stats?.made?.[recipe.id]||0);
+const collected=count>0;
+return `
+<div class="recipe-mini" style="opacity:${collected?1:.35}">
+<div class="recipe-mini-icon">${recipe.icon}</div>
+<div class="recipe-mini-name">${recipe.name}</div>
+<div style="font-size:10px;font-weight:900;margin-top:2px;color:${collected?"#6c9b5c":"#bbb"}">${collected?`✓ ×${count}`:"未收集"}</div>
+</div>`;
+}).join("")}
+</div>
+<div style="height:10px"></div>
+<button class="btn btn-light" onclick="closeModal()">關閉</button>`;
+openModal();
+}
+
+
+/* =========================================================
+   每日簽到
+========================================================= */
+
+function getTodayKey(){
+return new Date().toLocaleDateString("zh-TW");
+}
+
+function computeNextCheckinStreak(){
+const y=new Date();
+y.setDate(y.getDate()-1);
+const yesterday=y.toLocaleDateString("zh-TW");
+const cur=state.dailyCheckin||{date:"",streak:0};
+return cur.date===yesterday?(Number(cur.streak)||0)+1:1;
+}
+
+function getCheckinReward(streakDay){
+return 30+Math.min(Math.max(streakDay-1,0),6)*10;
+}
+
+function openDailyCheckin(){
+if(!state.dailyCheckin)state.dailyCheckin={date:"",streak:0};
+const today=getTodayKey();
+const claimedToday=state.dailyCheckin.date===today;
+const nextStreak=claimedToday?Number(state.dailyCheckin.streak)||1:computeNextCheckinStreak();
+const reward=getCheckinReward(nextStreak);
+document.getElementById("modal").innerHTML=`
+<div class="modal-title">🎁 每日簽到</div>
+<div style="text-align:center;font-size:35px">🎁</div>
+<div style="text-align:center;margin:8px 0 4px;font-size:13px;line-height:1.7">
+${claimedToday
+?`今天已經簽到囉！<br>明天再回來領取禮物吧～`
+:`連續簽到第 <b>${nextStreak}</b> 天<br>今天可以領取 <b>💰${reward}</b> 金幣！`}
+</div>
+<div style="height:10px"></div>
+${claimedToday
+?`<button class="btn btn-light" onclick="closeModal()">關閉</button>`
+:`<button class="btn btn-green" onclick="claimDailyCheckin()">領取獎勵</button>`}
+`;
+openModal();
+}
+
+function claimDailyCheckin(){
+if(!state.dailyCheckin)state.dailyCheckin={date:"",streak:0};
+const today=getTodayKey();
+if(state.dailyCheckin.date===today){
+toast("今天已經簽到過了");
+return;
+}
+const nextStreak=computeNextCheckinStreak();
+const reward=getCheckinReward(nextStreak);
+state.coins+=reward;
+state.dailyCheckin.streak=nextStreak;
+state.dailyCheckin.date=today;
+save();
+closeModal();
+toast(`🎁 簽到成功！+${reward} 金幣`);
+if(document.getElementById("gardenCoins"))document.getElementById("gardenCoins").textContent=state.coins;
+if(document.getElementById("kitchenCoins"))document.getElementById("kitchenCoins").textContent=state.coins;
+if(document.getElementById("truckCoins"))document.getElementById("truckCoins").textContent=state.coins;
 }
 
 
@@ -5865,6 +6290,8 @@ if(!Array.isArray(t.ownedEnvironments)||!t.ownedEnvironments.length)t.ownedEnvir
 if(!t.ownedEnvironments.includes("grass"))t.ownedEnvironments.unshift("grass");
 if(!Array.isArray(t.ownedSigns)||!t.ownedSigns.length)t.ownedSigns=["plain"];
 if(!t.ownedSigns.includes("plain"))t.ownedSigns.unshift("plain");
+if(!Array.isArray(t.ownedDecorations))t.ownedDecorations=[];
+if(!Array.isArray(t.decorations))t.decorations=[];
 if(!t.skin)t.skin="spring";
 if(!t.environment)t.environment="grass";
 if(!t.sign)t.sign="plain";
@@ -5907,7 +6334,13 @@ let next=currentTruckIndex+direction;
 if(next<0)next=TRUCK_MAX-1;
 if(next>=TRUCK_MAX)next=0;
 currentTruckIndex=next;
+selectedDecoUid=null;
+if(truckDecorateMode&&!state.trucks[currentTruckIndex]?.unlocked){
+exitDecorateMode();
+return;
+}
 renderTruck();
+if(truckDecorateMode)renderDecoShop();
 }
 function renderTruck(){
 ensureTruckData();
@@ -5930,7 +6363,27 @@ const sign=TRUCK_SIGNS.find(x=>x.id===truck.sign)||TRUCK_SIGNS[0];
 const recipe=RECIPES.find(x=>x.id===currentTruckRecipe(truck));
 const staff=truck.staffId?getCharacter(truck.staffId):null;
 const remaining=calcTruckSellout(truck);
-scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="openTruckEditor(${currentTruckIndex})"><div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span><span>${env.icon}</span></div><div class="truck-stand truck-stand-left"><div>全部完售</div><strong id="truckSelloutTime">${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div>${staff?`<div class="truck-staff"><img src="${characterImage(staff)}"></div>`:""}<div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}" id="truckCurrentRecipeIcon">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
+scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="handleTruckSceneClick(${currentTruckIndex})"><div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span><span>${env.icon}</span></div>${renderTruckDecorationsHTML(truck,truckDecorateMode)}<div class="truck-stand truck-stand-left"><div>全部完售</div><strong id="truckSelloutTime">${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div>${staff?`<div class="truck-staff"><img src="${characterImage(staff)}"></div>`:""}<div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}" id="truckCurrentRecipeIcon">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
+}
+function handleTruckSceneClick(index){
+if(truckDecorateMode)return;
+openTruckEditor(index);
+}
+function renderTruckDecorationsHTML(truck,editable){
+if(!Array.isArray(truck?.decorations)||!truck.decorations.length)return"";
+return truck.decorations.map(inst=>{
+const d=TRUCK_DECORATIONS.find(x=>x.id===inst?.id);
+if(!d)return"";
+const x=Number.isFinite(Number(inst.x))?Number(inst.x):(d.defaultX??50);
+const y=Number.isFinite(Number(inst.y))?Number(inst.y):(d.defaultY??80);
+const scale=Number.isFinite(Number(inst.scale))?Number(inst.scale):1;
+const flip=!!inst.flip;
+const selected=editable&&inst.uid===selectedDecoUid;
+const baseZ=10+Math.round(Math.max(0,Math.min(100,y))/5);
+const z=selected?300:baseZ;
+const transform=`translate(-50%,-100%) scale(${(flip?-1:1)*scale},${scale})`;
+return `<div class="deco-item${editable?" deco-editable":""}${selected?" selected":""}" data-deco-uid="${inst.uid}" style="left:${x}%;top:${y}%;font-size:${d.size||32}px;z-index:${z};transform:${transform}"${editable?` onpointerdown="onDecoPointerDown(event,'${inst.uid}')"`:""}>${d.emoji}</div>`;
+}).join("");
 }
 
 function updateTruckDisplay(){
@@ -5995,6 +6448,8 @@ ${staff?`<div style="display:flex;align-items:center;gap:10px;padding:9px;border
 <div class="truck-edit-title">🏷️ 招牌</div>
 <div class="truck-option-grid">${TRUCK_SIGNS.map(s=>`<button class="truck-option ${truck.sign===s.id?"selected":""}" onclick="buyTruckSign(${index},'${s.id}')">${s.id==="light"?"💡":s.id==="flower"?"🌸":s.id==="star"?"⭐":"🏷️"}<br>${s.name}<small>${truck.ownedSigns.includes(s.id)?"✓":`💰${s.price}`}</small></button>`).join("")}</div>
 </div>
+
+<div class="truck-edit-hint" style="margin-bottom:10px">💡 想擺設裝飾品嗎？關閉這個視窗後，點餐車畫面上方的「🛋️ 佈置」就可以直接拖曳佈置囉！</div>
 
 <button class="btn btn-orange" onclick="confirmTruckEditor()">💾 儲存並關閉</button>
 <div style="height:7px"></div>
@@ -6092,6 +6547,222 @@ const t=state.trucks[index],s=TRUCK_SIGNS.find(x=>x.id===id);
 if(!t||!s)return;
 if(!t.ownedSigns.includes(id)){if(state.coins<s.price){toast("錢幣不足");return;}state.coins-=s.price;t.ownedSigns.push(id);}
 t.sign=id;save();openTruckEditor(index);renderTruck();
+}
+
+
+/* =========================================================
+   餐車擺設佈置（直接在餐車頁面拖曳）
+========================================================= */
+
+let truckDecorateMode=false;
+let selectedDecoUid=null;
+let decoDragState=null;
+
+function toggleDecorateMode(){
+if(truckDecorateMode)exitDecorateMode();
+else enterDecorateMode();
+}
+
+function enterDecorateMode(){
+ensureTruckData();
+const truck=state.trucks[currentTruckIndex];
+if(!truck?.unlocked){toast("請先解鎖這台餐車");return;}
+truckDecorateMode=true;
+selectedDecoUid=null;
+const btn=document.getElementById("decoModeToggleBtn");
+if(btn)btn.textContent="✅ 佈置中";
+const panel=document.getElementById("decoModePanel");
+if(panel)panel.style.display="block";
+const info=document.getElementById("truckInfoCard");
+if(info)info.style.display="none";
+renderDecoShop();
+renderTruck();
+}
+
+function exitDecorateMode(){
+truckDecorateMode=false;
+selectedDecoUid=null;
+const btn=document.getElementById("decoModeToggleBtn");
+if(btn)btn.textContent="🛋️ 佈置";
+const panel=document.getElementById("decoModePanel");
+if(panel)panel.style.display="none";
+const info=document.getElementById("truckInfoCard");
+if(info)info.style.display="";
+renderTruck();
+}
+
+function renderDecoShop(){
+const grid=document.getElementById("decoShopGrid");
+if(!grid)return;
+const truck=state.trucks[currentTruckIndex];
+if(!truck)return;
+grid.innerHTML=TRUCK_DECORATIONS.map(d=>{
+const owned=truck.ownedDecorations.includes(d.id);
+const count=truck.decorations.filter(x=>x.id===d.id).length;
+return `<button class="truck-option" onclick="addTruckDecoration(${currentTruckIndex},'${d.id}')">${d.emoji}<br>${d.name}<small>${owned?`已放 ${count} 個`:`💰${d.price}`}</small></button>`;
+}).join("");
+updateDecoSelectedBar();
+}
+
+function updateDecoSelectedBar(){
+const bar=document.getElementById("decoSelectedBar");
+const label=document.getElementById("decoSelectedLabel");
+if(!bar||!label)return;
+const truck=state.trucks[currentTruckIndex];
+const item=selectedDecoUid?truck?.decorations?.find(x=>x.uid===selectedDecoUid):null;
+if(!item){
+bar.style.display="none";
+selectedDecoUid=null;
+return;
+}
+const d=TRUCK_DECORATIONS.find(x=>x.id===item.id);
+bar.style.display="flex";
+label.textContent=`已選取：${d?.emoji||""} ${d?.name||""}`;
+}
+
+function addTruckDecoration(index,id){
+ensureTruckData();
+const t=state.trucks[index];
+const d=TRUCK_DECORATIONS.find(x=>x.id===id);
+if(!t||!t.unlocked||!d)return;
+if(!Array.isArray(t.ownedDecorations))t.ownedDecorations=[];
+if(!Array.isArray(t.decorations))t.decorations=[];
+const owned=t.ownedDecorations.includes(id);
+if(!owned){
+if(state.coins<d.price){toast("錢幣不足");return;}
+state.coins-=d.price;
+t.ownedDecorations.push(id);
+}
+const count=t.decorations.filter(x=>x.id===id).length;
+const stagger=(count%5)*7-14;
+const uid=`deco_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,7)}`;
+const x=Math.max(6,Math.min(94,(d.defaultX??50)+stagger));
+const y=Math.max(16,Math.min(94,(d.defaultY??80)-Math.floor(count/5)*8));
+t.decorations.push({uid,id,x,y,scale:1,flip:false});
+selectedDecoUid=uid;
+save();
+renderTruck();
+renderDecoShop();
+toast(owned?`✨ 已新增 ${d.name}`:`✨ 已購買並擺放 ${d.name}`);
+}
+
+function onDecoPointerDown(event,uid){
+if(!truckDecorateMode)return;
+event.preventDefault();
+event.stopPropagation();
+const scene=event.currentTarget.closest(".truck-scene");
+if(!scene)return;
+const rect=scene.getBoundingClientRect();
+const el=event.currentTarget;
+try{el.setPointerCapture(event.pointerId);}catch(error){}
+decoDragState={uid,rect,el,startX:event.clientX,startY:event.clientY,moved:false,x:null,y:null,pointerId:event.pointerId};
+el.addEventListener("pointermove",onDecoPointerMove);
+el.addEventListener("pointerup",onDecoPointerUp);
+el.addEventListener("pointercancel",onDecoPointerCancel);
+}
+
+function onDecoPointerMove(event){
+if(!decoDragState)return;
+const dx=event.clientX-decoDragState.startX;
+const dy=event.clientY-decoDragState.startY;
+if(Math.abs(dx)>6||Math.abs(dy)>6)decoDragState.moved=true;
+if(!decoDragState.moved)return;
+const{rect,el}=decoDragState;
+let x=((event.clientX-rect.left)/rect.width)*100;
+let y=((event.clientY-rect.top)/rect.height)*100;
+x=Math.max(3,Math.min(97,x));
+y=Math.max(10,Math.min(97,y));
+el.classList.add("dragging");
+el.style.left=x+"%";
+el.style.top=y+"%";
+el.style.zIndex=300;
+decoDragState.x=x;
+decoDragState.y=y;
+}
+
+function endDecoDrag(pointerId){
+if(!decoDragState)return null;
+const finished=decoDragState;
+const{el}=finished;
+el.classList.remove("dragging");
+el.removeEventListener("pointermove",onDecoPointerMove);
+el.removeEventListener("pointerup",onDecoPointerUp);
+el.removeEventListener("pointercancel",onDecoPointerCancel);
+try{el.releasePointerCapture(pointerId??finished.pointerId);}catch(error){}
+decoDragState=null;
+return finished;
+}
+
+function onDecoPointerUp(event){
+const finished=endDecoDrag(event.pointerId);
+if(!finished)return;
+const truck=state.trucks[currentTruckIndex];
+if(finished.moved&&finished.x!=null&&finished.y!=null){
+const item=truck?.decorations?.find(d=>d.uid===finished.uid);
+if(item){
+item.x=Math.round(finished.x*10)/10;
+item.y=Math.round(finished.y*10)/10;
+save();
+}
+renderTruck();
+}else{
+selectedDecoUid=(selectedDecoUid===finished.uid)?null:finished.uid;
+renderTruck();
+updateDecoSelectedBar();
+}
+}
+
+function onDecoPointerCancel(event){
+endDecoDrag(event.pointerId);
+}
+
+function applyDecoTransform(item){
+if(!item)return;
+const el=document.querySelector(`.deco-item[data-deco-uid="${item.uid}"]`);
+if(!el)return;
+const scale=Number(item.scale)||1;
+const flip=!!item.flip;
+el.style.transform=`translate(-50%,-100%) scale(${(flip?-1:1)*scale},${scale})`;
+}
+
+function resizeSelectedDeco(factor){
+const truck=state.trucks[currentTruckIndex];
+const item=truck?.decorations?.find(d=>d.uid===selectedDecoUid);
+if(!item)return;
+let next=Math.round((Number(item.scale)||1)*factor*100)/100;
+next=Math.max(0.5,Math.min(2,next));
+item.scale=next;
+/*
+   直接更新畫面上的裝飾品樣式，
+   不整個重繪餐車場景，
+   讓放大縮小的手感更即時、更順暢。
+*/
+applyDecoTransform(item);
+save();
+}
+
+function flipSelectedDeco(){
+const truck=state.trucks[currentTruckIndex];
+const item=truck?.decorations?.find(d=>d.uid===selectedDecoUid);
+if(!item)return;
+item.flip=!item.flip;
+applyDecoTransform(item);
+save();
+}
+
+function deleteSelectedDeco(){
+const truck=state.trucks[currentTruckIndex];
+if(!truck)return;
+const idx=truck.decorations.findIndex(d=>d.uid===selectedDecoUid);
+if(idx===-1)return;
+const removed=truck.decorations[idx];
+truck.decorations.splice(idx,1);
+selectedDecoUid=null;
+save();
+renderTruck();
+renderDecoShop();
+const d=TRUCK_DECORATIONS.find(x=>x.id===removed.id);
+toast(`🗑️ 已刪除 ${d?.name||"裝飾品"}`);
 }
 function confirmTruckEditor(){
 const t=state.trucks[truckDraftIndex];
