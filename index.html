@@ -8083,6 +8083,17 @@ function parseStepDateFromText(text){
     return getStepDateKey();
 }
 
+function stripDateSubstringsFromLine(line){
+
+    /* 先移除完整日期（如 2026/09/26），
+       避免年份／月日的數字被誤判成步數候選 */
+
+    return String(line||"").replace(
+        /(20\d{2})[\/\-.年]\s*(\d{1,2})[\/\-.月]\s*(\d{1,2})日?/g,
+        ""
+    );
+}
+
 function findStepCandidatesInText(text){
 
     const lines=String(text||"")
@@ -8090,67 +8101,113 @@ function findStepCandidatesInText(text){
         .map(line=>line.trim())
         .filter(Boolean);
 
-    const stepLabel=/步數|steps/i;
+    /* 標籤關鍵字：
+       - totalLabel／stepLabel：常見於「健康」App 的兩種畫面，
+         主畫面摘要用「步數」，步行詳細頁則是「總計」＋「步」＋「步行」
+       - excludeLabel：詳細頁下方常見的「平均」「本週」等統計，
+         數值格式與當日步數相似，需要排除避免誤判
+    ========================= */
+
+    const totalLabel=/總計|total/i;
+    const stepLabel=/步數|步行|步|steps/i;
     const todayLabel=/今天|today/i;
     const yesterdayLabel=/昨天|yesterday/i;
+    const excludeLabel=/平均|average|本週|this week|上週|last week|上星期/i;
 
     const candidates=[];
 
     lines.forEach((line,i)=>{
 
-        const nums=(normalizeStepDigits(line).match(/\d{2,7}/g)||[])
+        const cleanLine=stripDateSubstringsFromLine(line);
+
+        const nums=(normalizeStepDigits(cleanLine).match(/\d{1,7}/g)||[])
             .map(Number)
             .filter(n=>Number.isFinite(n)&&n>0);
 
         if(!nums.length)return;
 
-        const context=[lines[i-1]||"",line,lines[i+1]||""].join(" ");
+        /* 標籤判斷用較寬的視窗（前後各 2 行），
+           因為「步」常常因為字體較小被 OCR 單獨拆成一行，
+           若只看前後各 1 行容易漏抓「今天」或「總計」 */
+
+        const context=[
+            lines[i-2]||"",
+            lines[i-1]||"",
+            line,
+            lines[i+1]||"",
+            lines[i+2]||""
+        ].join(" ");
 
         const isToday=todayLabel.test(context);
         const isYesterday=yesterdayLabel.test(context);
-        const nearLabel=stepLabel.test(context);
+        const nearTotal=totalLabel.test(context);
+        const nearLabel=nearTotal||stepLabel.test(context);
+        const excluded=excludeLabel.test(context);
 
         nums.forEach(value=>{
-            candidates.push({value,isToday,isYesterday,nearLabel});
+            candidates.push({
+                value,
+                digits:String(value).length,
+                isToday,
+                isYesterday,
+                nearLabel,
+                nearTotal,
+                excluded
+            });
         });
     });
 
     return candidates;
 }
 
+function scoreStepCandidate(c){
+
+    let score=0;
+
+    /* 「總計」是步行詳細頁最可靠的標籤，權重最高 */
+    if(c.nearTotal)score+=3;
+
+    if(c.isToday)score+=2;
+    if(c.isYesterday)score-=4;
+
+    /* 「平均」「本週」等統計數字排除，避免誤取 */
+    if(c.excluded)score-=4;
+
+    if(c.nearLabel)score+=1;
+
+    /* 步數通常至少 3 位數；電量、時鐘、圖表座標軸上常見的
+       1～2 位數字（如電量 87、時間 6:33、座標軸 0/500）予以扣分 */
+    if(c.digits>=3)score+=1;
+    else score-=2;
+
+    return score;
+}
+
 function pickBestStepCandidate(candidates){
 
     if(!candidates.length)return {steps:null,confident:false};
 
-    let pool=candidates.filter(c=>c.nearLabel);
+    const scored=candidates.map(c=>({...c,score:scoreStepCandidate(c)}));
 
-    if(!pool.length)pool=candidates;
+    const maxScore=Math.max(...scored.map(c=>c.score));
+    const top=scored.filter(c=>c.score===maxScore);
 
-    const todayPool=pool.filter(c=>c.isToday&&!c.isYesterday);
-
-    if(todayPool.length===1){
-        return {steps:todayPool[0].value,confident:true};
-    }
-
-    const noYesterday=pool.filter(c=>!c.isYesterday);
-
-    if(noYesterday.length===1){
-        return {steps:noYesterday[0].value,confident:true};
-    }
-
-    if(noYesterday.length>1){
+    if(top.length===1){
         return {
-            steps:Math.max(...noYesterday.map(c=>c.value)),
-            confident:false
+            steps:top[0].value,
+            confident:maxScore>=2
         };
     }
 
-    if(pool.length===1){
-        return {steps:pool[0].value,confident:true};
-    }
+    /* 同分時，優先採用位數較多、數值較大的候選（步數通常是較大的數字） */
+
+    const best=top.reduce((a,b)=>{
+        if(b.digits!==a.digits)return b.digits>a.digits?b:a;
+        return b.value>a.value?b:a;
+    });
 
     return {
-        steps:Math.max(...pool.map(c=>c.value)),
+        steps:best.value,
         confident:false
     };
 }
