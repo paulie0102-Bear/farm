@@ -346,7 +346,7 @@ button,
     bottom:calc(8px + var(--safe-bottom));
     z-index:100;
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(4,1fr);
     gap:7px;
     padding:7px;
     border-radius:20px;
@@ -2811,6 +2811,182 @@ button,
 
 
 /* =========================================================
+   步數派遣／日誌
+========================================================= */
+
+.step-today{
+    text-align:center;
+}
+
+.step-today-label{
+    font-size:12px;
+    font-weight:900;
+    color:#927f6d;
+}
+
+.step-today-value{
+    margin:2px 0 10px;
+    font-size:38px;
+    font-weight:900;
+    line-height:1.15;
+    color:var(--green-dark);
+}
+
+.step-today-value small{
+    margin-left:4px;
+    font-size:14px;
+    color:#a38d79;
+}
+
+.step-progress-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:11px;
+    font-weight:900;
+    color:#765b45;
+}
+
+.step-status{
+    margin-top:2px;
+    font-size:10px;
+    line-height:1.6;
+    text-align:center;
+    color:#a38d79;
+}
+
+.step-cal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.step-cal-title{
+    font-size:15px;
+    font-weight:900;
+    color:var(--green-dark);
+}
+
+.step-cal-nav{
+    width:40px;
+    height:36px;
+    flex:none;
+    border:1px solid #eadfce;
+    border-radius:12px;
+    background:#fff;
+    color:var(--brown);
+    font-size:18px;
+    font-weight:900;
+}
+
+.step-cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7,minmax(0,1fr));
+    gap:4px;
+}
+
+.step-cal-week{
+    padding:2px 0 3px;
+    text-align:center;
+    font-size:11px;
+    font-weight:900;
+    color:#a38d79;
+}
+
+.step-cal-cell{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    aspect-ratio:1/1.1;
+    padding:3px 0 0;
+    overflow:hidden;
+    border:1px solid #eee2d4;
+    border-radius:10px;
+    background:#fff;
+    font-size:11px;
+    font-weight:800;
+    color:#765b45;
+}
+
+.step-cal-cell.blank{
+    border-color:transparent;
+    background:transparent;
+}
+
+.step-cal-cell.today{
+    border-color:var(--green);
+    background:var(--green-light);
+}
+
+.step-cal-cell.has-record{
+    cursor:pointer;
+    border-color:#f0d47a;
+    background:#fff8e6;
+}
+
+.step-cal-cell.today.has-record{
+    border-color:var(--green);
+}
+
+.step-cal-num{
+    line-height:1.2;
+}
+
+.step-stamp{
+    width:74%;
+    max-height:64%;
+    margin-top:1px;
+    object-fit:contain;
+    pointer-events:none;
+}
+
+.step-cal-hint{
+    margin-top:8px;
+    text-align:center;
+    font-size:10px;
+    color:#a38d79;
+}
+
+.step-log-item{
+    margin-bottom:10px;
+}
+
+.step-log-item:last-child{
+    margin-bottom:0;
+}
+
+.step-log-step{
+    font-size:12px;
+    font-weight:900;
+    color:#765b45;
+}
+
+.step-log-item .dispatch-result-bonus{
+    margin-top:4px;
+}
+
+.step-log-item .step-event-rewards{
+    margin-top:4px;
+}
+
+.step-event-rewards{
+    grid-template-columns:minmax(0,110px);
+    justify-content:center;
+}
+
+.step-event-rewards .dispatch-result-item{
+    text-align:center;
+}
+
+.step-log-item .step-event-rewards{
+    justify-content:start;
+}
+
+
+/* =========================================================
    桌面版
 ========================================================= */
 
@@ -3159,6 +3335,102 @@ button,
 
 
     <!-- =====================================================
+         步數派遣
+    ====================================================== -->
+
+    <section id="stepPage" class="page">
+
+        <div class="topbar">
+
+            <div class="topbar-row">
+
+                <div class="title-area">
+                    <h1 class="title">🚶 步數派遣</h1>
+                </div>
+
+                <div class="topbar-actions">
+
+                    <button
+                        class="btn btn-light"
+                        style="
+                            width:auto;
+                            min-height:36px;
+                            padding:6px 9px;
+                            font-size:11px;
+                        "
+                        onclick="triggerStepScreenshotUpload()"
+                    >
+                        📷 上傳健康截圖
+                    </button>
+
+                    <input
+                        id="stepScreenshotInput"
+                        type="file"
+                        accept="image/*"
+                        style="display:none"
+                        onchange="handleStepScreenshotUpload(event)"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="subtitle">
+                每走 1000 步（可跨日累積），就會出發一次步數派遣；每天走的步數也會蓋上一個小印章
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div id="stepCalendar"></div>
+            <div class="step-cal-hint">點擊有印章的日期，查看當天步數</div>
+        </div>
+
+        <div class="card" style="font-size:11px;color:#a38d79;line-height:1.6;text-align:center;">
+            🔒 健康截圖僅用於本機辨識，不會保存原始圖片。
+        </div>
+
+        <div class="card">
+
+            <div class="step-today">
+                <div class="step-today-label">今日步數</div>
+                <div class="step-today-value">
+                    <span id="stepTodayValue">—</span><small>步</small>
+                </div>
+            </div>
+
+            <div class="step-progress-label">
+                <span>距離下一次派遣</span>
+                <span id="stepProgressText">0/1000</span>
+            </div>
+
+            <div class="progress-track">
+                <div
+                    id="stepProgressFill"
+                    class="progress-fill"
+                    style="width:0%"
+                ></div>
+            </div>
+
+            <div id="stepStatus" class="step-status"></div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="section-title">
+                <span>🎒 今日步數派遣</span>
+                <small id="stepTodayCount"></small>
+            </div>
+
+            <div id="stepTodayLog"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
          底部導覽
     ====================================================== -->
 
@@ -3191,6 +3463,15 @@ button,
             餐車
         </button>
 
+        <button
+            id="navSteps"
+            class="nav-btn"
+            onclick="showPage('steps')"
+        >
+            <span class="nav-icon">🚶</span>
+            步數派遣
+        </button>
+
     </nav>
 
 </div>
@@ -3218,6 +3499,7 @@ button,
 <div id="toast"></div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <script>
 
 /* =========================================================
@@ -3685,6 +3967,8 @@ startTime:0,
 endTime:0,
 targetCharacter:null
 },
+stepLog:{},
+stepDispatch:{totalSteps:0,dispatchCount:0},
 trucks:Array.from({length:4},(_,i)=>createDefaultTruck(i))
 };
 
@@ -4017,6 +4301,8 @@ merged.stats=Object.assign({made:{}},saved?.stats||{});
 merged.stats.made=Object.assign({},saved?.stats?.made||{});
 merged.dailyCheckin=Object.assign({date:"",streak:0},saved?.dailyCheckin||{});
 merged.expedition=Object.assign({},DEFAULT_STATE.expedition,saved?.expedition||{});
+merged.stepLog=normalizeStepLog(saved?.stepLog);
+merged.stepDispatch=normalizeStepDispatch(saved?.stepDispatch);
 merged.trucks=Array.isArray(saved?.trucks)?saved.trucks:[];
 if(!merged.trucks.length&&saved?.truck){
 const old=saved.truck;
@@ -4194,6 +4480,21 @@ function showPage(page){
             .classList.add("active");
 
         renderTruck();
+
+    }
+
+
+    if(page==="steps"){
+
+        document
+            .getElementById("stepPage")
+            .classList.add("active");
+
+        document
+            .getElementById("navSteps")
+            .classList.add("active");
+
+        renderStepPage();
 
     }
 
@@ -4994,6 +5295,198 @@ function renderExpedition(){
 
 
 /* =========================================================
+   人物遇見處理（好感度／加入小隊／滿好感食材回饋）
+
+   從 completeDispatch() 原封不動抽出，
+   讓「地區派遣（倒數）」與「步數派遣」共用同一份：
+   - 好感度資料 state.friendship
+   - 小隊 state.joined
+   - 滿好感後的食材回饋
+
+   傳入：這次遇到的人物（含裝扮）
+   回傳：結果卡用的 bonus，沒有結果則回傳 null
+========================================================= */
+
+function applyCharacterEncounter(character){
+
+    let bonus=null;
+
+
+    /*
+       找角色本體。
+
+       例如抽到 QUOKKA7，
+       好感仍算在 QUOKKA。
+
+       抽到 BOBO2，
+       好感仍算在 BOBO。
+    */
+
+    const baseCharacter=
+        getBaseCharacter(
+            character
+        );
+
+
+    const friendshipId=
+        baseCharacter.id;
+
+
+    if(
+        !state.friendship ||
+        typeof state.friendship!=="object"
+    ){
+        state.friendship={};
+    }
+
+
+    const current=
+        Number(
+            state.friendship[
+                friendshipId
+            ]||0
+        );
+
+
+    /* =========================
+       尚未滿 3 心
+    ========================= */
+
+    if(current<3){
+
+        const newFriendship=
+            Math.min(
+                3,
+                current+1
+            );
+
+
+        state.friendship[
+            friendshipId
+        ]=
+            newFriendship;
+
+
+        if(
+            !Array.isArray(
+                state.joined
+            )
+        ){
+            state.joined=[];
+        }
+
+
+        /* =========================
+           達到三顆心
+           角色本體加入小隊
+        ========================= */
+
+        if(
+            newFriendship>=3 &&
+            !state.joined.includes(
+                friendshipId
+            )
+        ){
+
+            state.joined.push(
+                friendshipId
+            );
+
+
+            bonus={
+
+                type:"joined",
+
+                /*
+                   結果畫面仍顯示
+                   這次隨機遇到的裝扮
+                */
+                character,
+
+                text:
+                    "好感度達到 ❤️❤️❤️，已加入小隊！"
+
+            };
+
+        }else{
+
+            bonus={
+
+                type:"friendship",
+
+                character,
+
+                text:
+                    `好感度 +1（${newFriendship}/3）`
+
+            };
+
+        }
+
+
+    }else{
+
+        /* =========================
+           已滿 3 心
+           保留你原本的送禮機制
+        ========================= */
+
+        const ids=
+            Object.keys(
+                INGREDIENTS
+            );
+
+
+        if(ids.length){
+
+            const id=
+                ids[
+                    Math.floor(
+                        Math.random()*
+                        ids.length
+                    )
+                ];
+
+
+            state.ingredients[id]=
+                (
+                    Number(
+                        state.ingredients[id]
+                    )
+                    ||
+                    0
+                )
+                +
+                1;
+
+
+            const item=
+                INGREDIENTS[id];
+
+
+            bonus={
+
+                type:"gift",
+
+                character,
+
+                item,
+
+                count:1
+
+            };
+
+        }
+
+    }
+
+
+    return bonus;
+
+}
+
+
+/* =========================================================
    派遣完成
 ========================================================= */
 
@@ -5138,173 +5631,8 @@ function completeDispatch(){
 
             if(character){
 
-                /*
-                   找角色本體。
-
-                   例如抽到 QUOKKA7，
-                   好感仍算在 QUOKKA。
-
-                   抽到 BOBO2，
-                   好感仍算在 BOBO。
-                */
-
-                const baseCharacter=
-                    getBaseCharacter(
-                        character
-                    );
-
-
-                const friendshipId=
-                    baseCharacter.id;
-
-
-                if(
-                    !state.friendship ||
-                    typeof state.friendship!=="object"
-                ){
-                    state.friendship={};
-                }
-
-
-                const current=
-                    Number(
-                        state.friendship[
-                            friendshipId
-                        ]||0
-                    );
-
-
-                /* =========================
-                   尚未滿 3 心
-                ========================= */
-
-                if(current<3){
-
-                    const newFriendship=
-                        Math.min(
-                            3,
-                            current+1
-                        );
-
-
-                    state.friendship[
-                        friendshipId
-                    ]=
-                        newFriendship;
-
-
-                    if(
-                        !Array.isArray(
-                            state.joined
-                        )
-                    ){
-                        state.joined=[];
-                    }
-
-
-                    /* =========================
-                       達到三顆心
-                       角色本體加入小隊
-                    ========================= */
-
-                    if(
-                        newFriendship>=3 &&
-                        !state.joined.includes(
-                            friendshipId
-                        )
-                    ){
-
-                        state.joined.push(
-                            friendshipId
-                        );
-
-
-                        bonus={
-
-                            type:"joined",
-
-                            /*
-                               結果畫面仍顯示
-                               這次隨機遇到的裝扮
-                            */
-                            character,
-
-                            text:
-                                "好感度達到 ❤️❤️❤️，已加入小隊！"
-
-                        };
-
-                    }else{
-
-                        bonus={
-
-                            type:"friendship",
-
-                            character,
-
-                            text:
-                                `好感度 +1（${newFriendship}/3）`
-
-                        };
-
-                    }
-
-
-                }else{
-
-                    /* =========================
-                       已滿 3 心
-                       保留你原本的送禮機制
-                    ========================= */
-
-                    const ids=
-                        Object.keys(
-                            INGREDIENTS
-                        );
-
-
-                    if(ids.length){
-
-                        const id=
-                            ids[
-                                Math.floor(
-                                    Math.random()*
-                                    ids.length
-                                )
-                            ];
-
-
-                        state.ingredients[id]=
-                            (
-                                Number(
-                                    state.ingredients[id]
-                                )
-                                ||
-                                0
-                            )
-                            +
-                            1;
-
-
-                        const item=
-                            INGREDIENTS[id];
-
-
-                        bonus={
-
-                            type:"gift",
-
-                            character,
-
-                            item,
-
-                            count:1
-
-                        };
-
-                    }
-
-                }
+                /* 共用處理：地區派遣（倒數）與步數派遣使用同一份好感度／回饋 */
+                bonus=applyCharacterEncounter(character);
 
             }
 
@@ -5339,7 +5667,16 @@ function completeDispatch(){
 }
 
 
-function showDispatchResult(region,reward,bonus){
+/* =========================================================
+   派遣結果卡
+
+   地區派遣（倒數）與步數派遣共用：
+   buildDispatchBonusHtml    人物／好感度／禮物區塊
+   buildDispatchRewardHtml   食材獎勵格子
+   openDispatchResultLayer   結果卡外框
+========================================================= */
+
+function buildDispatchBonusHtml(bonus){
 
 let bonusHtml="";
 
@@ -5396,27 +5733,14 @@ ${bonus.item?.icon||""} ${bonus.item?.name||""} ×${bonus.count}
 
 }
 
-const layer=document.createElement("div");
 
-layer.className="dispatch-result-layer";
+return bonusHtml;
 
-layer.innerHTML=`
-<div class="dispatch-result-modal">
+}
 
-<div class="dispatch-result-title">
-🎉 派遣完成！
-</div>
+function buildDispatchRewardHtml(reward){
 
-<div class="dispatch-result-region">
-${region.icon||"🧭"} ${region.name}
-</div>
-
-<div class="dispatch-result-subtitle">
-獲得食材
-</div>
-
-<div class="dispatch-result-rewards">
-${reward.map(x=>`
+return reward.map(x=>`
 <div class="dispatch-result-item">
 
 <div class="dispatch-result-icon">
@@ -5429,10 +5753,28 @@ ${x.icon}
 </div>
 
 </div>
-`).join("")}
+`).join("");
+
+}
+
+function openDispatchResultLayer(title,regionText,bodyHtml){
+
+const layer=document.createElement("div");
+
+layer.className="dispatch-result-layer";
+
+layer.innerHTML=`
+<div class="dispatch-result-modal">
+
+<div class="dispatch-result-title">
+${title}
 </div>
 
-${bonusHtml}
+<div class="dispatch-result-region">
+${regionText}
+</div>
+
+${bodyHtml}
 
 <button
 class="btn btn-orange dispatch-result-close"
@@ -5445,6 +5787,24 @@ onclick="this.closest('.dispatch-result-layer').remove()"
 
 document.body.appendChild(layer);
 }
+
+function showDispatchResult(region,reward,bonus){
+
+openDispatchResultLayer(
+"🎉 派遣完成！",
+`${region.icon||"🧭"} ${region.name}`,
+`<div class="dispatch-result-subtitle">
+獲得食材
+</div>
+
+<div class="dispatch-result-rewards">
+${buildDispatchRewardHtml(reward)}
+</div>
+
+${buildDispatchBonusHtml(bonus)}`
+);
+}
+
 
 /* =========================================================
    重置派遣
@@ -7276,6 +7636,965 @@ async function importSaveFile(event){
     }
 
 }
+
+/* =========================================================
+   步數派遣（健康截圖 OCR 辨識）
+
+   與「地區派遣（倒數）」完全獨立：
+   - 不讀寫 state.expedition
+   - 不啟動、不取消、不縮短任何倒數
+   - 倒數派遣進行中也可以同時觸發
+
+   共用原本系統：
+   - 人物／好感度／滿好感回饋 → applyCharacterEncounter()
+   - 食材 → state.ingredients
+   - 結果卡 → openDispatchResultLayer() 等
+
+   每天各自保存在 state.stepLog["YYYY-MM-DD"]：
+   {
+       date:"2026-09-20",
+       steps:8742,        當天目前已知步數（只增不減）
+       dispatchCount:17,  這一天累積觸發過幾次派遣事件（僅供當天顯示用）
+       events:[...]       每次事件的結果
+   }
+
+   另外用 state.stepDispatch 儲存「跨日累積」的總計：
+   {
+       totalSteps:23000,   目前已累積計入派遣判定的總步數（可跨日累加）
+       dispatchCount:23    目前已觸發過的派遣事件總數（唯一的計數）
+   }
+
+   新事件數 = floor(totalSteps / 1000) - dispatchCount
+   所以：漏傳一次會一次補發、重複上傳相同步數不會重複領，
+   且今天沒走滿的零頭步數會自動累積到明天繼續計算，不會歸零。
+
+   步數來源：使用者上傳 iPhone 健康 App 的步數截圖，
+   OCR 全部在瀏覽器本機執行（Tesseract.js），
+   辨識完成後由使用者確認日期與步數才會呼叫 applyStepReading()；
+   截圖本身不會被保存，也不會上傳到任何伺服器。
+========================================================= */
+
+const STEP_DISPATCH_UNIT=1000;
+const STEP_INGREDIENT_CHANCE=0.7;
+const STEP_DOUBLE_INGREDIENT_CHANCE=0.2;
+const STEP_MAX_PER_DAY=200000;
+const STEP_WEEKDAYS=["一","二","三","四","五","六","日"];
+const STEP_STAMP_URL=
+    "https://raw.githubusercontent.com/paulie0102-Bear/encourage/refs/heads/main/picture/quokka4.png";
+
+let currentStepReading=null;
+let stepStatusMessage="";
+let stepCalendarMonth=null;
+
+
+/* =========================
+   日期／格式
+========================= */
+
+function pad2(n){
+    return String(n).padStart(2,"0");
+}
+
+function getStepDateKey(date){
+    const d=date||new Date();
+    return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+}
+
+function isValidStepDateKey(key){
+    if(typeof key!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(key))return false;
+    const [y,m,d]=key.split("-").map(Number);
+    const t=new Date(y,m-1,d);
+    return t.getFullYear()===y&&t.getMonth()===m-1&&t.getDate()===d;
+}
+
+function formatStepDateLabel(key){
+    return String(key).replace(/-/g,"/");
+}
+
+function formatSteps(n){
+    return (Number(n)||0).toLocaleString("en-US");
+}
+
+function pickRandomItem(list){
+    return list[Math.floor(Math.random()*list.length)];
+}
+
+
+/* =========================
+   每日資料
+========================= */
+
+function normalizeStepLog(raw){
+
+    const result={};
+
+    if(!raw||typeof raw!=="object")return result;
+
+    Object.keys(raw).forEach(key=>{
+
+        const day=raw[key];
+
+        if(!isValidStepDateKey(key)||!day||typeof day!=="object")return;
+
+        result[key]={
+            date:key,
+            steps:Math.max(0,Math.floor(Number(day.steps)||0)),
+            dispatchCount:Math.max(0,Math.floor(Number(day.dispatchCount)||0)),
+            events:Array.isArray(day.events)
+                ?day.events.filter(e=>e&&typeof e==="object")
+                :[]
+        };
+
+    });
+
+    return result;
+}
+
+function getStepDay(dateKey,create){
+
+    if(!state.stepLog||typeof state.stepLog!=="object"){
+        state.stepLog={};
+    }
+
+    let day=state.stepLog[dateKey];
+
+    if(!day&&create){
+        day=state.stepLog[dateKey]={
+            date:dateKey,
+            steps:0,
+            dispatchCount:0,
+            events:[]
+        };
+    }
+
+    return day||null;
+}
+
+
+/* =========================
+   跨日累積的派遣總計
+   （totalSteps／dispatchCount 不分日期，可跨日累加）
+========================= */
+
+function normalizeStepDispatch(raw){
+    return {
+        totalSteps:Math.max(0,Math.floor(Number(raw?.totalSteps)||0)),
+        dispatchCount:Math.max(0,Math.floor(Number(raw?.dispatchCount)||0))
+    };
+}
+
+function getStepDispatchState(){
+
+    if(!state.stepDispatch||typeof state.stepDispatch!=="object"){
+        state.stepDispatch=normalizeStepDispatch(state.stepDispatch);
+    }
+
+    return state.stepDispatch;
+}
+
+
+/* =========================
+   單次步數事件（三選一）
+
+   70% 食材 x1：從全部食材（6 選 1）
+   20% 食材 x2：各自從全部食材（6 選 1，可能重複同一種）
+   10% 料理 x1：從全部料理（8 選 1），直接進入料理庫存
+========================= */
+
+function runStepDispatchEvent(stepNo){
+
+    const event={step:stepNo};
+
+    const roll=Math.random();
+
+    if(roll<STEP_INGREDIENT_CHANCE){
+
+        /* 70%：食材 x1 */
+
+        const id=pickRandomItem(Object.keys(INGREDIENTS));
+
+        state.ingredients[id]=
+            (Number(state.ingredients[id])||0)+1;
+
+        event.kind="ingredient";
+        event.items=[{itemId:id,count:1}];
+
+        return event;
+    }
+
+    if(roll<STEP_INGREDIENT_CHANCE+STEP_DOUBLE_INGREDIENT_CHANCE){
+
+        /* 20%：食材 x2（各自獨立 6 選 1） */
+
+        const picks=[
+            pickRandomItem(Object.keys(INGREDIENTS)),
+            pickRandomItem(Object.keys(INGREDIENTS))
+        ];
+
+        const counts={};
+
+        picks.forEach(id=>{
+            counts[id]=(counts[id]||0)+1;
+        });
+
+        Object.keys(counts).forEach(id=>{
+            state.ingredients[id]=
+                (Number(state.ingredients[id])||0)+counts[id];
+        });
+
+        event.kind="ingredient";
+        event.items=Object.keys(counts).map(id=>({
+            itemId:id,
+            count:counts[id]
+        }));
+
+        return event;
+    }
+
+    /* 10%：料理 x1，直接進入料理庫存（state.dishes） */
+
+    const recipe=pickRandomItem(RECIPES);
+
+    state.dishes[recipe.id]=
+        (Number(state.dishes[recipe.id])||0)+1;
+
+    event.kind="recipe";
+    event.recipeId=recipe.id;
+    event.count=1;
+
+    return event;
+}
+
+
+/* =========================
+   健康截圖 OCR 辨識（Tesseract.js，瀏覽器本機執行）
+
+   使用者流程：
+   1. 點擊「📷 上傳健康截圖」
+   2. 選擇 iPhone「健康」App 的步數截圖
+   3. 於瀏覽器本機執行 OCR（不會上傳到任何伺服器）
+   4. 辨識出日期與步數，顯示確認畫面
+   5. 使用者確認或修改後才會儲存
+
+   儲存後沿用原本的 applyStepReading()：
+   - 同一天只保留「目前確認的步數」（只增不減）
+   - 每 1000 步觸發一次派遣事件（跨日累積計算），且不會重複觸發
+========================= */
+
+let stepOCRBusy=false;
+
+function triggerStepScreenshotUpload(){
+
+    if(stepOCRBusy){
+        toast("辨識進行中，請稍候");
+        return;
+    }
+
+    const input=document.getElementById("stepScreenshotInput");
+
+    if(!input)return;
+
+    input.value="";
+    input.click();
+}
+
+function handleStepScreenshotUpload(event){
+
+    const input=event&&event.target;
+    const file=input&&input.files&&input.files[0];
+
+    if(!file)return;
+
+    if(!file.type||!file.type.startsWith("image/")){
+        toast("⚠️ 請選擇圖片檔案");
+        return;
+    }
+
+    if(file.size>20*1024*1024){
+        toast("⚠️ 圖片檔案過大，請重新選擇");
+        return;
+    }
+
+    let reader;
+
+    try{
+        reader=new FileReader();
+    }catch(error){
+        console.error("建立 FileReader 失敗",error);
+        toast("⚠️ 此瀏覽器不支援讀取圖片");
+        return;
+    }
+
+    reader.onerror=()=>{
+        toast("⚠️ 圖片讀取失敗，請重新選擇");
+    };
+
+    reader.onload=()=>{
+        prepareStepScreenshotImage(reader.result);
+    };
+
+    try{
+        reader.readAsDataURL(file);
+    }catch(error){
+        console.error("讀取健康截圖失敗",error);
+        toast("⚠️ 此瀏覽器無法讀取圖片，請改用 Safari 開啟");
+    }
+}
+
+function prepareStepScreenshotImage(dataURL){
+
+    const img=new Image();
+
+    img.onload=()=>{
+
+        try{
+
+            const scaled=resizeStepScreenshot(img);
+            runStepScreenshotOCR(scaled);
+
+        }catch(error){
+
+            console.error("處理健康截圖失敗",error);
+            toast("⚠️ 圖片處理失敗，請重新上傳");
+        }
+    };
+
+    img.onerror=()=>{
+        toast("⚠️ 無法辨識這個圖片檔案");
+    };
+
+    img.src=dataURL;
+}
+
+function resizeStepScreenshot(img){
+
+    const MAX_W=1200;
+
+    const scale=img.width>MAX_W?MAX_W/img.width:1;
+
+    const canvas=document.createElement("canvas");
+
+    canvas.width=Math.max(1,Math.round(img.width*scale));
+    canvas.height=Math.max(1,Math.round(img.height*scale));
+
+    const ctx=canvas.getContext("2d");
+
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+    return canvas.toDataURL("image/png");
+}
+
+function withTimeout(promise,ms){
+
+    return Promise.race([
+        promise,
+        new Promise((resolve,reject)=>{
+            setTimeout(()=>reject(new Error("OCR timeout")),ms);
+        })
+    ]);
+}
+
+async function runStepScreenshotOCR(dataURL){
+
+    if(stepOCRBusy)return;
+
+    if(typeof Tesseract==="undefined"){
+        toast("⚠️ OCR 元件載入失敗，請確認網路連線後再試一次");
+        return;
+    }
+
+    stepOCRBusy=true;
+
+    openStepOCRProgressModal();
+
+    try{
+
+        const result=await withTimeout(
+            Tesseract.recognize(
+                dataURL,
+                "eng+chi_tra",
+                {
+                    logger:info=>{
+                        if(info&&info.status==="recognizing text"&&typeof info.progress==="number"){
+                            updateStepOCRProgress(info.progress);
+                        }
+                    }
+                }
+            ),
+            60000
+        );
+
+        const text=(result&&result.data&&result.data.text)||"";
+
+        openStepConfirmModal(parseStepScreenshotText(text));
+
+    }catch(error){
+
+        console.error("步數截圖辨識失敗",error);
+
+        closeModal();
+
+        toast("⚠️ 辨識失敗，請重新上傳或稍後再試");
+
+    }finally{
+
+        stepOCRBusy=false;
+    }
+}
+
+
+/* =========================
+   辨識文字 → 日期／步數
+========================= */
+
+function normalizeStepDigits(text){
+
+    let out=String(text||"");
+    let prev;
+
+    do{
+        prev=out;
+        out=out.replace(/(\d)[,\s](\d{3})(?!\d)/g,"$1$2");
+    }while(out!==prev);
+
+    return out;
+}
+
+function parseStepDateFromText(text){
+
+    const m=String(text||"").match(/(20\d{2})[\/\-.年](\d{1,2})[\/\-.月](\d{1,2})/);
+
+    if(m){
+
+        const y=Number(m[1]);
+        const mo=Number(m[2]);
+        const d=Number(m[3]);
+
+        if(mo>=1&&mo<=12&&d>=1&&d<=31){
+
+            const key=`${y}-${pad2(mo)}-${pad2(d)}`;
+
+            if(isValidStepDateKey(key)&&key<=getStepDateKey()){
+                return key;
+            }
+        }
+    }
+
+    return getStepDateKey();
+}
+
+function findStepCandidatesInText(text){
+
+    const lines=String(text||"")
+        .split(/\r?\n/)
+        .map(line=>line.trim())
+        .filter(Boolean);
+
+    const stepLabel=/步數|steps/i;
+    const todayLabel=/今天|today/i;
+    const yesterdayLabel=/昨天|yesterday/i;
+
+    const candidates=[];
+
+    lines.forEach((line,i)=>{
+
+        const nums=(normalizeStepDigits(line).match(/\d{2,7}/g)||[])
+            .map(Number)
+            .filter(n=>Number.isFinite(n)&&n>0);
+
+        if(!nums.length)return;
+
+        const context=[lines[i-1]||"",line,lines[i+1]||""].join(" ");
+
+        const isToday=todayLabel.test(context);
+        const isYesterday=yesterdayLabel.test(context);
+        const nearLabel=stepLabel.test(context);
+
+        nums.forEach(value=>{
+            candidates.push({value,isToday,isYesterday,nearLabel});
+        });
+    });
+
+    return candidates;
+}
+
+function pickBestStepCandidate(candidates){
+
+    if(!candidates.length)return {steps:null,confident:false};
+
+    let pool=candidates.filter(c=>c.nearLabel);
+
+    if(!pool.length)pool=candidates;
+
+    const todayPool=pool.filter(c=>c.isToday&&!c.isYesterday);
+
+    if(todayPool.length===1){
+        return {steps:todayPool[0].value,confident:true};
+    }
+
+    const noYesterday=pool.filter(c=>!c.isYesterday);
+
+    if(noYesterday.length===1){
+        return {steps:noYesterday[0].value,confident:true};
+    }
+
+    if(noYesterday.length>1){
+        return {
+            steps:Math.max(...noYesterday.map(c=>c.value)),
+            confident:false
+        };
+    }
+
+    if(pool.length===1){
+        return {steps:pool[0].value,confident:true};
+    }
+
+    return {
+        steps:Math.max(...pool.map(c=>c.value)),
+        confident:false
+    };
+}
+
+function parseStepScreenshotText(text){
+
+    const dateKey=parseStepDateFromText(text);
+    const picked=pickBestStepCandidate(findStepCandidatesInText(text));
+
+    return {
+        dateKey,
+        steps:picked.steps,
+        confident:picked.confident&&picked.steps!=null
+    };
+}
+
+
+/* =========================
+   OCR 進度 Modal
+========================= */
+
+function openStepOCRProgressModal(){
+
+    document.getElementById("modal").innerHTML=`
+<div class="modal-title">🔍 正在分析健康截圖...</div>
+<div class="progress-track" style="margin:6px 0 8px;">
+<div id="stepOCRProgressFill" class="progress-fill" style="width:0%"></div>
+</div>
+<div id="stepOCRProgressText" style="text-align:center;font-size:11px;color:#a38d79;">準備中...</div>
+`;
+
+    openModal();
+}
+
+function updateStepOCRProgress(ratio){
+
+    const fill=document.getElementById("stepOCRProgressFill");
+    const text=document.getElementById("stepOCRProgressText");
+
+    const pct=Math.round(Math.max(0,Math.min(1,ratio))*100);
+
+    if(fill)fill.style.width=`${pct}%`;
+    if(text)text.textContent=`${pct}%`;
+}
+
+
+/* =========================
+   辨識結果確認 Modal
+========================= */
+
+function openStepConfirmModal(parsed){
+
+    const dateKey=(parsed&&parsed.dateKey)||getStepDateKey();
+    const stepsValue=(parsed&&parsed.steps!=null)?parsed.steps:"";
+
+    const warning=(parsed&&parsed.confident)
+        ?""
+        :`<div style="margin-bottom:12px;padding:8px 10px;border-radius:12px;background:#fff3c9;color:#9a6a15;font-size:11px;line-height:1.6;">⚠️ 無法確定步數，請確認辨識結果，或手動修改後再儲存。</div>`;
+
+    document.getElementById("modal").innerHTML=`
+<div class="modal-title">📷 辨識完成</div>
+${warning}
+<div style="font-size:11px;font-weight:900;color:#927f6d;margin-bottom:4px;">日期</div>
+<input id="stepConfirmDate" type="date" value="${dateKey}" max="${getStepDateKey()}" style="width:100%;margin-bottom:12px;padding:10px;border-radius:12px;border:1px solid #eadfce;font-size:14px;">
+<div style="font-size:11px;font-weight:900;color:#927f6d;margin-bottom:4px;">今日步數</div>
+<input id="stepConfirmSteps" type="number" inputmode="numeric" min="0" value="${stepsValue}" placeholder="請輸入步數" style="width:100%;margin-bottom:14px;padding:10px;border-radius:12px;border:1px solid #eadfce;font-size:14px;">
+<button class="btn btn-orange" onclick="triggerStepScreenshotUpload()">🔄 重新上傳</button>
+<div style="height:8px"></div>
+<button class="btn btn-green" onclick="confirmStepScreenshotSave()">✅ 確認儲存</button>
+<div style="height:8px"></div>
+<button class="btn btn-light" onclick="closeModal()">取消</button>
+`;
+
+    openModal();
+}
+
+function confirmStepScreenshotSave(){
+
+    const dateInput=document.getElementById("stepConfirmDate");
+    const stepsInput=document.getElementById("stepConfirmSteps");
+
+    if(!dateInput||!stepsInput)return;
+
+    const dateKey=dateInput.value;
+    const steps=Math.floor(Number(stepsInput.value));
+
+    if(!isValidStepDateKey(dateKey)){
+        toast("⚠️ 日期格式不正確");
+        return;
+    }
+
+    if(dateKey>getStepDateKey()){
+        toast("⚠️ 日期不可以晚於今天");
+        return;
+    }
+
+    if(!Number.isFinite(steps)||steps<=0){
+        toast("⚠️ 步數必須是大於 0 的數字");
+        return;
+    }
+
+    if(steps>1000000){
+        toast("⚠️ 步數數值超出合理範圍，請重新確認");
+        return;
+    }
+
+    if(steps>STEP_MAX_PER_DAY){
+
+        if(!confirm(`步數 ${formatSteps(steps)} 看起來異常大，確定要儲存嗎？`)){
+            return;
+        }
+    }
+
+    const existing=getStepDay(dateKey,false);
+
+    if(existing&&steps<=existing.steps){
+
+        closeModal();
+        toast(`目前已記錄 ${formatSteps(existing.steps)} 步，未更新`);
+        return;
+    }
+
+    closeModal();
+
+    stepStatusMessage="";
+
+    applyStepReading({date:dateKey,steps});
+
+    toast("✅ 步數已更新");
+}
+
+
+/* =========================
+   套用一次讀數：補發所有新的 1000 步事件
+   （累積步數跨日計算，今天沒走滿的零頭會留到明天繼續累積）
+========================= */
+
+function applyStepReading(reading){
+
+    const dateKey=reading.date;
+    const steps=reading.steps;
+
+    stepStatusMessage="";
+
+    const day=getStepDay(dateKey,steps>0);
+
+    const newEvents=[];
+
+    let changed=false;
+
+    if(day){
+
+        if(steps>day.steps){
+
+            const delta=steps-day.steps;
+
+            day.steps=steps;
+            changed=true;
+
+            const dispatch=getStepDispatchState();
+
+            dispatch.totalSteps+=delta;
+
+            const due=Math.floor(dispatch.totalSteps/STEP_DISPATCH_UNIT);
+
+            while(dispatch.dispatchCount<due){
+
+                const event=runStepDispatchEvent(
+                    (dispatch.dispatchCount+1)*STEP_DISPATCH_UNIT
+                );
+
+                day.events.push(event);
+                day.dispatchCount++;
+                dispatch.dispatchCount++;
+                newEvents.push(event);
+            }
+        }
+    }
+
+    if(dateKey===getStepDateKey()){
+        currentStepReading={
+            date:dateKey,
+            steps:day?day.steps:steps
+        };
+    }
+
+    if(changed){
+        save();
+    }
+
+    if(newEvents.length){
+        renderGarden();
+        renderKitchen();
+    }
+
+    renderStepViews();
+
+    if(newEvents.length){
+        showStepDispatchResult(dateKey,newEvents);
+    }
+}
+
+
+/* =========================
+   結果卡（沿用派遣結果卡）
+========================= */
+
+function stepEventToView(event){
+
+    if(event.kind==="recipe"){
+
+        const recipe=RECIPES.find(r=>r.id===event.recipeId);
+
+        if(!recipe)return null;
+
+        return {
+            bonus:null,
+            reward:[{
+                icon:recipe.icon,
+                name:recipe.name,
+                count:Number(event.count)||1
+            }]
+        };
+    }
+
+    const items=Array.isArray(event.items)?event.items:[];
+
+    const reward=items
+        .map(entry=>{
+
+            const item=INGREDIENTS[entry.itemId];
+
+            if(!item)return null;
+
+            return {
+                icon:item.icon,
+                name:item.name,
+                count:Number(entry.count)||1
+            };
+        })
+        .filter(Boolean);
+
+    if(!reward.length)return null;
+
+    return {bonus:null,reward};
+}
+
+function buildStepEventHtml(event){
+
+    const view=stepEventToView(event);
+
+    if(!view)return "";
+
+    if(view.bonus){
+        return buildDispatchBonusHtml(view.bonus);
+    }
+
+    return `<div class="dispatch-result-rewards step-event-rewards">${buildDispatchRewardHtml(view.reward)}</div>`;
+}
+
+function showStepDispatchResult(dateKey,events){
+
+    const rows=events.map(event=>{
+
+        const html=buildStepEventHtml(event);
+
+        if(!html)return "";
+
+        return `<div class="dispatch-result-subtitle">🚶 ${formatSteps(event.step)} 步</div>${html}`;
+
+    }).join("");
+
+    openDispatchResultLayer(
+        "🚶 步數派遣完成！",
+        `${formatStepDateLabel(dateKey)}・觸發 ${events.length} 次`,
+        rows
+    );
+}
+
+
+/* =========================
+   月曆（步數派遣頁與日誌頁共用）
+   星期固定：一 二 三 四 五 六 日
+========================= */
+
+function renderStepCalendar(containerId){
+
+    const box=document.getElementById(containerId);
+
+    if(!box)return;
+
+    if(!stepCalendarMonth){
+        const now=new Date();
+        stepCalendarMonth={
+            year:now.getFullYear(),
+            month:now.getMonth()
+        };
+    }
+
+    const year=stepCalendarMonth.year;
+    const month=stepCalendarMonth.month;
+
+    const offset=(new Date(year,month,1).getDay()+6)%7;
+    const total=new Date(year,month+1,0).getDate();
+    const todayKey=getStepDateKey();
+    const log=state.stepLog||{};
+
+    let cells="";
+
+    for(let i=0;i<offset;i++){
+        cells+=`<div class="step-cal-cell blank"></div>`;
+    }
+
+    for(let d=1;d<=total;d++){
+
+        const key=`${year}-${pad2(month+1)}-${pad2(d)}`;
+        const has=!!log[key];
+
+        cells+=`<div class="step-cal-cell${key===todayKey?" today":""}${has?" has-record":""}"${has?` onclick="openStepDayInfo('${key}')"`:""}><span class="step-cal-num">${d}</span>${has?`<img class="step-stamp" src="${STEP_STAMP_URL}" alt="" onerror="this.style.display='none'">`:""}</div>`;
+    }
+
+    box.innerHTML=`
+<div class="step-cal-head">
+<button class="step-cal-nav" onclick="changeStepMonth(-1)">←</button>
+<div class="step-cal-title">${year} 年 ${month+1} 月</div>
+<button class="step-cal-nav" onclick="changeStepMonth(1)">→</button>
+</div>
+<div class="step-cal-grid">
+${STEP_WEEKDAYS.map(w=>`<div class="step-cal-week">${w}</div>`).join("")}
+${cells}
+</div>`;
+}
+
+function changeStepMonth(delta){
+
+    if(!stepCalendarMonth){
+        const now=new Date();
+        stepCalendarMonth={
+            year:now.getFullYear(),
+            month:now.getMonth()
+        };
+    }
+
+    let year=stepCalendarMonth.year;
+    let month=stepCalendarMonth.month+delta;
+
+    while(month<0){
+        month+=12;
+        year--;
+    }
+
+    while(month>11){
+        month-=12;
+        year++;
+    }
+
+    stepCalendarMonth={year,month};
+
+    renderStepCalendar("stepCalendar");
+}
+
+function openStepDayInfo(key){
+
+    const day=getStepDay(key,false);
+
+    if(!day)return;
+
+    document.getElementById("modal").innerHTML=`
+<div class="modal-title">📅 ${formatStepDateLabel(key)}</div>
+<div style="text-align:center;padding:4px 0 12px;">
+<img src="${STEP_STAMP_URL}" alt="" style="width:64px;height:64px;object-fit:contain;" onerror="this.style.display='none'">
+<div style="margin-top:6px;font-size:12px;font-weight:900;color:#927f6d;">當日步數</div>
+<div style="font-size:34px;font-weight:900;line-height:1.2;color:var(--green-dark);">${formatSteps(day.steps)} <small style="font-size:14px;color:#a38d79;">步</small></div>
+<div style="margin-top:6px;font-size:12px;font-weight:900;color:#765b45;">步數派遣 ${day.dispatchCount} 次</div>
+</div>
+<button class="btn btn-light" onclick="closeModal()">關閉</button>
+`;
+
+    openModal();
+}
+
+
+/* =========================
+   步數派遣頁／日誌頁
+========================= */
+
+function renderStepPage(){
+
+    if(!document.getElementById("stepPage"))return;
+
+    renderStepCalendar("stepCalendar");
+
+    const today=getStepDateKey();
+    const day=getStepDay(today,false);
+
+    const known=
+        currentStepReading&&currentStepReading.date===today
+            ?currentStepReading.steps
+            :(day?day.steps:null);
+
+    const dispatch=getStepDispatchState();
+    const into=dispatch.totalSteps%STEP_DISPATCH_UNIT;
+
+    document.getElementById("stepTodayValue").textContent=
+        known===null?"—":formatSteps(known);
+
+    document.getElementById("stepProgressText").textContent=
+        `${into}/${STEP_DISPATCH_UNIT}`;
+
+    document.getElementById("stepProgressFill").style.width=
+        `${(into/STEP_DISPATCH_UNIT)*100}%`;
+
+    const count=day?day.dispatchCount:0;
+
+    document.getElementById("stepStatus").textContent=
+        stepStatusMessage
+        ||(known===null
+            ?"尚未上傳今日步數截圖"
+            :`還差 ${STEP_DISPATCH_UNIT-into} 步就會出發下一次派遣`);
+
+    document.getElementById("stepTodayCount").textContent=
+        `${count} 次`;
+
+    const events=day?day.events:[];
+
+    const html=events.map(event=>{
+
+        const eventHtml=buildStepEventHtml(event);
+
+        if(!eventHtml)return "";
+
+        return `<div class="step-log-item"><div class="step-log-step">🚶 ${formatSteps(event.step)} 步</div>${eventHtml}</div>`;
+
+    }).join("");
+
+    document.getElementById("stepTodayLog").innerHTML=
+        html||`<div class="empty">今天還沒有步數派遣<br>走滿 ${STEP_DISPATCH_UNIT} 步就會出發！</div>`;
+}
+
+function renderStepViews(){
+
+    renderStepPage();
+}
+
 
 /* =========================================================
    全域更新
