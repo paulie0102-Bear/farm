@@ -3226,8 +3226,9 @@ button,
 }
 
 .step-event-rewards{
-    grid-template-columns:minmax(0,110px);
-    justify-content:center;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    justify-content:stretch;
 }
 
 .step-event-rewards .dispatch-result-item{
@@ -4316,7 +4317,7 @@ renderTaskCenterContent();
 
 const TASK_DAILY_LABELS=[
 ["dispatch","🧭 派遣一次"],
-["cook","🍳 製作一次料理"],
+["cook","🍳 製作並獲得一份料理"],
 ["list","🚚 在餐車上架一次料理"],
 ["stepUpload","🚶 在步數派遣上傳一次截圖"]
 ];
