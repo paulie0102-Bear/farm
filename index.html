@@ -383,7 +383,8 @@ button,
 
 .garden-scene{
     position:relative;
-    min-height:180px;
+    min-height:70vh;
+    min-height:70dvh;
     margin-bottom:12px;
     overflow:hidden;
     border-radius:22px;
@@ -495,6 +496,224 @@ button,
     font-weight:900;
     white-space:nowrap;
     box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.garden-gramophone{
+    position:absolute;
+    right:16px;
+    bottom:16px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    cursor:pointer;
+    touch-action:manipulation;
+    z-index:6;
+    background:
+        radial-gradient(circle at 50% 50%, var(--gold) 0 6px, #161616 7px, #161616 100%),
+        repeating-radial-gradient(circle at 50% 50%, #333 0px, #333 1px, #101010 1px, #101010 4px);
+    border:3px solid #fff;
+    box-shadow:0 4px 14px rgba(0,0,0,.25);
+}
+
+.garden-gramophone::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    background:conic-gradient(from -40deg,
+        rgba(255,255,255,0) 0deg, rgba(255,255,255,.65) 18deg, rgba(255,255,255,0) 42deg,
+        rgba(255,255,255,0) 190deg, rgba(255,255,255,.28) 208deg, rgba(255,255,255,0) 226deg,
+        rgba(255,255,255,0) 360deg);
+    mix-blend-mode:screen;
+    pointer-events:none;
+}
+
+.garden-gramophone::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:6px;
+    height:6px;
+    background:#161616;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 1px rgba(255,255,255,.5);
+}
+
+.garden-gramophone.playing{
+    animation:gramophoneSpin 4s linear infinite;
+}
+
+@keyframes gramophoneSpin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+
+@keyframes musicSpin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+
+@media(prefers-reduced-motion:reduce){
+    .garden-gramophone.playing{animation:none;}
+}
+
+/* =========================================================
+   花園主畫面布置（沿用 Boss Tetris 布置系統的邏輯與設定）
+========================================================= */
+#gardenHomeCanvas{
+    position:absolute;
+    inset:0;
+    z-index:3;
+    overflow:hidden;
+    pointer-events:none;
+}
+#gardenHomeCanvas.editing{
+    pointer-events:auto;
+    outline:3px dashed var(--gold);
+    outline-offset:-4px;
+}
+.ghome-deco{
+    position:absolute;
+    font-size:30px;
+    line-height:1;
+    touch-action:none;
+    cursor:grab;
+    pointer-events:none;
+    transform-origin:center center;
+    filter:drop-shadow(0 3px 5px rgba(0,0,0,.2));
+}
+#gardenHomeCanvas.editing .ghome-deco{
+    pointer-events:auto;
+}
+.ghome-deco.bgLayer{
+    z-index:0;
+}
+.ghome-deco.selected{
+    outline:2px dashed var(--gold);
+    border-radius:8px;
+}
+.ghome-deco-img{
+    width:42px;
+    height:42px;
+    object-fit:contain;
+    display:block;
+    pointer-events:none;
+    -webkit-user-drag:none;
+}
+.ghome-edit-btn{
+    position:absolute;
+    left:10px;
+    top:10px;
+    z-index:8;
+    background:rgba(255,250,240,.92);
+    border:none;
+    color:var(--brown);
+    padding:5px 11px;
+    border-radius:14px;
+    font-size:10px;
+    font-weight:900;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+    touch-action:manipulation;
+}
+.ghome-edit-btn.on{
+    background:var(--gold);
+    color:#5c3d0a;
+}
+.ghome-toolbar{
+    position:absolute;
+    display:none;
+    background:var(--cream);
+    border:1px solid var(--cream-dark);
+    border-radius:14px;
+    padding:7px;
+    gap:6px;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr 1fr;
+    width:132px;
+    z-index:50;
+    box-shadow:0 6px 16px rgba(0,0,0,.18);
+}
+.ghome-toolbar button{
+    background:var(--cream-dark);
+    color:var(--brown);
+    border:none;
+    border-radius:9px;
+    padding:5px 3px;
+    font-size:10.5px;
+    font-weight:700;
+    touch-action:manipulation;
+    white-space:nowrap;
+    width:100%;
+    height:30px;
+}
+.ghome-toolbar .scaleCell{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:var(--cream-dark);
+    border-radius:9px;
+    height:30px;
+    padding:0 6px;
+}
+.ghome-toolbar .scaleCell span{
+    font-size:9px;
+    color:var(--brown);
+    margin-bottom:1px;
+}
+.ghome-toolbar input[type=range]{
+    width:100%;
+    margin:0;
+}
+.ghome-picker-tabs{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    padding-bottom:6px;
+}
+.ghome-picker-tab{
+    background:#fff;
+    border:1px solid #eee0cf;
+    color:#a3876c;
+    padding:6px 13px;
+    border-radius:16px;
+    font-size:11px;
+    font-weight:900;
+    white-space:nowrap;
+    touch-action:manipulation;
+}
+.ghome-picker-tab.active{
+    color:#fff;
+    background:var(--green);
+    border-color:var(--green-dark);
+}
+.ghome-picker-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-top:8px;
+}
+.ghome-picker-item{
+    background:#fff;
+    border:2px solid #eee2d4;
+    border-radius:12px;
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    touch-action:manipulation;
+    position:relative;
+}
+.ghome-picker-item.locked{
+    opacity:.32;
+}
+.ghome-picker-item img{
+    width:76%;
+    height:76%;
+    object-fit:contain;
 }
 
 
@@ -1192,6 +1411,15 @@ button,
     z-index:1;
     background:#dff3d5;
     transition:background .4s ease;
+}
+
+.truck-reward-bg{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
 }
 
 .truck-scene::before,
@@ -2571,6 +2799,31 @@ button,
     font-size:8px;
 }
 
+.deco-tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:8px;
+}
+
+.deco-tab-btn{
+    min-height:30px;
+    padding:5px 11px;
+    border:1px solid #eadfce;
+    border-radius:20px;
+    background:#fff;
+    color:#927f6d;
+    font-size:11px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.deco-tab-btn.active{
+    color:#fff;
+    background:var(--green);
+    border-color:var(--green-dark);
+}
+
 
 /* =========================================================
    派遣結果
@@ -3095,9 +3348,9 @@ button,
                     padding:6px 9px;
                     font-size:11px;
                 "
-                onclick="openDailyCheckin()"
+                onclick="openTaskCenter()"
             >
-                🎁 簽到
+                📋 任務
             </button>
 
             <button
@@ -3136,20 +3389,41 @@ button,
             <div class="flower f3">🌻</div>
             <div class="flower f4">🌷</div>
 
-            <div
-    class="garden-character-wrap"
-    onclick="openGardenCharacterModal()"
->
-    <img
-        id="gardenCharacter"
-        class="garden-character"
-        alt="花園角色"
-    >
-    <div class="garden-character-hint">
-        點擊更換角色
-    </div>
-</div>
+            <button
+                class="ghome-edit-btn"
+                id="gardenHomeEditBtn"
+                onclick="toggleGardenHomeEdit()"
+            >✏️ 布置模式：關閉</button>
 
+            <div
+                id="gardenHomeCanvas"
+                onclick="handleGardenCanvasClick(event)"
+            ></div>
+
+            <div class="ghome-toolbar" id="gardenDecoToolbar">
+                <div class="scaleCell">
+                    <span>大小</span>
+                    <input type="range" id="gardenScaleSlider" min="0.4" max="2.2" step="0.05" value="1" oninput="updateGardenDecoScale(this.value)">
+                </div>
+                <button onclick="rotateGardenDeco()">↻ 旋轉</button>
+                <button onclick="flipGardenDeco()">↔️ 翻轉</button>
+                <button onclick="deleteGardenDeco()">🗑️ 刪除</button>
+            </div>
+
+            <div
+                id="gardenGramophone"
+                class="garden-gramophone"
+                title="音樂播放器"
+                onclick="openMusicPicker()"
+            ></div>
+
+        </div>
+
+        <div class="card" id="gardenDecoPanel" style="display:none">
+            <div class="section-title"><span>🎨 主畫面布置</span><small>點選素材即可擺放</small></div>
+            <div style="font-size:11px;color:#998675;line-height:1.6;margin-bottom:8px">拖曳畫面上的裝飾品能調整位置；點一下裝飾品後，可用上方面板放大、縮小、旋轉或刪除。</div>
+            <div class="ghome-picker-tabs" id="gardenDecoTabs"></div>
+            <div class="ghome-picker-grid" id="gardenDecoGrid"></div>
         </div>
 
 
@@ -3323,6 +3597,7 @@ button,
 <button class="btn btn-light" style="width:auto;min-height:34px;padding:5px 10px;font-size:13px" onclick="deleteSelectedDeco()">🗑️ 刪除</button>
 </div>
 <div style="font-size:11px;color:#998675;line-height:1.6;margin-bottom:8px">點選下方項目可以收藏／新增到餐車上；拖曳畫面上的裝飾品能調整位置；點一下裝飾品可以放大、縮小、翻轉或刪除。</div>
+<div class="deco-tabs" id="decoTabs"></div>
 <div class="truck-option-grid" id="decoShopGrid"></div>
 <div style="height:8px"></div>
 <button class="btn btn-orange" onclick="exitDecorateMode()">✅ 完成佈置</button>
@@ -3883,17 +4158,459 @@ const TRUCK_SIGNS=[
 ========================================================= */
 
 const TRUCK_DECORATIONS=[
-{id:"pot1",name:"陶土花盆",emoji:"🪴",price:60,size:34,defaultX:18,defaultY:80},
-{id:"stool",name:"小木凳",emoji:"🪑",price:60,size:32,defaultX:80,defaultY:84},
-{id:"lantern",name:"暖黃燈籠",emoji:"🏮",price:80,size:30,defaultX:12,defaultY:38},
-{id:"bench",name:"野餐長椅",emoji:"🛋️",price:90,size:34,defaultX:84,defaultY:70},
-{id:"umbrella",name:"陽傘",emoji:"⛱️",price:100,size:38,defaultX:86,defaultY:45},
-{id:"signboard",name:"迎賓小立牌",emoji:"🪧",price:50,size:26,defaultX:16,defaultY:90},
-{id:"basket",name:"野餐提籃",emoji:"🧺",price:55,size:26,defaultX:70,defaultY:92},
-{id:"bike",name:"復古腳踏車",emoji:"🚲",price:120,size:40,defaultX:10,defaultY:60},
-{id:"flowerbox",name:"花架",emoji:"💐",price:65,size:28,defaultX:90,defaultY:86},
-{id:"stringlight",name:"串燈",emoji:"✨",price:75,size:26,defaultX:50,defaultY:16}
+{id:"pot1",name:"陶土花盆",emoji:"🪴",price:60,size:34,defaultX:18,defaultY:80,category:"other"},
+{id:"stool",name:"小木凳",emoji:"🪑",price:60,size:32,defaultX:80,defaultY:84,category:"other"},
+{id:"lantern",name:"暖黃燈籠",emoji:"🏮",price:80,size:30,defaultX:12,defaultY:38,category:"other"},
+{id:"bench",name:"野餐長椅",emoji:"🛋️",price:90,size:34,defaultX:84,defaultY:70,category:"other"},
+{id:"umbrella",name:"陽傘",emoji:"⛱️",price:100,size:38,defaultX:86,defaultY:45,category:"other"},
+{id:"signboard",name:"迎賓小立牌",emoji:"🪧",price:50,size:26,defaultX:16,defaultY:90,category:"other"},
+{id:"basket",name:"野餐提籃",emoji:"🧺",price:55,size:26,defaultX:70,defaultY:92,category:"other"},
+{id:"bike",name:"復古腳踏車",emoji:"🚲",price:120,size:40,defaultX:10,defaultY:60,category:"other"},
+{id:"flowerbox",name:"花架",emoji:"💐",price:65,size:28,defaultX:90,defaultY:86,category:"other"},
+{id:"stringlight",name:"串燈",emoji:"✨",price:75,size:26,defaultX:50,defaultY:16,category:"other"}
 ];
+
+/* =========================================================
+   任務積分系統（取自 boss tetris，每日任務改為料理／販賣／派遣）
+========================================================= */
+const TASK_CONFIG={
+seasonLengthDays:14,
+seasonAnchor:{year:2026,month:8,day:28,hour:8},
+dailyTaskPoints:5,
+dailyResetHour:8
+};
+
+const TASK_MUSIC_TRACKS={
+track_r1:{name:"離開的一路上",url:"https://paulie0102-bear.github.io/garden/music/1.mp3"},
+track_r2:{name:"如果可以",url:"https://paulie0102-bear.github.io/garden/music/2.mp3"},
+track_r3:{name:"總有一工",url:"https://paulie0102-bear.github.io/garden/music/10.mp3"},
+track_r4:{name:"絕地花園",url:"https://paulie0102-bear.github.io/garden/music/14.mp3"},
+track_r5:{name:"披星戴月的想你",url:"https://paulie0102-bear.github.io/garden/music/15.mp3"},
+track_r6:{name:"소연 (SOYEON) 퇴사할게여 (Narr. 기안84)",url:"https://paulie0102-bear.github.io/catch/music/6.mp3"}
+};
+
+const TASK_SEASON_REWARDS=[
+[
+{id:"bg_r1",name:"雪地全家福",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/1.png",threshold:30},
+{id:"plant_r1",name:"楓葉",category:"plant",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f341.png",threshold:60},
+{id:"food_r1",name:"草莓冰淇淋",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f366.png",threshold:90},
+{id:"char_r1",name:"Bobo",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/BOBO.gif",threshold:120},
+{id:"music_r1",name:"離開的一路上",category:"music",trackId:"track_r1",threshold:150}
+],
+[
+{id:"bg_r2",name:"滑雪的BoBo",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/2.png",threshold:30},
+{id:"plant_r2",name:"馬力歐菇",category:"plant",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f344.png",threshold:60},
+{id:"food_r2",name:"沁涼雪花冰",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f367.png",threshold:90},
+{id:"char_r2",name:"Quokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/QUOKKA.gif",threshold:120},
+{id:"music_r2",name:"如果可以",category:"music",trackId:"track_r2",threshold:150}
+],
+[
+{id:"bg_r3",name:"雪地滑雪",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/3.png",threshold:30},
+{id:"plant_r3",name:"葡萄",category:"plant",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f347.png",threshold:60},
+{id:"food_r3",name:"三色抹茶丸子",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f361.png",threshold:90},
+{id:"char_r3",name:"Bric",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/BRIC.gif",threshold:120},
+{id:"music_r3",name:"總有一工",category:"music",trackId:"track_r3",threshold:150}
+],
+[
+{id:"bg_r4",name:"10分!",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/4.png",threshold:30},
+{id:"plant_r4",name:"哈密瓜",category:"plant",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f348.png",threshold:60},
+{id:"food_r4",name:"提拉米蘇蛋糕",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f370.png",threshold:90},
+{id:"char_r4",name:"Fatty",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/FATTY.gif",threshold:120},
+{id:"music_r4",name:"絕地花園",category:"music",trackId:"track_r4",threshold:150}
+],
+[
+{id:"bg_r5",name:"臥冰求鯉",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/5.png",threshold:30},
+{id:"plant_r5",name:"牛頓的天敵",category:"plant",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f34e.png",threshold:60},
+{id:"food_r5",name:"法式吐司",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f35e.png",threshold:90},
+{id:"char_r5",name:"Hatty",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/HATTY.gif",threshold:120},
+{id:"music_r5",name:"披星戴月的想你",category:"music",trackId:"track_r5",threshold:150}
+],
+[
+{id:"bg_r6",name:"笑一個吧",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/6.png",threshold:30},
+{id:"plant_r6",name:"旺來",category:"plant",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f34d.png",threshold:60},
+{id:"food_r6",name:"金黃薯條",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f35f.png",threshold:90},
+{id:"char_r6",name:"Marsh",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/MARSH.gif",threshold:120},
+{id:"music_r6",name:"소연 (SOYEON) 퇴사할게여 (Narr. 기안84)",category:"music",trackId:"track_r6",threshold:150}
+],
+[
+{id:"bg_r7",name:"願者上鉤",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/7.png",threshold:30},
+{id:"plant_r7",name:"天天有活力",category:"plant",img:"https://paulie0102-Bear.github.io/pharm/bouquet_energy.png",threshold:60},
+{id:"food_r7",name:"杯子蛋糕",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f9c1.png",threshold:90},
+{id:"char_r7",name:"Mr.Burnt",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/MR.BURNT.gif",threshold:120}
+],
+[
+{id:"bg_r8",name:"雪人",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/8.png",threshold:30},
+{id:"plant_r8",name:"倏然夢",category:"plant",img:"https://paulie0102-Bear.github.io/pharm/bouquet_dream.png",threshold:60},
+{id:"food_r8",name:"生日蛋糕",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f382.png",threshold:90},
+{id:"char_r8",name:"MamaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/MAMA%20QUOKKA.gif",threshold:120}
+],
+[
+{id:"bg_r9",name:"雪球",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/9.png",threshold:30},
+{id:"plant_r9",name:"成功之路",category:"plant",img:"https://paulie0102-Bear.github.io/pharm/bouquet_success.png",threshold:60},
+{id:"food_r9",name:"餅乾",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f36a.png",threshold:90},
+{id:"char_r9",name:"PapaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/PAPA%20QUOKKA.gif",threshold:120}
+],
+[
+{id:"bg_r10",name:"眾樂樂",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/10.png",threshold:30},
+{id:"plant_r10",name:"畢業快樂",category:"plant",img:"https://paulie0102-Bear.github.io/pharm/bouquet_grad.png",threshold:60},
+{id:"food_r10",name:"甜甜圈",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f369.png",threshold:90},
+{id:"char_r10",name:"GrandpaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/GRANDPA%20QUOKKA.gif",threshold:120}
+]
+];
+
+function taskLocalDateKey(d){
+const shifted=new Date(d.getTime()-TASK_CONFIG.dailyResetHour*3600*1000);
+return shifted.getFullYear()+"-"+(shifted.getMonth()+1)+"-"+shifted.getDate();
+}
+function taskSeasonAnchorTs(){
+const a=TASK_CONFIG.seasonAnchor;
+return new Date(a.year,a.month,a.day,a.hour,0,0,0).getTime();
+}
+function taskCurrentSeasonIndex(now){
+const periodMs=TASK_CONFIG.seasonLengthDays*24*3600*1000;
+return Math.floor((now-taskSeasonAnchorTs())/periodMs);
+}
+function taskSeasonStartTs(idx){
+const periodMs=TASK_CONFIG.seasonLengthDays*24*3600*1000;
+return taskSeasonAnchorTs()+idx*periodMs;
+}
+function getTaskSeasonRewards(seasonIndex){
+const tpl=TASK_SEASON_REWARDS[((seasonIndex%TASK_SEASON_REWARDS.length)+TASK_SEASON_REWARDS.length)%TASK_SEASON_REWARDS.length];
+return tpl.slice().sort((a,b)=>a.threshold-b.threshold);
+}
+function taskRewardItemById(id){
+for(const s of TASK_SEASON_REWARDS)for(const it of s)if(it.id===id)return it;
+return null;
+}
+function ensureTaskSystem(){
+if(!state.taskSystem){
+state.taskSystem={
+daily:{date:null,dispatch:false,cook:false,list:false,stepUpload:false,claimDispatch:false,claimCook:false,claimList:false,claimStepUpload:false},
+season:{index:null,points:0,rewardsClaimed:[]},
+unlockedItems:[],
+music:{unlocked:[],current:null,musicOn:true,musicVol:0.6}
+};
+}
+const ts=state.taskSystem;
+if(!ts.daily)ts.daily={date:null,dispatch:false,cook:false,list:false,stepUpload:false,claimDispatch:false,claimCook:false,claimList:false,claimStepUpload:false};
+if(!ts.season)ts.season={index:null,points:0,rewardsClaimed:[]};
+if(!Array.isArray(ts.unlockedItems))ts.unlockedItems=[];
+if(!ts.music)ts.music={unlocked:[],current:null,musicOn:true,musicVol:0.6};
+if(!Array.isArray(ts.music.unlocked))ts.music.unlocked=[];
+const key=taskLocalDateKey(new Date());
+if(ts.daily.date!==key){
+ts.daily={date:key,dispatch:false,cook:false,list:false,stepUpload:false,claimDispatch:false,claimCook:false,claimList:false,claimStepUpload:false};
+}
+const idx=taskCurrentSeasonIndex(Date.now());
+if(ts.season.index!==idx){
+ts.season={index:idx,points:0,rewardsClaimed:[]};
+}
+}
+function markTaskDaily(kind){
+ensureTaskSystem();
+if(!state.taskSystem.daily[kind]){
+state.taskSystem.daily[kind]=true;
+}
+renderTaskCenterContent();
+}
+
+const TASK_DAILY_LABELS=[
+["dispatch","🧭 派遣一次"],
+["cook","🍳 製作一次料理"],
+["list","🚚 在餐車上架一次料理"],
+["stepUpload","🚶 在步數派遣上傳一次截圖"]
+];
+
+function renderTaskCenterContent(){
+ensureTaskSystem();
+const ts=state.taskSystem;
+
+if(!state.dailyCheckin)state.dailyCheckin={date:"",streak:0};
+const today=getTodayKey();
+const claimedToday=state.dailyCheckin.date===today;
+const nextStreak=claimedToday?Number(state.dailyCheckin.streak)||1:computeNextCheckinStreak();
+const checkinReward=getCheckinReward(nextStreak);
+
+const checkinHtml=`
+<div style="padding-bottom:10px;margin-bottom:10px;border-bottom:1px dashed #eee2d4;">
+<div style="font-size:13px;font-weight:900;color:#4a4039;margin-bottom:6px;">🎁 簽到獎勵</div>
+<div style="font-size:12px;color:#765b45;line-height:1.6;margin-bottom:8px;">
+${claimedToday
+?`今天已經簽到囉！明天再回來領取禮物吧～`
+:`連續簽到第 <b>${nextStreak}</b> 天，今天可以領取 <b>💰${checkinReward}</b> 金幣！`}
+</div>
+${claimedToday
+?""
+:`<button class="btn btn-green" style="min-height:38px;" onclick="claimDailyCheckin()">領取簽到獎勵</button>`}
+</div>`;
+
+const dailyHtml=TASK_DAILY_LABELS.map(([key,label])=>{
+const claimKey="claim"+key.charAt(0).toUpperCase()+key.slice(1);
+const done=ts.daily[key];
+const claimed=ts.daily[claimKey];
+const canClaim=done&&!claimed;
+return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px dashed #eee2d4;">
+<div><div style="font-size:12px;font-weight:900;color:#4a4039;">${label}</div><div style="font-size:10px;color:#998675;">${claimed?"已領取":done?"已完成":"進行中"}</div></div>
+<button class="btn ${canClaim?"btn-orange":"btn-light"}" style="width:auto;min-height:32px;padding:6px 11px;font-size:11px;" ${canClaim?"":"disabled"} onclick="claimTaskDaily('${key}')">領取 ${TASK_CONFIG.dailyTaskPoints}</button>
+</div>`;
+}).join("");
+
+const startD=new Date(taskSeasonStartTs(ts.season.index));
+const endD=new Date(taskSeasonStartTs(ts.season.index+1));
+const seasonInfoText=`本輪：${startD.getMonth()+1}/${startD.getDate()} ～ ${endD.getMonth()+1}/${endD.getDate()}`;
+
+const rewards=getTaskSeasonRewards(ts.season.index);
+const points=ts.season.points;
+const maxThreshold=rewards.length?rewards[rewards.length-1].threshold:0;
+const barWidth=(maxThreshold>0?Math.min(100,points/maxThreshold*100):100);
+const nextReward=rewards.find(r=>points<r.threshold);
+const nextText=nextReward
+?`距離「${nextReward.name}」還差 ${nextReward.threshold-points} 積分`
+:"已達成本輪所有積分獎勵！";
+
+const modal=document.getElementById("modal");
+if(!modal)return;
+modal.innerHTML=`
+<div class="modal-title">📋 任務</div>
+${checkinHtml}
+<div class="section-title" style="margin-bottom:6px;"><span style="font-size:13px;">📅 每日任務</span><small>${seasonInfoText}</small></div>
+<div>${dailyHtml}</div>
+<div style="height:8px"></div>
+<div class="pointsProgress">
+<div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:900;color:#765b45;">
+<span>目前積分</span>
+<span>${points}</span>
+</div>
+<div class="progress-track" style="margin:6px 0;">
+<div class="progress-fill" style="width:${barWidth}%"></div>
+</div>
+<div style="font-size:10px;color:#998675;">${nextText}</div>
+</div>
+<div style="height:8px"></div>
+<button class="btn btn-light" onclick="openTaskRewardModal()">🎁 查看積分獎勵</button>
+<div style="height:8px"></div>
+<button class="btn btn-light" onclick="closeModal()">關閉</button>
+`;
+}
+
+function openTaskCenter(){
+ensureTaskSystem();
+renderTaskCenterContent();
+openModal();
+}
+
+function claimTaskDaily(kind){
+ensureTaskSystem();
+const ts=state.taskSystem;
+const claimKey="claim"+kind.charAt(0).toUpperCase()+kind.slice(1);
+if(ts.daily[kind]&&!ts.daily[claimKey]){
+ts.daily[claimKey]=true;
+ts.season.points+=TASK_CONFIG.dailyTaskPoints;
+save();
+renderTaskCenterContent();
+toast(`已領取 ${TASK_CONFIG.dailyTaskPoints} 積分`);
+}
+}
+
+function openTaskRewardModal(){
+ensureTaskSystem();
+renderTaskRewardModalContent();
+openModal();
+}
+
+function renderTaskRewardModalContent(){
+ensureTaskSystem();
+const ts=state.taskSystem;
+const rewards=getTaskSeasonRewards(ts.season.index);
+const points=ts.season.points;
+const rowsHtml=rewards.map(r=>{
+const unlocked=points>=r.threshold;
+const claimed=ts.season.rewardsClaimed.includes(r.id+":"+ts.season.index);
+const iconHtml=r.img
+?`<img src="${r.img}" style="width:40px;height:40px;object-fit:contain;flex-shrink:0;" onerror="this.style.display='none'">`
+:`<div style="font-size:32px;flex-shrink:0;">${r.emoji||"🎁"}</div>`;
+const threshText=unlocked
+?(claimed?"已領取":"已達成，可領取")
+:`還差 ${r.threshold-points} 積分（需要 ${r.threshold} 積分）`;
+return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0e6d6;">
+${iconHtml}
+<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:900;color:#4a4039;">${r.name}</div><div style="font-size:10px;color:#998675;">${threshText}</div></div>
+<button class="btn ${unlocked&&!claimed?"btn-orange":"btn-light"}" style="width:auto;min-height:34px;padding:6px 10px;font-size:11px;flex-shrink:0;" ${(!unlocked||claimed)?"disabled":""} onclick="claimTaskReward('${r.id}')">${claimed?"已領取":"領取"}</button>
+</div>`;
+}).join("");
+const modal=document.getElementById("modal");
+if(!modal)return;
+modal.innerHTML=`<div class="modal-title">🎁 積分獎勵</div>
+<div style="font-size:11px;color:#998675;margin-bottom:8px;">目前積分 ${points}（背景／植物／食物／人物獎勵可在花園的主畫面布置中使用）</div>
+<div style="max-height:360px;overflow-y:auto;">${rowsHtml}</div>
+<div style="height:8px"></div>
+<button class="btn btn-light" onclick="closeModal()">關閉</button>`;
+}
+
+function claimTaskReward(id){
+ensureTaskSystem();
+const ts=state.taskSystem;
+const rewards=getTaskSeasonRewards(ts.season.index);
+const r=rewards.find(x=>x.id===id);
+if(!r)return;
+const key=r.id+":"+ts.season.index;
+if(ts.season.points>=r.threshold&&!ts.season.rewardsClaimed.includes(key)){
+ts.season.rewardsClaimed.push(key);
+const already=ts.unlockedItems.includes(r.id);
+if(!already)ts.unlockedItems.push(r.id);
+if(r.category==="music"&&r.trackId&&!ts.music.unlocked.includes(r.trackId)){
+ts.music.unlocked.push(r.trackId);
+}
+save();
+renderTaskCenterContent();
+renderTaskRewardModalContent();
+if(truckDecorateMode)renderDecoShop();
+if(gardenEditMode)renderGardenDecoPanel();
+toast(already?("已再次領取："+r.name):("已解鎖："+r.name));
+}
+}
+
+
+/* =========================================================
+   音樂播放系統（黑膠唱片，取自 boss tetris）
+   使用單一持久化 <audio> 元素，只在整個網頁生命週期建立一次，
+   切換頁面／點擊任何按鍵都只是畫面重繪，不會重建或重新 play()，
+   因此音樂播放不受頁面切換或按鍵點擊影響。
+========================================================= */
+const AudioSys=(function(){
+let musicEl=null;
+let currentTrackId=null;
+function ensureMusicEl(){
+if(musicEl)return musicEl;
+musicEl=new Audio();
+musicEl.loop=true;
+musicEl.preload="auto";
+musicEl.addEventListener("error",()=>{toast("音樂載入失敗，請確認網址是否正確");});
+applyVolume();
+return musicEl;
+}
+function applyVolume(){
+ensureTaskSystem();
+const m=state.taskSystem.music;
+if(musicEl)musicEl.volume=m.musicOn?(Number(m.musicVol)||0):0;
+}
+function playTrack(id){
+const track=TASK_MUSIC_TRACKS[id];
+if(!track||!track.url){toast("此音樂尚未設定網址");return;}
+ensureMusicEl();
+if(currentTrackId===id){
+if(musicEl.paused)musicEl.play().catch(()=>{});
+return;
+}
+currentTrackId=id;
+musicEl.src=track.url;
+musicEl.currentTime=0;
+applyVolume();
+musicEl.play().catch(()=>{});
+}
+function stop(){
+if(musicEl)musicEl.pause();
+currentTrackId=null;
+}
+function pause(){
+if(musicEl)musicEl.pause();
+}
+function setMusicOn(on){
+ensureTaskSystem();
+state.taskSystem.music.musicOn=on;
+applyVolume();
+}
+function setMusicVol(v){
+ensureTaskSystem();
+state.taskSystem.music.musicVol=v;
+applyVolume();
+}
+function unlockOnGesture(){
+ensureTaskSystem();
+const m=state.taskSystem.music;
+if(m.current&&m.unlocked.includes(m.current)){
+if(currentTrackId===null){
+playTrack(m.current);
+}else if(musicEl&&musicEl.paused){
+musicEl.play().catch(()=>{});
+}
+}
+}
+return{
+playTrack,stop,pause,setMusicOn,setMusicVol,applyVolume,unlockOnGesture,
+get isPlaying(){return!!(musicEl&&!musicEl.paused&&!musicEl.ended);}
+};
+})();
+
+function openMusicPicker(){
+ensureTaskSystem();
+AudioSys.unlockOnGesture();
+renderMusicModal();
+openModal();
+}
+
+function renderMusicModal(){
+ensureTaskSystem();
+const m=state.taskSystem.music;
+const unlocked=m.unlocked;
+let listHtml;
+if(!unlocked.length){
+listHtml=`<div style="font-size:11px;color:#998675;text-align:center;padding:14px 0;">尚未解鎖任何音樂，完成任務解鎖吧！</div>`;
+}else{
+listHtml=unlocked.map(id=>{
+const track=TASK_MUSIC_TRACKS[id];
+if(!track)return"";
+const isCurrent=m.current===id;
+const isPlaying=isCurrent&&AudioSys.isPlaying;
+return `<div style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:12px;${isCurrent?"background:#fff3c9;":""}cursor:pointer;" onclick="toggleTaskMusic('${id}')">
+<div style="font-size:20px;${isPlaying?"animation:musicSpin 3s linear infinite;":""}">💿</div>
+<div style="flex:1;min-width:0;">
+<div style="font-size:12px;font-weight:900;color:#4a4039;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${track.name}</div>
+<div style="font-size:10px;color:#998675;">${isPlaying?"播放中":isCurrent?"已暫停":"點按播放"}</div>
+</div>
+<button class="btn btn-light" style="width:auto;min-height:30px;padding:4px 10px;font-size:12px;">${isPlaying?"⏸":"▶"}</button>
+</div>`;
+}).join("");
+}
+const modal=document.getElementById("modal");
+if(!modal)return;
+modal.innerHTML=`<div class="modal-title">💿 音樂播放器</div>
+<div style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;margin-bottom:10px;">${listHtml}</div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+<span style="font-size:11px;color:#765b45;font-weight:900;white-space:nowrap;">🔊 音量</span>
+<input type="range" min="0" max="1" step="0.05" value="${m.musicVol}" oninput="setTaskMusicVol(this.value)" style="flex:1;">
+</div>
+<button class="btn btn-light" onclick="stopTaskMusic()">⏹ 停止播放</button>
+<div style="height:7px"></div>
+<button class="btn btn-light" onclick="closeModal()">關閉</button>`;
+}
+
+function toggleTaskMusic(id){
+ensureTaskSystem();
+const m=state.taskSystem.music;
+const isPlaying=m.current===id&&AudioSys.isPlaying;
+if(isPlaying){
+AudioSys.pause();
+}else{
+m.current=id;
+AudioSys.playTrack(id);
+}
+save();
+renderMusicModal();
+}
+
+function stopTaskMusic(){
+ensureTaskSystem();
+AudioSys.stop();
+state.taskSystem.music.current=null;
+save();
+renderMusicModal();
+}
+
+function setTaskMusicVol(v){
+AudioSys.setMusicVol(parseFloat(v));
+save();
+}
 
 
 const SALE_PRICE=30;
@@ -3912,6 +4629,7 @@ sign:"plain",
 ownedSigns:["plain"],
 ownedDecorations:[],
 decorations:[],
+rewardBackground:null,
 staffId:null,
 stock:[],
 lastSaleTime:Date.now(),
@@ -3924,6 +4642,7 @@ totalSales:0
 const DEFAULT_STATE={
 playerCharacter:"QUOKKA",
 coins:100,
+gardenHome:{background:null,placed:[]},
 ingredients:{
 "🌾":2,
 "🍎":2,
@@ -3969,7 +4688,13 @@ targetCharacter:null
 },
 stepLog:{},
 stepDispatch:{totalSteps:0,dispatchCount:0},
-trucks:Array.from({length:4},(_,i)=>createDefaultTruck(i))
+trucks:Array.from({length:4},(_,i)=>createDefaultTruck(i)),
+taskSystem:{
+daily:{date:null,dispatch:false,cook:false,list:false,stepUpload:false,claimDispatch:false,claimCook:false,claimList:false,claimStepUpload:false},
+season:{index:null,points:0,rewardsClaimed:[]},
+unlockedItems:[],
+music:{unlocked:[],current:null,musicOn:true,musicVol:0.6}
+}
 };
 
 
@@ -4330,22 +5055,49 @@ if(!Array.isArray(t.ownedSigns)||!t.ownedSigns.length)t.ownedSigns=["plain"];
 if(!t.ownedSigns.includes("plain"))t.ownedSigns.unshift("plain");
 if(!Array.isArray(t.ownedDecorations))t.ownedDecorations=[];
 if(!Array.isArray(t.decorations))t.decorations=[];
-t.decorations=t.decorations.filter(x=>x&&typeof x.id==="string"&&TRUCK_DECORATIONS.some(d=>d.id===x.id));
+t.decorations=t.decorations.filter(x=>x&&(
+(typeof x.id==="string"&&TRUCK_DECORATIONS.some(d=>d.id===x.id))||
+(typeof x.rewardId==="string"&&taskRewardItemById(x.rewardId))
+));
 t.decorations.forEach(x=>{
 if(!Number.isFinite(Number(x.x)))x.x=50;
 if(!Number.isFinite(Number(x.y)))x.y=80;
 });
 t.ownedDecorations=t.ownedDecorations.filter(id=>TRUCK_DECORATIONS.some(d=>d.id===id));
-t.decorations.forEach(x=>{if(!t.ownedDecorations.includes(x.id))t.ownedDecorations.push(x.id);});
+t.decorations.forEach(x=>{if(x.id&&!t.ownedDecorations.includes(x.id))t.ownedDecorations.push(x.id);});
 if(!t.skin)t.skin="spring";
 if(!t.environment)t.environment="grass";
 if(!t.sign)t.sign="plain";
+if(!("rewardBackground" in t))t.rewardBackground=null;
+if(t.rewardBackground&&!taskRewardItemById(t.rewardBackground))t.rewardBackground=null;
 if(!t.lastSaleTime)t.lastSaleTime=Date.now();
 if(!Number.isFinite(Number(t.totalSales)))t.totalSales=0;
 });
+merged.taskSystem=Object.assign({
+daily:{date:null,cook:false,sell:false,dispatch:false,claimCook:false,claimSell:false,claimDispatch:false},
+season:{index:null,points:0,rewardsClaimed:[]},
+unlockedItems:[],
+music:{unlocked:[],current:null,musicOn:true,musicVol:0.6}
+},saved?.taskSystem||{});
+merged.taskSystem.daily=Object.assign({date:null,dispatch:false,cook:false,list:false,stepUpload:false,claimDispatch:false,claimCook:false,claimList:false,claimStepUpload:false},saved?.taskSystem?.daily||{});
+merged.taskSystem.season=Object.assign({index:null,points:0,rewardsClaimed:[]},saved?.taskSystem?.season||{});
+merged.taskSystem.season.rewardsClaimed=Array.isArray(merged.taskSystem.season.rewardsClaimed)?merged.taskSystem.season.rewardsClaimed:[];
+merged.taskSystem.unlockedItems=Array.isArray(saved?.taskSystem?.unlockedItems)?Array.from(new Set(saved.taskSystem.unlockedItems)):[];
+merged.taskSystem.music=Object.assign({unlocked:[],current:null,musicOn:true,musicVol:0.6},saved?.taskSystem?.music||{});
+merged.taskSystem.music.unlocked=Array.isArray(merged.taskSystem.music.unlocked)?Array.from(new Set(merged.taskSystem.music.unlocked)):[];
 merged.cooking=Array.isArray(saved?.cooking)?saved.cooking:[];
 while(merged.cooking.length<merged.cookingLines)merged.cooking.push({recipeId:null,endTime:0,helperEnabled:false});
 if(!Array.isArray(merged.joined))merged.joined=[];
+merged.gardenHome=Object.assign({background:null,placed:[]},saved?.gardenHome||{});
+if(merged.gardenHome.background&&!taskRewardItemById(merged.gardenHome.background))merged.gardenHome.background=null;
+merged.gardenHome.placed=Array.isArray(merged.gardenHome.placed)?merged.gardenHome.placed.filter(p=>p&&taskRewardItemById(p.itemId)):[];
+merged.gardenHome.placed.forEach(p=>{
+if(!Number.isFinite(Number(p.x)))p.x=40;
+if(!Number.isFinite(Number(p.y)))p.y=60;
+if(!Number.isFinite(Number(p.scale)))p.scale=1;
+if(!Number.isFinite(Number(p.rotate)))p.rotate=0;
+p.flipped=!!p.flipped;
+});
 return merged;
 }
 
@@ -4572,7 +5324,7 @@ function renderGarden(){
         state.coins;
 
 
-    renderGardenCharacter();
+    renderGardenHome();
 
     renderRegions();
 
@@ -4628,6 +5380,238 @@ save();
 closeModal();
 renderGardenCharacter();
 toast(`🌿 已選擇 ${character.name}`);
+}
+
+/* =========================================================
+   花園主畫面布置
+   （拖曳、縮放、旋轉、翻轉、刪除等設定直接沿用 Boss Tetris
+   的布置系統：見 index.html 的 #homeCanvas / #decoToolbar）
+========================================================= */
+let gardenEditMode=false,selectedGardenUid=null,gardenDecoTab="background";
+const GARDEN_DECO_CATEGORIES=[
+{id:"background",name:"背景"},{id:"plant",name:"植物"},
+{id:"food",name:"食物"},{id:"character",name:"人物"}
+];
+
+function ensureGardenHome(){
+if(!state.gardenHome||typeof state.gardenHome!=="object")state.gardenHome={background:null,placed:[]};
+if(!Array.isArray(state.gardenHome.placed))state.gardenHome.placed=[];
+}
+
+function gardenHomeCanvasEl(){ return document.getElementById("gardenHomeCanvas"); }
+
+function renderGardenHome(){
+ensureGardenHome();
+const canvas=gardenHomeCanvasEl();
+if(!canvas)return;
+canvas.querySelectorAll(".ghome-deco").forEach(el=>el.remove());
+if(state.gardenHome.background){
+const bgItem=taskRewardItemById(state.gardenHome.background);
+if(bgItem){
+const el=document.createElement("div");
+el.className="ghome-deco bgLayer";
+el.style.left="0";el.style.top="0";el.style.width="100%";el.style.height="100%";
+if(bgItem.img){
+el.style.backgroundImage=`url("${bgItem.img}")`;
+el.style.backgroundSize="cover";
+el.style.backgroundPosition="center";
+el.style.backgroundRepeat="no-repeat";
+}else{
+el.style.display="flex";el.style.alignItems="center";el.style.justifyContent="center";
+el.innerHTML=`<span style="font-size:70px;opacity:.35">${bgItem.emoji||""}</span>`;
+}
+canvas.insertBefore(el,canvas.firstChild);
+}
+}
+state.gardenHome.placed.slice().sort((a,b)=>a.z-b.z).forEach(p=>{
+const item=taskRewardItemById(p.itemId);if(!item)return;
+const el=document.createElement("div");
+el.className="ghome-deco";el.dataset.uid=p.uid;
+el.style.left=p.x+"px";el.style.top=p.y+"px";
+el.style.transform=`scale(${p.scale}) rotate(${p.rotate||0}deg) scaleX(${p.flipped?-1:1})`;
+if(item.img){
+const img=document.createElement("img");
+img.src=item.img;img.alt=item.name;img.className="ghome-deco-img";img.draggable=false;
+el.appendChild(img);
+}else{
+el.textContent=item.emoji||"";
+}
+if(p.uid===selectedGardenUid)el.classList.add("selected");
+canvas.appendChild(el);
+bindGardenDecoDrag(el,p);
+});
+}
+
+function clampToGardenCanvas(x,y){
+const canvas=gardenHomeCanvasEl();
+const w=canvas?.clientWidth||300,h=canvas?.clientHeight||180;
+const margin=16;
+return [Math.max(-margin,Math.min(w-margin,x)),Math.max(-margin,Math.min(h-margin,y))];
+}
+
+function bindGardenDecoDrag(el,p){
+let dragging=false,sx=0,sy=0,ox=0,oy=0;
+el.addEventListener("pointerdown",(e)=>{
+if(!gardenEditMode)return;
+e.preventDefault();e.stopPropagation();
+dragging=true;sx=e.clientX;sy=e.clientY;ox=p.x;oy=p.y;
+try{el.setPointerCapture(e.pointerId);}catch(err){}
+selectGardenDeco(p.uid);
+});
+el.addEventListener("pointermove",(e)=>{
+if(!dragging)return;
+const[cx,cy]=clampToGardenCanvas(ox+(e.clientX-sx),oy+(e.clientY-sy));
+p.x=cx;p.y=cy;
+el.style.left=p.x+"px";el.style.top=p.y+"px";
+positionGardenToolbar(el);
+});
+function end(){ if(dragging){ dragging=false; save(); } }
+el.addEventListener("pointerup",end);
+el.addEventListener("pointercancel",end);
+el.addEventListener("click",(e)=>{ if(gardenEditMode){ e.stopPropagation(); selectGardenDeco(p.uid); } });
+}
+
+function selectGardenDeco(uid){
+selectedGardenUid=uid;
+document.querySelectorAll(".ghome-deco").forEach(el=>el.classList.toggle("selected",el.dataset.uid===uid));
+const toolbar=document.getElementById("gardenDecoToolbar");
+if(!toolbar)return;
+if(uid){
+const el=gardenHomeCanvasEl()?.querySelector(`.ghome-deco[data-uid="${uid}"]`);
+if(el){ positionGardenToolbar(el); toolbar.style.display="grid"; }
+}else{
+toolbar.style.display="none";
+}
+}
+
+function positionGardenToolbar(el){
+const toolbar=document.getElementById("gardenDecoToolbar");
+const canvas=gardenHomeCanvasEl();
+if(!toolbar||!canvas)return;
+const r=el.getBoundingClientRect();const cr=canvas.getBoundingClientRect();
+const wasHidden=toolbar.style.display!=="grid";
+if(wasHidden){ toolbar.style.visibility="hidden"; toolbar.style.display="grid"; }
+const toolbarW=toolbar.offsetWidth||132;
+if(wasHidden){ toolbar.style.display="none"; toolbar.style.visibility=""; }
+toolbar.style.left=Math.max(4,Math.min(cr.width-toolbarW-4,r.left-cr.left))+"px";
+toolbar.style.top=Math.max(4,r.top-cr.top-42)+"px";
+}
+
+function currentGardenPlaced(){
+ensureGardenHome();
+return state.gardenHome.placed.find(p=>p.uid===selectedGardenUid);
+}
+
+function updateGardenDecoScale(v){
+const p=currentGardenPlaced();if(!p)return;
+p.scale=parseFloat(v);
+renderGardenHome();save();
+selectGardenDeco(selectedGardenUid);
+}
+
+function rotateGardenDeco(){
+const p=currentGardenPlaced();if(!p)return;
+p.rotate=((p.rotate||0)+15)%360;
+renderGardenHome();save();
+selectGardenDeco(selectedGardenUid);
+}
+
+function flipGardenDeco(){
+const p=currentGardenPlaced();if(!p)return;
+p.flipped=!p.flipped;
+renderGardenHome();save();
+selectGardenDeco(selectedGardenUid);
+}
+
+function deleteGardenDeco(){
+ensureGardenHome();
+const idx=state.gardenHome.placed.findIndex(x=>x.uid===selectedGardenUid);
+if(idx===-1)return;
+state.gardenHome.placed.splice(idx,1);
+selectedGardenUid=null;
+const toolbar=document.getElementById("gardenDecoToolbar");
+if(toolbar)toolbar.style.display="none";
+renderGardenHome();save();
+}
+
+function handleGardenCanvasClick(e){
+if(e.target.id==="gardenHomeCanvas"||e.target.classList.contains("bgLayer"))selectGardenDeco(null);
+}
+
+function toggleGardenHomeEdit(){
+gardenEditMode=!gardenEditMode;
+const btn=document.getElementById("gardenHomeEditBtn");
+if(btn){
+btn.textContent="布置模式："+(gardenEditMode?"開啟":"關閉");
+btn.classList.toggle("on",gardenEditMode);
+}
+const canvas=gardenHomeCanvasEl();
+if(canvas)canvas.classList.toggle("editing",gardenEditMode);
+const panel=document.getElementById("gardenDecoPanel");
+if(panel)panel.style.display=gardenEditMode?"block":"none";
+if(gardenEditMode){
+renderGardenDecoPanel();
+}else{
+selectedGardenUid=null;
+const toolbar=document.getElementById("gardenDecoToolbar");
+if(toolbar)toolbar.style.display="none";
+renderGardenHome();
+}
+}
+
+function switchGardenDecoTab(id){
+gardenDecoTab=id;
+renderGardenDecoPanel();
+}
+
+function renderGardenDecoPanel(){
+ensureTaskSystem();
+const tabsEl=document.getElementById("gardenDecoTabs");
+if(tabsEl){
+tabsEl.innerHTML=GARDEN_DECO_CATEGORIES.map(c=>
+`<button class="ghome-picker-tab${gardenDecoTab===c.id?" active":""}" onclick="switchGardenDecoTab('${c.id}')">${c.name}</button>`
+).join("");
+}
+const gridEl=document.getElementById("gardenDecoGrid");
+if(!gridEl)return;
+const items=TASK_SEASON_REWARDS.flat().filter(it=>it.category===gardenDecoTab);
+if(!items.length){
+gridEl.innerHTML='<div style="grid-column:1/-1;font-size:11px;color:#998675;padding:10px;text-align:center;">此分類尚無素材，完成任務解鎖吧！</div>';
+return;
+}
+gridEl.innerHTML="";
+items.forEach(it=>{
+const unlocked=state.taskSystem.unlockedItems.includes(it.id);
+const cell=document.createElement("div");
+cell.className="ghome-picker-item"+(unlocked?"":" locked");
+if(it.img){
+const img=document.createElement("img");
+img.src=it.img;img.alt=it.name;img.draggable=false;
+cell.appendChild(img);
+}else{
+cell.textContent=it.emoji||"🎁";
+}
+const isBg=it.category==="background";
+const isCurrentBg=isBg&&state.gardenHome.background===it.id;
+if(isCurrentBg)cell.style.borderColor="var(--gold)";
+cell.title=it.name;
+cell.addEventListener("click",()=>{
+if(!unlocked){ toast("尚未解鎖："+it.name); return; }
+ensureGardenHome();
+if(it.category==="background"){
+state.gardenHome.background=(state.gardenHome.background===it.id)?null:it.id;
+toast(state.gardenHome.background?("已套用背景："+it.name):"已取消背景");
+renderGardenDecoPanel();
+}else{
+const[px,py]=clampToGardenCanvas(30+Math.random()*80,30+Math.random()*90);
+state.gardenHome.placed.push({uid:"gd"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+itemId:it.id,x:px,y:py,scale:1,flipped:false,rotate:0,z:state.gardenHome.placed.length});
+toast("已放置："+it.name);
+}
+save();renderGardenHome();
+});
+gridEl.appendChild(cell);
+});
 }
 
 /* =========================================================
@@ -4977,6 +5961,7 @@ function startDispatch(){
     state.expedition.startTime=now;
     state.expedition.endTime=now+DISPATCH_TIME;
     state.expedition.targetCharacter=members[0];
+    markTaskDaily("dispatch");
     save();
     renderGarden();
     toast(`🧭 ${members.length} 位隊員出發了！`);
@@ -6139,6 +7124,7 @@ state.dishes[recipe.id]=(Number(state.dishes[recipe.id])||0)+1;
 if(!state.stats)state.stats={made:{}};
 if(!state.stats.made)state.stats.made={};
 state.stats.made[recipe.id]=(Number(state.stats.made[recipe.id])||0)+1;
+markTaskDaily("cook");
 return true;
 }
 
@@ -6192,41 +7178,20 @@ openModal();
 ========================================================= */
 
 function getTodayKey(){
-return new Date().toLocaleDateString("zh-TW");
+const shifted=new Date(Date.now()-TASK_CONFIG.dailyResetHour*3600*1000);
+return shifted.toLocaleDateString("zh-TW");
 }
 
 function computeNextCheckinStreak(){
-const y=new Date();
-y.setDate(y.getDate()-1);
-const yesterday=y.toLocaleDateString("zh-TW");
+const shifted=new Date(Date.now()-TASK_CONFIG.dailyResetHour*3600*1000);
+shifted.setDate(shifted.getDate()-1);
+const yesterday=shifted.toLocaleDateString("zh-TW");
 const cur=state.dailyCheckin||{date:"",streak:0};
 return cur.date===yesterday?(Number(cur.streak)||0)+1:1;
 }
 
 function getCheckinReward(streakDay){
 return 30+Math.min(Math.max(streakDay-1,0),6)*10;
-}
-
-function openDailyCheckin(){
-if(!state.dailyCheckin)state.dailyCheckin={date:"",streak:0};
-const today=getTodayKey();
-const claimedToday=state.dailyCheckin.date===today;
-const nextStreak=claimedToday?Number(state.dailyCheckin.streak)||1:computeNextCheckinStreak();
-const reward=getCheckinReward(nextStreak);
-document.getElementById("modal").innerHTML=`
-<div class="modal-title">🎁 每日簽到</div>
-<div style="text-align:center;font-size:35px">🎁</div>
-<div style="text-align:center;margin:8px 0 4px;font-size:13px;line-height:1.7">
-${claimedToday
-?`今天已經簽到囉！<br>明天再回來領取禮物吧～`
-:`連續簽到第 <b>${nextStreak}</b> 天<br>今天可以領取 <b>💰${reward}</b> 金幣！`}
-</div>
-<div style="height:10px"></div>
-${claimedToday
-?`<button class="btn btn-light" onclick="closeModal()">關閉</button>`
-:`<button class="btn btn-green" onclick="claimDailyCheckin()">領取獎勵</button>`}
-`;
-openModal();
 }
 
 function claimDailyCheckin(){
@@ -6242,7 +7207,7 @@ state.coins+=reward;
 state.dailyCheckin.streak=nextStreak;
 state.dailyCheckin.date=today;
 save();
-closeModal();
+renderTaskCenterContent();
 toast(`🎁 簽到成功！+${reward} 金幣`);
 if(document.getElementById("gardenCoins"))document.getElementById("gardenCoins").textContent=state.coins;
 if(document.getElementById("kitchenCoins"))document.getElementById("kitchenCoins").textContent=state.coins;
@@ -6656,6 +7621,7 @@ if(!t.skin)t.skin="spring";
 if(!t.environment)t.environment="grass";
 if(!t.sign)t.sign="plain";
 if(!("staffId" in t))t.staffId=null;
+if(!("rewardBackground" in t))t.rewardBackground=null;
 if(!t.lastSaleTime)t.lastSaleTime=Date.now();
 if(!Number.isFinite(Number(t.totalSales)))t.totalSales=0;
 });
@@ -6704,6 +7670,7 @@ if(truckDecorateMode)renderDecoShop();
 }
 function renderTruck(){
 ensureTruckData();
+ensureTaskSystem();
 const coins=document.getElementById("truckCoins");
 if(coins)coins.textContent=state.coins;
 const stage=document.getElementById("truckStage");
@@ -6723,7 +7690,9 @@ const sign=TRUCK_SIGNS.find(x=>x.id===truck.sign)||TRUCK_SIGNS[0];
 const recipe=RECIPES.find(x=>x.id===currentTruckRecipe(truck));
 const staff=truck.staffId?getCharacter(truck.staffId):null;
 const remaining=calcTruckSellout(truck);
-scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="handleTruckSceneClick(${currentTruckIndex})"><div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span><span>${env.icon}</span></div>${renderTruckDecorationsHTML(truck,truckDecorateMode)}<div class="truck-stand truck-stand-left"><div>全部完售</div><strong id="truckSelloutTime">${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div>${staff?`<div class="truck-staff"><img src="${characterImage(staff)}"></div>`:""}<div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}" id="truckCurrentRecipeIcon">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
+const rewardBg=truck.rewardBackground?taskRewardItemById(truck.rewardBackground):null;
+const rewardBgHtml=rewardBg?`<div class="truck-reward-bg" style="background-image:url('${rewardBg.img}')"></div>`:"";
+scene.innerHTML=`<div class="truck-scene ${skin.css} ${env.css}" onclick="handleTruckSceneClick(${currentTruckIndex})">${rewardBgHtml}<div class="truck-counter-title">🚚 餐車 ${currentTruckIndex+1} / ${TRUCK_MAX}</div><div class="truck-environment"><span>${env.icon}</span><span>${env.icon}</span><span>${env.icon}</span></div>${renderTruckDecorationsHTML(truck,truckDecorateMode)}<div class="truck-stand truck-stand-left"><div>全部完售</div><strong id="truckSelloutTime">${remaining?formatTruckTime(remaining):"--:--"}</strong></div><div class="truck-stand truck-stand-right"><strong>${currentTruckIndex+1}</strong></div>${staff?`<div class="truck-staff"><img src="${characterImage(staff)}"></div>`:""}<div class="food-truck"><div class="truck-roof"></div><div class="truck-window"></div><div class="truck-counter"></div><div class="truck-sign ${sign.css}" id="truckCurrentRecipeIcon">${recipe?.icon||"🍽️"}</div><div class="wheel left"></div><div class="wheel right"></div></div></div>`;
 }
 function handleTruckSceneClick(index){
 if(truckDecorateMode)return;
@@ -6732,17 +7701,29 @@ openTruckEditor(index);
 function renderTruckDecorationsHTML(truck,editable){
 if(!Array.isArray(truck?.decorations)||!truck.decorations.length)return"";
 return truck.decorations.map(inst=>{
+let size,visual;
+if(inst&&inst.rewardId){
+const it=taskRewardItemById(inst.rewardId);
+if(!it)return"";
+size=34;
+visual=it.img?`<img src="${it.img}" style="width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;">`:(it.emoji||"🎁");
+}else{
 const d=TRUCK_DECORATIONS.find(x=>x.id===inst?.id);
 if(!d)return"";
-const x=Number.isFinite(Number(inst.x))?Number(inst.x):(d.defaultX??50);
-const y=Number.isFinite(Number(inst.y))?Number(inst.y):(d.defaultY??80);
+size=d.size||32;
+visual=d.emoji;
+}
+const defX=inst.rewardId?50:(TRUCK_DECORATIONS.find(x=>x.id===inst?.id)?.defaultX??50);
+const defY=inst.rewardId?80:(TRUCK_DECORATIONS.find(x=>x.id===inst?.id)?.defaultY??80);
+const x=Number.isFinite(Number(inst.x))?Number(inst.x):defX;
+const y=Number.isFinite(Number(inst.y))?Number(inst.y):defY;
 const scale=Number.isFinite(Number(inst.scale))?Number(inst.scale):1;
 const flip=!!inst.flip;
 const selected=editable&&inst.uid===selectedDecoUid;
 const baseZ=10+Math.round(Math.max(0,Math.min(100,y))/5);
 const z=selected?300:baseZ;
 const transform=`translate(-50%,-100%) scale(${(flip?-1:1)*scale},${scale})`;
-return `<div class="deco-item${editable?" deco-editable":""}${selected?" selected":""}" data-deco-uid="${inst.uid}" style="left:${x}%;top:${y}%;font-size:${d.size||32}px;z-index:${z};transform:${transform}"${editable?` onpointerdown="onDecoPointerDown(event,'${inst.uid}')"`:""}>${d.emoji}</div>`;
+return `<div class="deco-item${editable?" deco-editable":""}${selected?" selected":""}" data-deco-uid="${inst.uid}" style="left:${x}%;top:${y}%;width:${size}px;height:${size}px;font-size:${size}px;z-index:${z};transform:${transform}"${editable?` onpointerdown="onDecoPointerDown(event,'${inst.uid}')"`:""}>${visual}</div>`;
 }).join("");
 }
 
@@ -6917,7 +7898,6 @@ t.sign=id;save();openTruckEditor(index);renderTruck();
 let truckDecorateMode=false;
 let selectedDecoUid=null;
 let decoDragState=null;
-
 function toggleDecorateMode(){
 if(truckDecorateMode)exitDecorateMode();
 else enterDecorateMode();
@@ -6952,6 +7932,9 @@ renderTruck();
 }
 
 function renderDecoShop(){
+ensureTaskSystem();
+const tabsEl=document.getElementById("decoTabs");
+if(tabsEl)tabsEl.innerHTML="";
 const grid=document.getElementById("decoShopGrid");
 if(!grid)return;
 const truck=state.trucks[currentTruckIndex];
@@ -6975,9 +7958,47 @@ bar.style.display="none";
 selectedDecoUid=null;
 return;
 }
+let emoji="",name="";
+if(item.rewardId){
+const it=taskRewardItemById(item.rewardId);
+emoji=it?.img?"🖼️":(it?.emoji||"");
+name=it?.name||"";
+}else{
 const d=TRUCK_DECORATIONS.find(x=>x.id===item.id);
+emoji=d?.emoji||"";
+name=d?.name||"";
+}
 bar.style.display="flex";
-label.textContent=`已選取：${d?.emoji||""} ${d?.name||""}`;
+label.textContent=`已選取：${emoji} ${name}`;
+}
+
+function placeTaskRewardItem(id){
+ensureTaskSystem();
+const it=taskRewardItemById(id);
+if(!it)return;
+if(!state.taskSystem.unlockedItems.includes(id)){toast("尚未解鎖："+it.name);return;}
+const truck=state.trucks[currentTruckIndex];
+if(!truck||!truck.unlocked)return;
+if(it.category==="background"){
+truck.rewardBackground=(truck.rewardBackground===id)?null:id;
+save();
+renderTruck();
+renderDecoShop();
+toast(truck.rewardBackground?("已套用背景："+it.name):"已取消背景");
+return;
+}
+if(!Array.isArray(truck.decorations))truck.decorations=[];
+const count=truck.decorations.filter(x=>x.rewardId===id).length;
+const stagger=(count%5)*7-14;
+const uid=`rdeco_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,7)}`;
+const x=Math.max(6,Math.min(94,50+stagger));
+const y=Math.max(16,Math.min(94,80-Math.floor(count/5)*8));
+truck.decorations.push({uid,rewardId:id,x,y,scale:1,flip:false});
+selectedDecoUid=uid;
+save();
+renderTruck();
+renderDecoShop();
+toast("已放置："+it.name);
 }
 
 function addTruckDecoration(index,id){
@@ -7121,8 +8142,8 @@ selectedDecoUid=null;
 save();
 renderTruck();
 renderDecoShop();
-const d=TRUCK_DECORATIONS.find(x=>x.id===removed.id);
-toast(`🗑️ 已刪除 ${d?.name||"裝飾品"}`);
+const name=removed.rewardId?(taskRewardItemById(removed.rewardId)?.name):(TRUCK_DECORATIONS.find(x=>x.id===removed.id)?.name);
+toast(`🗑️ 已刪除 ${name||"裝飾品"}`);
 }
 function confirmTruckEditor(){
 const t=state.trucks[truckDraftIndex];
@@ -7138,6 +8159,7 @@ state.dishes[r.id]=Number(state.dishes[r.id]||0)-amount;
 t.stock.push({recipeId:r.id,qty:amount,listedAt:Date.now(),soldUnits:0});
 added+=amount;
 }
+if(added>0)markTaskDaily("list");
 save();
 closeModal();
 renderTruck();
@@ -8352,6 +9374,8 @@ function applyStepReading(reading){
 
     stepStatusMessage="";
 
+    markTaskDaily("stepUpload");
+
     const day=getStepDay(dateKey,steps>0);
 
     const newEvents=[];
@@ -8691,6 +9715,9 @@ if(truck){
 updateTruckDisplay();
 renderCustomer();
 }
+
+const gramophone=document.getElementById("gardenGramophone");
+if(gramophone)gramophone.classList.toggle("playing",AudioSys.isPlaying);
 }
 
 
@@ -8702,6 +9729,7 @@ async function init(){
 
     state=await loadState();
 ensureTruckData();
+ensureTaskSystem();
 if(!Array.isArray(state.joined))state.joined=[];
 if(!Array.isArray(state.cooking))state.cooking=[];
 while(state.cooking.length<state.cookingLines){
