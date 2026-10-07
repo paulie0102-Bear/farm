@@ -550,6 +550,86 @@ button,
     to{transform:rotate(360deg);}
 }
 
+
+/* =========================================================
+   人物搖桿（僅限已布置完成的人物 GIF）
+========================================================= */
+#gardenHomeCanvas:not(.editing) .ghome-deco.is-char{
+    pointer-events:auto;
+    cursor:pointer;
+}
+.ghome-deco.ctrl-selected{
+    z-index:5;
+}
+.ghome-deco.ctrl-selected::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-4px;
+    width:46px;
+    height:12px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:radial-gradient(ellipse at center, rgba(255,255,255,.95) 0 38%, rgba(124,200,120,.75) 40% 62%, rgba(124,200,120,0) 70%);
+    pointer-events:none;
+    animation:gjoyPulse 1.4s ease-in-out infinite;
+}
+@keyframes gjoyPulse{
+    0%,100%{opacity:.75;}
+    50%{opacity:1;}
+}
+.ghome-deco.walking .ghome-deco-img{
+    animation:gjoyHop .34s ease-in-out infinite;
+}
+@keyframes gjoyHop{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-4px);}
+}
+.garden-joystick{
+    position:absolute;
+    right:2px;
+    bottom:68px;
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    z-index:7;
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+    background:rgba(255,250,240,.55);
+    border:2px solid rgba(255,255,255,.85);
+    box-shadow:inset 0 2px 8px rgba(120,90,60,.22), 0 3px 10px rgba(0,0,0,.14);
+    opacity:.55;
+    transition:opacity .2s, box-shadow .2s;
+}
+.garden-joystick.active{
+    opacity:1;
+    box-shadow:inset 0 2px 8px rgba(120,90,60,.22), 0 0 0 3px rgba(124,200,120,.55), 0 3px 10px rgba(0,0,0,.14);
+}
+.garden-joystick.off{
+    display:none;
+}
+.garden-joystick-knob{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:38px;
+    height:38px;
+    margin:-19px 0 0 -19px;
+    border-radius:50%;
+    background-color:#efd9cf;
+    background-image:url("data:image/jpeg;base64,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");
+    background-size:cover;
+    background-position:center;
+    box-shadow:0 3px 8px rgba(0,0,0,.28);
+    pointer-events:none;
+    will-change:transform;
+}
+@media(prefers-reduced-motion:reduce){
+    .ghome-deco.walking .ghome-deco-img,
+    .ghome-deco.ctrl-selected::after{animation:none;}
+}
+
 @keyframes musicSpin{
     from{transform:rotate(0deg);}
     to{transform:rotate(360deg);}
@@ -974,6 +1054,50 @@ button,
     width:80px;
     height:80px;
     object-fit:contain;
+}
+
+.character-card-empty{
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.character-pager{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-top:10px;
+}
+
+.character-pager-nav{
+    width:44px;
+    height:38px;
+    flex:none;
+    border:1px solid #eadfce;
+    border-radius:12px;
+    background:#fff;
+    color:var(--brown);
+    font-size:18px;
+    font-weight:900;
+    cursor:pointer;
+    transition:transform .1s;
+}
+
+.character-pager-nav:active{
+    transform:scale(.94);
+}
+
+.character-pager-nav:disabled{
+    opacity:.35;
+    cursor:not-allowed;
+}
+
+.character-pager-info{
+    flex:1;
+    text-align:center;
+    font-size:12px;
+    font-weight:900;
+    color:#927f6d;
 }
 
 .character-name{
@@ -3418,6 +3542,12 @@ button,
                 onclick="openMusicPicker()"
             ></div>
 
+            <div
+                id="gardenJoystick"
+                class="garden-joystick"
+                title="人物搖桿：先點選布置好的人物，再拖曳搖桿"
+            ><div class="garden-joystick-knob" id="gardenJoystickKnob"></div></div>
+
         </div>
 
         <div class="card" id="gardenDecoPanel" style="display:none">
@@ -3482,6 +3612,11 @@ button,
             <div
                 id="characterGrid"
                 class="character-grid"
+            ></div>
+
+            <div
+                id="characterPager"
+                class="character-pager"
             ></div>
 
         </div>
@@ -5374,6 +5509,7 @@ toast(`🌿 已選擇 ${character.name}`);
    的布置系統：見 index.html 的 #homeCanvas / #decoToolbar）
 ========================================================= */
 let gardenEditMode=false,selectedGardenUid=null,gardenDecoTab="background";
+let controlGardenUid=null;
 const GARDEN_DECO_CATEGORIES=[
 {id:"background",name:"背景"},{id:"plant",name:"植物"},
 {id:"food",name:"食物"},{id:"character",name:"人物"}
@@ -5391,6 +5527,8 @@ ensureGardenHome();
 const canvas=gardenHomeCanvasEl();
 if(!canvas)return;
 canvas.querySelectorAll(".ghome-deco").forEach(el=>el.remove());
+if(controlGardenUid&&!state.gardenHome.placed.some(p=>p.uid===controlGardenUid))controlGardenUid=null;
+refreshGardenJoystickState();
 if(state.gardenHome.background){
 const bgItem=taskRewardItemById(state.gardenHome.background);
 if(bgItem){
@@ -5423,6 +5561,10 @@ el.appendChild(img);
 el.textContent=item.emoji||"";
 }
 if(p.uid===selectedGardenUid)el.classList.add("selected");
+if(item.category==="character"){
+el.classList.add("is-char");
+if(p.uid===controlGardenUid&&!gardenEditMode)el.classList.add("ctrl-selected");
+}
 canvas.appendChild(el);
 bindGardenDecoDrag(el,p);
 });
@@ -5454,7 +5596,10 @@ positionGardenToolbar(el);
 function end(){ if(dragging){ dragging=false; save(); } }
 el.addEventListener("pointerup",end);
 el.addEventListener("pointercancel",end);
-el.addEventListener("click",(e)=>{ if(gardenEditMode){ e.stopPropagation(); selectGardenDeco(p.uid); } });
+el.addEventListener("click",(e)=>{
+if(gardenEditMode){ e.stopPropagation(); selectGardenDeco(p.uid); return; }
+if(el.classList.contains("is-char")){ e.stopPropagation(); selectGardenControl(p.uid); }
+});
 }
 
 function selectGardenDeco(uid){
@@ -5514,6 +5659,7 @@ ensureGardenHome();
 const idx=state.gardenHome.placed.findIndex(x=>x.uid===selectedGardenUid);
 if(idx===-1)return;
 state.gardenHome.placed.splice(idx,1);
+if(controlGardenUid===selectedGardenUid)controlGardenUid=null;
 selectedGardenUid=null;
 const toolbar=document.getElementById("gardenDecoToolbar");
 if(toolbar)toolbar.style.display="none";
@@ -5536,6 +5682,9 @@ if(canvas)canvas.classList.toggle("editing",gardenEditMode);
 const panel=document.getElementById("gardenDecoPanel");
 if(panel)panel.style.display=gardenEditMode?"block":"none";
 if(gardenEditMode){
+stopGardenJoystickMove();
+controlGardenUid=null;
+renderGardenHome();
 renderGardenDecoPanel();
 }else{
 selectedGardenUid=null;
@@ -5599,6 +5748,138 @@ save();renderGardenHome();
 gridEl.appendChild(cell);
 });
 }
+
+
+/* =========================================================
+   人物搖桿：只能操控「已布置完成」的人物 GIF
+   （背景／植物／食物不套用；布置模式中停用）
+========================================================= */
+const GJOY_SPEED=110;          // 最大速度（px／秒）
+const gJoy={active:false,pid:null,vx:0,vy:0,raf:0,last:0,moved:false};
+
+function gardenControlItem(){
+if(!controlGardenUid)return null;
+ensureGardenHome();
+return state.gardenHome.placed.find(p=>p.uid===controlGardenUid)||null;
+}
+
+function gardenControlEl(){
+if(!controlGardenUid)return null;
+return gardenHomeCanvasEl()?.querySelector(`.ghome-deco[data-uid="${controlGardenUid}"]`)||null;
+}
+
+function refreshGardenJoystickState(){
+const joy=document.getElementById("gardenJoystick");
+if(!joy)return;
+joy.classList.toggle("off",!!gardenEditMode);
+joy.classList.toggle("active",!!controlGardenUid&&!gardenEditMode);
+}
+
+function selectGardenControl(uid){
+if(gardenEditMode)return;
+if(controlGardenUid===uid){
+// 再點一次同一個人物 → 取消操控
+stopGardenJoystickMove();
+controlGardenUid=null;
+renderGardenHome();
+return;
+}
+stopGardenJoystickMove();
+controlGardenUid=uid;
+renderGardenHome();
+const p=gardenControlItem();
+const it=p&&taskRewardItemById(p.itemId);
+if(it)toast("操控中："+it.name);
+}
+
+function setGardenJoystickKnob(dx,dy){
+const knob=document.getElementById("gardenJoystickKnob");
+if(knob)knob.style.transform=`translate(${dx}px,${dy}px)`;
+}
+
+function stopGardenJoystickMove(){
+gJoy.vx=0;gJoy.vy=0;
+if(gJoy.raf){cancelAnimationFrame(gJoy.raf);gJoy.raf=0;}
+setGardenJoystickKnob(0,0);
+const el=gardenControlEl();
+if(el)el.classList.remove("walking");
+if(gJoy.moved){gJoy.moved=false;save();}
+}
+
+function gardenJoystickStep(ts){
+gJoy.raf=0;
+if(!gJoy.active)return;
+const p=gardenControlItem(),el=gardenControlEl();
+if(!p||!el){return;}
+const dt=Math.min(0.05,(ts-(gJoy.last||ts))/1000);
+gJoy.last=ts;
+const mag=Math.hypot(gJoy.vx,gJoy.vy);
+if(mag>0.12){
+const[nx,ny]=clampToGardenCanvas(p.x+gJoy.vx*GJOY_SPEED*dt,p.y+gJoy.vy*GJOY_SPEED*dt);
+if(nx!==p.x||ny!==p.y){gJoy.moved=true;}
+p.x=nx;p.y=ny;
+el.style.left=p.x+"px";el.style.top=p.y+"px";
+el.classList.add("walking");
+}else{
+el.classList.remove("walking");
+}
+gJoy.raf=requestAnimationFrame(gardenJoystickStep);
+}
+
+function gardenJoystickMove(e){
+const joy=document.getElementById("gardenJoystick");
+const r=joy.getBoundingClientRect();
+const radius=r.width/2-19;   // 搖桿底座半徑 − 圓鈕半徑
+let dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+const d=Math.hypot(dx,dy);
+if(d>radius){dx=dx/d*radius;dy=dy/d*radius;}
+setGardenJoystickKnob(dx,dy);
+gJoy.vx=dx/radius;gJoy.vy=dy/radius;
+}
+
+(function initGardenJoystick(){
+const joy=document.getElementById("gardenJoystick");
+if(!joy)return;
+joy.addEventListener("pointerdown",(e)=>{
+if(gardenEditMode)return;
+e.preventDefault();e.stopPropagation();
+if(!gardenControlItem()){
+toast("請先點選畫面上已布置的人物");
+return;
+}
+gJoy.active=true;gJoy.pid=e.pointerId;gJoy.last=0;
+try{joy.setPointerCapture(e.pointerId);}catch(err){}
+gardenJoystickMove(e);
+if(!gJoy.raf)gJoy.raf=requestAnimationFrame(gardenJoystickStep);
+});
+joy.addEventListener("pointermove",(e)=>{
+if(!gJoy.active||e.pointerId!==gJoy.pid)return;
+e.preventDefault();
+gardenJoystickMove(e);
+});
+function end(e){
+if(!gJoy.active||(e&&e.pointerId!==gJoy.pid))return;
+gJoy.active=false;gJoy.pid=null;
+stopGardenJoystickMove();
+}
+joy.addEventListener("pointerup",end);
+joy.addEventListener("pointercancel",end);
+joy.addEventListener("lostpointercapture",end);
+joy.addEventListener("click",(e)=>e.stopPropagation());
+
+// 點場景空白處 → 取消操控
+const scene=joy.closest(".garden-scene");
+if(scene){
+scene.addEventListener("click",(e)=>{
+if(gardenEditMode||!controlGardenUid)return;
+if(e.target.closest(".ghome-deco,.garden-joystick,.garden-gramophone,.ghome-edit-btn,.ghome-toolbar"))return;
+stopGardenJoystickMove();
+controlGardenUid=null;
+renderGardenHome();
+});
+}
+refreshGardenJoystickState();
+})();
 
 /* =========================================================
    地區
@@ -6837,16 +7118,41 @@ function renderIngredients(){
 /* =========================================================
    角色
 ========================================================= */
+const CHARACTERS_PER_PAGE=6;
+let characterPage=0;
+
+function changeCharacterPage(delta){
+const pages=Math.max(1,Math.ceil(CHARACTERS.length/CHARACTERS_PER_PAGE));
+const next=Math.min(pages-1,Math.max(0,characterPage+delta));
+if(next===characterPage)return;
+characterPage=next;
+renderCharacters();
+}
+
 function renderCharacters(){
 const container=document.getElementById("characterGrid");
 if(!container)return;
-const signature=CHARACTERS.map(c=>`${c.id}:${state.joined.includes(c.id)?1:0}:${state.friendship?.[c.id]||0}`).join("|");
+const pages=Math.max(1,Math.ceil(CHARACTERS.length/CHARACTERS_PER_PAGE));
+if(characterPage>pages-1)characterPage=pages-1;
+if(characterPage<0)characterPage=0;
+const signature=characterPage+"#"+CHARACTERS.map(c=>`${c.id}:${state.joined.includes(c.id)?1:0}:${state.friendship?.[c.id]||0}`).join("|");
 if(container.dataset.signature!==signature){
-container.innerHTML=CHARACTERS.map(character=>{
+const start=characterPage*CHARACTERS_PER_PAGE;
+const pageItems=CHARACTERS.slice(start,start+CHARACTERS_PER_PAGE);
+let html=pageItems.map(character=>{
 const joined=state.joined.includes(character.id);
 return`<div class="character-card"><img class="character-img" src="${characterImage(character)}" alt="${character.name}"><div class="character-name">${character.name}</div>${joined?`<div class="hearts">❤️❤️❤️</div><div class="joined">✓ 已加入小隊</div>`:`<div class="hearts">${hearts(character.id)}</div>`}</div>`;
 }).join("");
+for(let i=pageItems.length;i<CHARACTERS_PER_PAGE;i++){
+html+=`<div class="character-card character-card-empty" aria-hidden="true"><img class="character-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt=""><div class="character-name">&nbsp;</div><div class="hearts">&nbsp;</div><div class="joined">&nbsp;</div></div>`;
+}
+container.innerHTML=html;
 container.dataset.signature=signature;
+}
+const pager=document.getElementById("characterPager");
+if(pager){
+pager.style.display=pages>1?"flex":"none";
+pager.innerHTML=`<button class="character-pager-nav" onclick="changeCharacterPage(-1)" ${characterPage<=0?"disabled":""} aria-label="上一頁">←</button><div class="character-pager-info">${characterPage+1} / ${pages}</div><button class="character-pager-nav" onclick="changeCharacterPage(1)" ${characterPage>=pages-1?"disabled":""} aria-label="下一頁">→</button>`;
 }
 const team=document.getElementById("teamCount");
 if(team)team.textContent=`${state.joined.length}/${CHARACTERS.length}`;
