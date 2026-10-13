@@ -3713,6 +3713,90 @@ button,
     transform:translateY(3px);
 }
 
+/* =========================================================
+   夜市彈珠台（足球通過後進入）
+========================================================= */
+
+#pinballLayer{
+    background:linear-gradient(180deg,#4a3470 0%,#251a45 100%);
+}
+
+#pinballLayer .sb-title{
+    color:#fff3c4;
+}
+
+#pinballLayer .sb-hint{
+    color:#e8dcff;
+}
+
+.pb-count{
+    min-width:84px;
+    text-align:right;
+    font-size:12px;
+    font-weight:900;
+    color:#fff3c4;
+}
+
+.pb-stage{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:360px;
+    height:560px;
+    transform-origin:center center;
+}
+
+.pb-canvas{
+    position:absolute;
+    left:0;
+    top:0;
+    width:360px;
+    height:560px;
+    border-radius:14px;
+    box-shadow:0 5px 18px rgba(0,0,0,.4);
+}
+
+.pb-char{
+    position:absolute;
+    left:0;
+    top:0;
+    width:48px;
+    height:48px;
+    z-index:5;
+    pointer-events:none;
+    will-change:transform;
+}
+
+.pb-char img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+}
+
+.pb-char-fallback{
+    display:none;
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    font-size:30px;
+    line-height:48px;
+    text-align:center;
+    background:#fffaf0;
+    border:2px solid #fff;
+}
+
+#pbDrop{
+    font-size:15px;
+}
+
+#pbDrop:disabled{
+    opacity:.45;
+    background:var(--orange);
+    box-shadow:0 5px 0 var(--orange-dark);
+}
+
+
 </style>
 </head>
 
@@ -4222,6 +4306,46 @@ button,
     </div>
 
 </div>
+
+
+<!-- =========================================================
+     夜市彈珠台（足球通過後進入）
+========================================================== -->
+
+<div id="pinballLayer" class="soccer-layer">
+
+    <div class="sb-top">
+        <button class="btn btn-light" onclick="exitStepPinball()">← 返回</button>
+        <div class="sb-title">🎯 夜市彈珠台</div>
+        <div class="pb-count" id="pbCount"></div>
+    </div>
+
+    <div class="sb-hint" id="pbHint">搖桿左右移動・按「放下彈珠」</div>
+
+    <div class="sb-field-wrap" id="pbFieldWrap">
+
+        <div class="pb-stage" id="pbStage">
+
+            <canvas id="pbCanvas" class="pb-canvas" width="360" height="560"></canvas>
+
+            <div class="pb-char" id="pbPlayer">
+                <img id="pbPlayerImg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+                <div class="pb-char-fallback">🐹</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="sb-controls">
+        <div class="sb-joystick" id="pbJoystick">
+            <div class="sb-joystick-knob" id="pbJoystickKnob"></div>
+        </div>
+        <button class="sb-kick" id="pbDrop" type="button">放下彈珠</button>
+    </div>
+
+</div>
+
 
 <div id="toast"></div>
 
@@ -5141,6 +5265,7 @@ targetCharacter:null
 stepLog:{},
 stepDispatch:{totalSteps:0,dispatchCount:0},
 stepPending:[],
+stepPinball:null,
 trucks:Array.from({length:4},(_,i)=>createDefaultTruck(i)),
 taskSystem:{
 daily:{date:null,dispatch:false,cook:false,list:false,stepUpload:false,claimDispatch:false,claimCook:false,claimList:false,claimStepUpload:false},
@@ -5482,6 +5607,7 @@ merged.expedition=Object.assign({},DEFAULT_STATE.expedition,saved?.expedition||{
 merged.stepLog=normalizeStepLog(saved?.stepLog);
 merged.stepDispatch=normalizeStepDispatch(saved?.stepDispatch);
 merged.stepPending=normalizeStepPending(saved?.stepPending);
+merged.stepPinball=normalizeStepPinball(saved?.stepPinball,merged.stepPending);
 merged.trucks=Array.isArray(saved?.trucks)?saved.trucks:[];
 if(!merged.trucks.length&&saved?.truck){
 const old=saved.truck;
@@ -9262,6 +9388,8 @@ async function importSaveFile(event){
 
         renderTruck();
 
+        renderStepViews();
+
 
         toast(
             "📥 存檔匯入成功"
@@ -9322,8 +9450,6 @@ async function importSaveFile(event){
 ========================================================= */
 
 const STEP_DISPATCH_UNIT=1000;
-const STEP_INGREDIENT_CHANCE=0.7;
-const STEP_DOUBLE_INGREDIENT_CHANCE=0.2;
 const STEP_MAX_PER_DAY=200000;
 const STEP_WEEKDAYS=["一","二","三","四","五","六","日"];
 const STEP_STAMP_URL=
@@ -9441,65 +9567,12 @@ function getStepDispatchState(){
 
 
 /* =========================
-   單次步數事件（三選一）
+   單次步數事件（彈珠券）
 
-   70% 食材 x1：從全部食材（6 選 1）
-   20% 食材 x2：各自從全部食材（6 選 1，可能重複同一種）
-   10% 料理 x1：從全部料理（8 選 1），直接進入料理庫存
+   每達標一次只建立一張「彈珠券」（kind:"marble"），不在這裡抽獎。
+   足球通過後，依券的張數給等量彈珠；最終獎勵完全由彈珠台實際落點決定。
+   （原本 70% 單份食材／20% 雙份食材／10% 料理 的機率已移除）
 ========================= */
-
-function runStepDispatchEvent(stepNo){
-
-    const event={step:stepNo};
-
-    const roll=Math.random();
-
-    if(roll<STEP_INGREDIENT_CHANCE){
-
-        /* 70%：食材 x1 */
-
-        const id=pickRandomItem(Object.keys(INGREDIENTS));
-
-        event.kind="ingredient";
-        event.items=[{itemId:id,count:1}];
-
-        return event;
-    }
-
-    if(roll<STEP_INGREDIENT_CHANCE+STEP_DOUBLE_INGREDIENT_CHANCE){
-
-        /* 20%：食材 x2（各自獨立 6 選 1） */
-
-        const picks=[
-            pickRandomItem(Object.keys(INGREDIENTS)),
-            pickRandomItem(Object.keys(INGREDIENTS))
-        ];
-
-        const counts={};
-
-        picks.forEach(id=>{
-            counts[id]=(counts[id]||0)+1;
-        });
-
-        event.kind="ingredient";
-        event.items=Object.keys(counts).map(id=>({
-            itemId:id,
-            count:counts[id]
-        }));
-
-        return event;
-    }
-
-    /* 10%：料理 x1，直接進入料理庫存（state.dishes） */
-
-    const recipe=pickRandomItem(RECIPES);
-
-    event.kind="recipe";
-    event.recipeId=recipe.id;
-    event.count=1;
-
-    return event;
-}
 
 
 /* =========================
@@ -10013,9 +10086,11 @@ function applyStepReading(reading){
 
             while(dispatch.dispatchCount<due){
 
-                const event=runStepDispatchEvent(
-                    (dispatch.dispatchCount+1)*STEP_DISPATCH_UNIT
-                );
+                /* 只建立彈珠券：獎勵由彈珠台落點決定，不在這裡抽獎 */
+                const event={
+                    step:(dispatch.dispatchCount+1)*STEP_DISPATCH_UNIT,
+                    kind:"marble"
+                };
 
                 event.id=createStepEventId(dispatch.dispatchCount+1);
                 event.date=dateKey;
@@ -10337,13 +10412,30 @@ function normalizeStepPending(raw){
             kicks:Math.max(0,Math.floor(Number(e.kicks)||0))
         };
 
-        if(e.kind==="recipe"){
+        const isGoal=e.status==="goal";
+
+        if(e.kind==="marble"){
+
+            out.kind="marble";
+
+        }else if(e.kind==="recipe"){
 
             if(!RECIPES.some(r=>r.id===e.recipeId))return;
 
-            out.kind="recipe";
-            out.recipeId=e.recipeId;
-            out.count=Math.max(1,Math.floor(Number(e.count)||1));
+            if(isGoal){
+
+                /* 舊版已進球、獎勵已定：保留，沿用原本領取流程 */
+
+                out.kind="recipe";
+                out.recipeId=e.recipeId;
+                out.count=Math.max(1,Math.floor(Number(e.count)||1));
+
+            }else{
+
+                /* 舊版尚未進球：改成彈珠券，獎勵交給彈珠台 */
+
+                out.kind="marble";
+            }
 
         }else if(e.kind==="ingredient"){
 
@@ -10354,10 +10446,17 @@ function normalizeStepPending(raw){
                     count:Math.max(1,Math.floor(Number(it.count)||1))
                 }));
 
-            if(!items.length)return;
+            if(isGoal){
 
-            out.kind="ingredient";
-            out.items=items;
+                if(!items.length)return;
+
+                out.kind="ingredient";
+                out.items=items;
+
+            }else{
+
+                out.kind="marble";
+            }
 
         }else{
             return;
@@ -10425,7 +10524,7 @@ function claimStepEvent(id){
 
     const event=list[idx];
 
-    if(event.status!=="goal")return false;
+    if(event.status!=="goal"||event.kind==="marble")return false;
 
     list.splice(idx,1);
 
@@ -10458,17 +10557,39 @@ function claimStepEvent(id){
 
 function openNextStepSoccer(){
 
+    if(sb.running||pb.running)return;
+
+    /* 已有進行中（或已結算待領取）的彈珠台：優先回到彈珠台 */
+
+    if(state.stepPinball){
+        openStepPinball();
+        return;
+    }
+
     const list=getStepPending();
 
     if(!list.length)return;
 
-    const event=list[0];
+    /* 足球已通過的彈珠券 → 建立一輪彈珠台（盤面只在這裡建立並存檔一次） */
 
-    if(event.status==="goal"){
-        showStepClaimLayer(event.id);
-    }else{
-        startStepSoccer(event.id);
+    const goalMarbles=list.filter(e=>e.status==="goal"&&e.kind==="marble");
+
+    if(goalMarbles.length){
+        createPinballRound(goalMarbles);
+        openStepPinball();
+        return;
     }
+
+    /* 舊版已進球、獎勵已定的事件：沿用原本領取流程 */
+
+    const legacyGoal=list.find(e=>e.status==="goal");
+
+    if(legacyGoal){
+        showStepClaimLayer(legacyGoal.id);
+        return;
+    }
+
+    startStepSoccer(list[0].id);
 }
 
 function renderStepPendingBox(){
@@ -10477,32 +10598,61 @@ function renderStepPendingBox(){
 
     if(!box)return;
 
+    const round=state.stepPinball;
     const list=getStepPending();
+
+    const card=(title,desc,btn)=>`
+<div class="card step-pending-card">
+<div class="step-pending-title">${title}</div>
+<div class="step-pending-desc">${desc}</div>
+<button class="btn btn-green" onclick="openNextStepSoccer()">${btn}</button>
+</div>`;
+
+    if(round){
+
+        const settled=round.status==="settled";
+        const left=Math.max(0,round.total-round.drops.length);
+
+        box.innerHTML=settled
+            ?card("🎯 彈珠台結算完成","所有彈珠都已落定，可以領取獎勵了！","🎁 領取獎勵")
+            :card("🎯 夜市彈珠台進行中",`還有 ${left} 顆彈珠可以放`,"🎯 繼續彈珠台");
+
+        return;
+    }
 
     if(!list.length){
         box.innerHTML="";
         return;
     }
 
-    const goal=list[0].status==="goal";
+    if(list.some(e=>e.status==="goal"&&e.kind!=="marble")){
+        box.innerHTML=card(`⚽ 有 ${list.length} 個待完成的射門事件`,"已進球，可以領取獎勵了！","🎁 領取獎勵");
+        return;
+    }
 
-    box.innerHTML=`
-<div class="card step-pending-card">
-<div class="step-pending-title">⚽ 有 ${list.length} 個待完成的射門事件</div>
-<div class="step-pending-desc">${goal?"已進球，可以領取獎勵了！":"進球後就能看到並領取獎勵"}</div>
-<button class="btn btn-green" onclick="openNextStepSoccer()">${goal?"🎁 領取獎勵":"⚽ 開始射門"}</button>
-</div>`;
+    const goalMarbles=list.filter(e=>e.status==="goal"&&e.kind==="marble").length;
+
+    if(goalMarbles){
+        box.innerHTML=card("⚽ 進球成功！",`可以進入夜市彈珠台，共 ${goalMarbles} 顆彈珠`,"🎯 進入彈珠台");
+        return;
+    }
+
+    box.innerHTML=card(
+        `⚽ 有 ${list.length} 個待完成的射門事件`,
+        `進球後獲得 ${list.length} 顆彈珠，進入夜市彈珠台`,
+        "⚽ 開始射門"
+    );
 }
 
 function showStepClaimLayer(eventId){
 
     const event=findStepPending(eventId);
 
-    if(!event||event.status!=="goal")return;
+    if(!event||event.status!=="goal"||event.kind==="marble")return;
 
     document.querySelectorAll(".step-claim-layer").forEach(el=>el.remove());
 
-    const goals=getStepPending().filter(e=>e.status==="goal");
+    const goals=getStepPending().filter(e=>e.status==="goal"&&e.kind!=="marble");
 
     let regionText;
     let bodyHtml;
@@ -10551,7 +10701,7 @@ function confirmClaimStepEvent(eventId,btn){
 
     /* 同一場進球完成的所有事件一起領（每一筆仍走 claimStepEvent，維持防重複） */
 
-    const ids=getStepPending().filter(e=>e.status==="goal").map(e=>e.id);
+    const ids=getStepPending().filter(e=>e.status==="goal"&&e.kind!=="marble").map(e=>e.id);
 
     if(!ids.includes(eventId))ids.push(eventId);
 
@@ -11112,12 +11262,19 @@ function startStepSoccer(eventId){
 
     if(sb.running)return;
 
+    /* 已有彈珠台（進行中或待領取）時，先回彈珠台，不再開新的足球 */
+
+    if(pb.running||state.stepPinball){
+        openNextStepSoccer();
+        return;
+    }
+
     const event=findStepPending(eventId);
 
     if(!event)return;
 
     if(event.status==="goal"){
-        showStepClaimLayer(event.id);
+        openNextStepSoccer();
         return;
     }
 
@@ -11210,9 +11367,1148 @@ function exitStepSoccer(){
 
     renderStepViews();
 
+    /* 進球後：建立彈珠台（舊版已定獎勵的事件則沿用原領取流程） */
+
     if(wasGoal){
-        showStepClaimLayer(eventId);
+        openNextStepSoccer();
     }
+}
+
+
+/* =========================================================
+   夜市彈珠台
+
+   流程：足球進球後，依「本次原本觸發的獎勵次數」建立等量彈珠。
+   - 一輪（state.stepPinball）＝ 一個 7 格盤面 + N 顆彈珠
+   - 盤面（6 種食材各一格 + 隨機 1 道料理）在建立一輪時洗牌一次並存檔，
+     同輪所有彈珠共用，下一輪才會重新洗牌
+   - 彈珠落點由固定時間步長（1/240 秒）的 2D 物理模擬決定；
+     放下彈珠當下就把初始條件（位置、初速、亂數種子）存檔，
+     因此重新整理／中途離開時，會用同一套模擬快轉出同一個落點，
+     不能靠離開重抽
+   - 每顆彈珠落點只記錄一次；全部落定後才統計，
+     按「領取」時才一次性發放，並同步移除對應的步數事件與這一輪
+
+   state.stepPinball = {
+       id, events:[{id,step,date}], total,
+       board:[7 格 {kind:"ingredient",itemId} | {kind:"recipe",recipeId}],
+       drops:[{slot,kind,itemId|recipeId,count:1}],   已落定的彈珠（依序對應 events）
+       pending:null | {x,vx,seed},                    飛行中、尚未記錄落點的彈珠
+       status:"playing"|"settled"
+   }
+========================================================= */
+
+const PB_W=360;
+const PB_H=560;
+const PB_L=10;                       // 左牆
+const PB_R=350;                      // 右牆
+const PB_SLOTS=7;
+const PB_SLOT_W=(PB_R-PB_L)/PB_SLOTS;
+const PB_SLOT_TOP=470;               // 隔板頂端
+const PB_SLOT_BOT=548;               // 格子底
+const PB_LAND_Y=498;                 // 彈珠心越過此線 = 落入該格
+const PB_MR=8;                       // 彈珠半徑
+const PB_PEG_R=5;
+const PB_GRAVITY=900;
+const PB_DT=1/240;                   // 固定步長：即時與快轉共用，結果一致
+const PB_MAX_SPEED=900;
+const PB_PEG_REST=0.55;
+const PB_WALL_REST=0.45;
+const PB_DIV_REST=0.3;
+const PB_DROP_Y=66;
+const PB_CHAR_Y=6;
+const PB_CHAR_SPEED=150;
+const PB_MAX_SIM_STEPS=240*90;
+const PB_PEG_COLORS=["#ff7a9a","#ffb84d","#6ed0a0","#6bb8ff","#c08bff"];
+const PB_SLOT_COLORS=["#ff9fb5","#ffc98a","#a8e6b8","#9fd3ff","#d3b3ff","#fff1a0"];
+
+const PB_PEGS=(function(){
+
+    const list=[];
+
+    for(let row=0;row<8;row++){
+
+        const y=120+row*42;
+        const even=row%2===0;
+        const n=even?6:5;
+        const x0=even?38:66;
+
+        for(let i=0;i<n;i++){
+            list.push({
+                x:x0+i*56,
+                y,
+                c:PB_PEG_COLORS[(row+i)%PB_PEG_COLORS.length]
+            });
+        }
+    }
+
+    return list;
+})();
+
+/* 擋板（斜板，把貼牆落下的彈珠導向中間）＋ 獎勵格隔板 */
+
+const PB_PLATES=[
+    {x1:PB_L,y1:330,x2:40,y2:346,t:3,rest:PB_PEG_REST},
+    {x1:PB_R,y1:330,x2:PB_R-30,y2:346,t:3,rest:PB_PEG_REST}
+];
+
+const PB_DIVIDERS=(function(){
+
+    const list=[];
+
+    for(let i=1;i<PB_SLOTS;i++){
+        const x=PB_L+PB_SLOT_W*i;
+        list.push({x1:x,y1:PB_SLOT_TOP,x2:x,y2:PB_SLOT_BOT,t:3,rest:PB_DIV_REST});
+    }
+
+    return list;
+})();
+
+const PB_SEGS=PB_PLATES.concat(PB_DIVIDERS);
+
+const pb={
+    running:false,
+    raf:0,
+    last:0,
+    acc:0,
+    charX:PB_W/2,
+    joy:{active:false,pid:null,vx:0},
+    keys:{},
+    marble:null,         // 飛行中的彈珠（物理狀態）
+    anim:null,           // 剛落定的彈珠滑入格內的小動畫（純視覺）
+    dpr:1,
+    timer:0,
+    bound:false
+};
+
+
+/* =========================
+   盤面／資料
+========================= */
+
+function pbCleanItem(it){
+
+    if(!it||typeof it!=="object")return null;
+
+    if(it.kind==="recipe"&&RECIPES.some(r=>r.id===it.recipeId)){
+        return {kind:"recipe",recipeId:it.recipeId};
+    }
+
+    if(it.kind==="ingredient"&&INGREDIENTS[it.itemId]){
+        return {kind:"ingredient",itemId:it.itemId};
+    }
+
+    return null;
+}
+
+function pbSlotMeta(item){
+
+    if(!item)return {icon:"❔",name:""};
+
+    if(item.kind==="recipe"){
+        const r=RECIPES.find(x=>x.id===item.recipeId);
+        return {icon:r?r.icon:"🍽️",name:r?r.name:"料理"};
+    }
+
+    const g=INGREDIENTS[item.itemId];
+
+    return {icon:g?g.icon:item.itemId,name:g?g.name:item.itemId};
+}
+
+/* 6 種食材各一格 + 隨機 1 道料理，Fisher–Yates 洗牌一次 */
+
+function pbBuildBoard(){
+
+    const slots=Object.keys(INGREDIENTS).map(id=>({kind:"ingredient",itemId:id}));
+
+    slots.push({kind:"recipe",recipeId:pickRandomItem(RECIPES).id});
+
+    for(let i=slots.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        const t=slots[i];
+        slots[i]=slots[j];
+        slots[j]=t;
+    }
+
+    return slots;
+}
+
+function normalizeStepPinball(raw,pendingList){
+
+    if(!raw||typeof raw!=="object")return null;
+
+    const id=typeof raw.id==="string"?raw.id:"";
+
+    if(!id)return null;
+
+    const list=Array.isArray(pendingList)?pendingList:[];
+    const seen=new Set();
+    const events=[];
+
+    (Array.isArray(raw.events)?raw.events:[]).forEach(e=>{
+
+        if(!e||typeof e.id!=="string"||seen.has(e.id))return;
+
+        const p=list.find(x=>x.id===e.id);
+
+        if(!p||p.kind!=="marble"||p.status!=="goal")return;
+
+        seen.add(e.id);
+        events.push({id:p.id,step:p.step,date:p.date});
+    });
+
+    if(!events.length)return null;
+
+    const board=(Array.isArray(raw.board)?raw.board:[]).map(pbCleanItem);
+
+    if(board.length!==PB_SLOTS||board.some(b=>!b))return null;
+
+    const ings=board.filter(b=>b.kind==="ingredient").map(b=>b.itemId);
+
+    if(
+        ings.length!==Object.keys(INGREDIENTS).length||
+        new Set(ings).size!==ings.length
+    )return null;
+
+    const drops=[];
+
+    (Array.isArray(raw.drops)?raw.drops:[]).forEach(d=>{
+
+        if(drops.length>=events.length)return;
+
+        const slot=Math.floor(Number(d&&d.slot));
+
+        if(!(slot>=0&&slot<PB_SLOTS))return;
+
+        drops.push(Object.assign({slot,count:1},board[slot]));
+    });
+
+    let pending=null;
+    const p=raw.pending;
+
+    if(
+        drops.length<events.length&&p&&typeof p==="object"&&
+        Number.isFinite(Number(p.x))&&
+        Number.isFinite(Number(p.vx))&&
+        Number.isFinite(Number(p.seed))
+    ){
+        pending={
+            x:sbClamp(Number(p.x),PB_L+24,PB_R-24),
+            vx:sbClamp(Number(p.vx),-60,60),
+            seed:Math.abs(Math.floor(Number(p.seed)))%2147483647
+        };
+    }
+
+    return {
+        id,
+        events,
+        total:events.length,
+        board,
+        drops,
+        pending,
+        status:drops.length>=events.length?"settled":"playing"
+    };
+}
+
+/* 足球通過的彈珠券 → 建立一輪（已有一輪就沿用，不會重建） */
+
+function createPinballRound(goalEvents){
+
+    if(state.stepPinball)return state.stepPinball;
+
+    const evs=goalEvents.filter(e=>e&&e.kind==="marble"&&e.status==="goal");
+
+    if(!evs.length)return null;
+
+    state.stepPinball={
+        id:"pb_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7),
+        events:evs.map(e=>({id:e.id,step:e.step,date:e.date})),
+        total:evs.length,
+        board:pbBuildBoard(),
+        drops:[],
+        pending:null,
+        status:"playing"
+    };
+
+    save();
+
+    return state.stepPinball;
+}
+
+
+/* =========================
+   物理模擬（即時與快轉共用同一組函式）
+========================= */
+
+function pbMulberry(seed){
+
+    let a=seed>>>0;
+
+    return function(){
+        a=(a+0x6D2B79F5)>>>0;
+        let t=a;
+        t=Math.imul(t^(t>>>15),t|1);
+        t^=t+Math.imul(t^(t>>>7),t|61);
+        return((t^(t>>>14))>>>0)/4294967296;
+    };
+}
+
+function pbMakeMarble(spec){
+
+    return {
+        x:spec.x,
+        y:PB_DROP_Y,
+        vx:spec.vx,
+        vy:0,
+        still:0,
+        t:0,
+        rng:pbMulberry(spec.seed),
+        landed:false,
+        slot:-1
+    };
+}
+
+function pbCollideCircle(m,cx,cy,rad,rest){
+
+    let dx=m.x-cx;
+    let dy=m.y-cy;
+    let d=Math.hypot(dx,dy);
+    const minD=PB_MR+rad;
+
+    if(d>=minD)return;
+
+    if(d<1e-6){dx=0;dy=-1;d=1;}
+
+    const nx=dx/d;
+    const ny=dy/d;
+
+    m.x=cx+nx*minD;
+    m.y=cy+ny*minD;
+
+    const vn=m.vx*nx+m.vy*ny;
+
+    if(vn<0){
+
+        m.vx-=(1+rest)*vn*nx;
+        m.vy-=(1+rest)*vn*ny;
+
+        /* 輕微切線摩擦 */
+
+        const tx=-ny;
+        const ty=nx;
+        const vt=m.vx*tx+m.vy*ty;
+
+        m.vx-=vt*0.03*tx;
+        m.vy-=vt*0.03*ty;
+    }
+}
+
+function pbCollideSeg(m,s){
+
+    const ex=s.x2-s.x1;
+    const ey=s.y2-s.y1;
+    const l2=ex*ex+ey*ey;
+
+    let t=((m.x-s.x1)*ex+(m.y-s.y1)*ey)/l2;
+
+    t=Math.max(0,Math.min(1,t));
+
+    pbCollideCircle(m,s.x1+ex*t,s.y1+ey*t,s.t,s.rest);
+}
+
+function pbStepMarble(m,dt){
+
+    if(m.landed)return;
+
+    m.t+=dt;
+
+    m.vy+=PB_GRAVITY*dt;
+
+    const sp=Math.hypot(m.vx,m.vy);
+
+    if(sp>PB_MAX_SPEED){
+        m.vx*=PB_MAX_SPEED/sp;
+        m.vy*=PB_MAX_SPEED/sp;
+    }
+
+    m.x+=m.vx*dt;
+    m.y+=m.vy*dt;
+
+    /* 左右牆 */
+
+    if(m.x<PB_L+PB_MR){
+        m.x=PB_L+PB_MR;
+        m.vx=Math.abs(m.vx)*PB_WALL_REST;
+    }else if(m.x>PB_R-PB_MR){
+        m.x=PB_R-PB_MR;
+        m.vx=-Math.abs(m.vx)*PB_WALL_REST;
+    }
+
+    /* 障礙釘 */
+
+    for(let i=0;i<PB_PEGS.length;i++){
+
+        const p=PB_PEGS[i];
+
+        if(Math.abs(p.y-m.y)>PB_MR+PB_PEG_R+2)continue;
+
+        pbCollideCircle(m,p.x,p.y,PB_PEG_R,PB_PEG_REST);
+    }
+
+    /* 擋板與隔板 */
+
+    for(let i=0;i<PB_SEGS.length;i++){
+        pbCollideSeg(m,PB_SEGS[i]);
+    }
+
+    /* 卡住保護：幾乎不動又還沒落入格子時，給一個由種子決定的小擾動 */
+
+    if(Math.hypot(m.vx,m.vy)<25&&m.y<PB_LAND_Y){
+
+        m.still+=dt;
+
+        if(m.still>0.5){
+            m.vx+=(m.rng()-0.5)*(220+m.t*10);
+            m.vy-=60;
+            m.still=0;
+        }
+
+    }else{
+        m.still=0;
+    }
+
+    /* 落入獎勵格：只在這裡決定一次落點 */
+
+    if(m.y>=PB_LAND_Y){
+        m.landed=true;
+        m.slot=sbClamp(Math.floor((m.x-PB_L)/PB_SLOT_W),0,PB_SLOTS-1);
+    }
+}
+
+/* 從放下當下的初始條件一路模擬到落點（快轉用，與即時畫面逐步相同） */
+
+function pbSimulateSpec(spec){
+
+    const m=pbMakeMarble(spec);
+
+    for(let i=0;i<PB_MAX_SIM_STEPS&&!m.landed;i++){
+        pbStepMarble(m,PB_DT);
+    }
+
+    if(!m.landed){
+        m.landed=true;
+        m.slot=sbClamp(Math.floor((m.x-PB_L)/PB_SLOT_W),0,PB_SLOTS-1);
+    }
+
+    return m;
+}
+
+
+/* =========================
+   落點記錄／結算／領取
+========================= */
+
+/* 每顆彈珠只會記錄一次：必須有 pending 才會寫入，寫入後立刻清掉 */
+
+function pbRecordLanding(slot){
+
+    const r=state.stepPinball;
+
+    if(!r||!r.pending||r.status!=="playing")return false;
+
+    const item=r.board[slot];
+
+    if(!item)return false;
+
+    r.drops.push(Object.assign({slot,count:1},item));
+    r.pending=null;
+
+    if(r.drops.length>=r.total)r.status="settled";
+
+    save();
+
+    return true;
+}
+
+/* 飛行中的彈珠（重新整理／中途離開）用同一套模擬快轉出落點並記錄 */
+
+function pbResolvePending(){
+
+    const r=state.stepPinball;
+
+    if(!r||!r.pending)return false;
+
+    const m=pbSimulateSpec(r.pending);
+
+    return pbRecordLanding(m.slot);
+}
+
+function pbTotals(round){
+
+    const map=new Map();
+
+    round.drops.forEach(d=>{
+
+        const key=d.kind==="recipe"?"r:"+d.recipeId:"i:"+d.itemId;
+        const cur=map.get(key);
+
+        if(cur){
+            cur.count+=Number(d.count)||1;
+        }else{
+            const meta=pbSlotMeta(d);
+            map.set(key,{icon:meta.icon,name:meta.name,count:Number(d.count)||1});
+        }
+    });
+
+    return Array.from(map.values());
+}
+
+function showPinballClaimLayer(){
+
+    const r=state.stepPinball;
+
+    if(!r||r.status!=="settled")return;
+
+    document.querySelectorAll(".step-claim-layer").forEach(el=>el.remove());
+
+    const layer=document.createElement("div");
+
+    layer.className="dispatch-result-layer step-claim-layer";
+
+    layer.innerHTML=`
+<div class="dispatch-result-modal">
+<div class="dispatch-result-title">🎯 彈珠台結算</div>
+<div class="dispatch-result-region">共 ${r.total} 顆彈珠</div>
+<div class="dispatch-result-rewards step-event-rewards">${buildDispatchRewardHtml(pbTotals(r))}</div>
+<button class="btn btn-orange dispatch-result-close" onclick="confirmClaimPinball('${r.id}',this)">🎁 領取獎勵</button>
+</div>`;
+
+    document.body.appendChild(layer);
+}
+
+/*
+   安全領取：
+   - 必須是已全部落定、尚未發放的同一輪
+   - 發放、移除對應步數事件、寫入 stepLog、清除這一輪，全部在同一個同步區塊完成
+   - 清掉之後再呼叫一次只會回傳 false，不會重複發放
+*/
+function claimPinballRound(id){
+
+    const r=state.stepPinball;
+
+    if(!r||r.id!==id||r.status!=="settled"||r.granted)return false;
+
+    r.granted=true;
+
+    const list=getStepPending();
+
+    r.events.forEach((ev,i)=>{
+
+        const d=r.drops[i];
+
+        const idx=list.findIndex(e=>e.id===ev.id);
+
+        if(idx>=0)list.splice(idx,1);
+
+        if(!d)return;
+
+        const logged={step:ev.step};
+
+        if(d.kind==="recipe"){
+
+            state.dishes[d.recipeId]=(Number(state.dishes[d.recipeId])||0)+(Number(d.count)||1);
+
+            logged.kind="recipe";
+            logged.recipeId=d.recipeId;
+            logged.count=Number(d.count)||1;
+
+        }else{
+
+            state.ingredients[d.itemId]=(Number(state.ingredients[d.itemId])||0)+(Number(d.count)||1);
+
+            logged.kind="ingredient";
+            logged.items=[{itemId:d.itemId,count:Number(d.count)||1}];
+        }
+
+        const dateKey=isValidStepDateKey(ev.date)?ev.date:getStepDateKey();
+
+        getStepDay(dateKey,true).events.push(logged);
+    });
+
+    state.stepPinball=null;
+
+    save();
+
+    renderGarden();
+    renderKitchen();
+    renderStepViews();
+
+    return true;
+}
+
+function confirmClaimPinball(id,btn){
+
+    if(btn){
+        if(btn.disabled)return;
+        btn.disabled=true;
+    }
+
+    const ok=claimPinballRound(id);
+
+    document.querySelectorAll(".step-claim-layer").forEach(el=>el.remove());
+
+    if(ok)toast("🎁 已領取彈珠台獎勵");
+
+    if(getStepPending().length||state.stepPinball){
+        setTimeout(openNextStepSoccer,350);
+    }
+}
+
+
+/* =========================
+   畫面
+========================= */
+
+function pbRoundRect(ctx,x,y,w,h,r){
+
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.lineTo(x+w-r,y);
+    ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r);
+    ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r);
+    ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath();
+}
+
+function pbDrawMarble(ctx,x,y,alpha){
+
+    ctx.save();
+
+    ctx.globalAlpha=alpha==null?1:alpha;
+
+    const g=ctx.createRadialGradient(x-3,y-3,1,x,y,PB_MR);
+
+    g.addColorStop(0,"#ffffff");
+    g.addColorStop(0.35,"#9fe0ff");
+    g.addColorStop(1,"#3a8fd8");
+
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.arc(x,y,PB_MR,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.strokeStyle="rgba(255,255,255,.85)";
+    ctx.lineWidth=1;
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function pbStackPos(slot,k){
+
+    const cx=PB_L+PB_SLOT_W*(slot+0.5);
+    const offs=[0,-11,11];
+
+    return {
+        x:cx+offs[k%3],
+        y:PB_SLOT_BOT-11-Math.floor(k/3)*14
+    };
+}
+
+function pbRender(now){
+
+    const cv=document.getElementById("pbCanvas");
+
+    if(!cv)return;
+
+    const ctx=cv.getContext("2d");
+    const k=pb.dpr||1;
+    const r=state.stepPinball;
+
+    ctx.setTransform(k,0,0,k,0,0);
+    ctx.clearRect(0,0,PB_W,PB_H);
+
+    /* 背景 */
+
+    const bg=ctx.createLinearGradient(0,0,0,PB_H);
+    bg.addColorStop(0,"#5a3f86");
+    bg.addColorStop(1,"#2c1e50");
+    ctx.fillStyle=bg;
+    pbRoundRect(ctx,0,0,PB_W,PB_H,14);
+    ctx.fill();
+
+    /* 彈珠台面 */
+
+    ctx.fillStyle="rgba(255,244,214,.10)";
+    pbRoundRect(ctx,PB_L,80,PB_R-PB_L,PB_SLOT_BOT-80,10);
+    ctx.fill();
+    ctx.strokeStyle="rgba(255,255,255,.35)";
+    ctx.lineWidth=2;
+    ctx.stroke();
+
+    /* 夜市彩燈 */
+
+    for(let x=PB_L+6;x<PB_R;x+=20){
+        ctx.fillStyle=PB_PEG_COLORS[Math.floor((x-PB_L)/20)%PB_PEG_COLORS.length];
+        ctx.beginPath();
+        ctx.arc(x,79,3.2,0,Math.PI*2);
+        ctx.fill();
+    }
+
+    /* 發射線 */
+
+    if(r&&r.status==="playing"&&!r.pending&&!pb.marble){
+        ctx.strokeStyle="rgba(255,255,255,.25)";
+        ctx.setLineDash([4,5]);
+        ctx.beginPath();
+        ctx.moveTo(pb.charX,PB_DROP_Y+PB_MR);
+        ctx.lineTo(pb.charX,112);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        pbDrawMarble(ctx,pb.charX,PB_DROP_Y,0.55);
+    }
+
+    /* 獎勵格 */
+
+    for(let i=0;i<PB_SLOTS;i++){
+
+        const item=r?r.board[i]:null;
+        const x=PB_L+PB_SLOT_W*i;
+        const isDish=!!item&&item.kind==="recipe";
+
+        ctx.fillStyle=isDish?"rgba(255,217,102,.55)":"rgba(255,255,255,.14)";
+        pbRoundRect(ctx,x+3,PB_SLOT_TOP+6,PB_SLOT_W-6,PB_SLOT_BOT-PB_SLOT_TOP-8,8);
+        ctx.fill();
+
+        ctx.strokeStyle=isDish?"#ffd966":PB_SLOT_COLORS[i%PB_SLOT_COLORS.length];
+        ctx.lineWidth=2;
+        ctx.stroke();
+
+        const meta=pbSlotMeta(item);
+
+        ctx.font="24px sans-serif";
+        ctx.textAlign="center";
+        ctx.textBaseline="middle";
+        ctx.fillStyle="#fff";
+        ctx.fillText(meta.icon,x+PB_SLOT_W/2,PB_SLOT_TOP+30);
+
+        if(isDish){
+            ctx.font="bold 10px sans-serif";
+            ctx.fillStyle="#fff3c4";
+            ctx.fillText("料理",x+PB_SLOT_W/2,PB_SLOT_TOP+52);
+        }
+    }
+
+    /* 隔板 */
+
+    ctx.strokeStyle="#fff3e0";
+    ctx.lineWidth=6;
+    ctx.lineCap="round";
+
+    PB_DIVIDERS.forEach(s=>{
+        ctx.beginPath();
+        ctx.moveTo(s.x1,s.y1);
+        ctx.lineTo(s.x2,s.y2);
+        ctx.stroke();
+    });
+
+    /* 擋板 */
+
+    ctx.strokeStyle="#ffc58a";
+    ctx.lineWidth=6;
+
+    PB_PLATES.forEach(s=>{
+        ctx.beginPath();
+        ctx.moveTo(s.x1,s.y1);
+        ctx.lineTo(s.x2,s.y2);
+        ctx.stroke();
+    });
+
+    /* 障礙釘 */
+
+    PB_PEGS.forEach(p=>{
+        ctx.fillStyle=p.c;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,PB_PEG_R,0,Math.PI*2);
+        ctx.fill();
+        ctx.strokeStyle="rgba(255,255,255,.9)";
+        ctx.lineWidth=1.5;
+        ctx.stroke();
+    });
+
+    /* 已落定的彈珠（剛落定那顆先用滑入動畫顯示） */
+
+    if(r){
+
+        const seen=[0,0,0,0,0,0,0];
+
+        r.drops.forEach((d,idx)=>{
+
+            const n=seen[d.slot]++;
+            const pos=pbStackPos(d.slot,n);
+
+            if(pb.anim&&pb.anim.idx===idx&&now-pb.anim.start<pb.anim.dur){
+
+                const u=(now-pb.anim.start)/pb.anim.dur;
+                const e=1-(1-u)*(1-u);
+
+                pbDrawMarble(
+                    ctx,
+                    pb.anim.x+(pos.x-pb.anim.x)*e,
+                    pb.anim.y+(pos.y-pb.anim.y)*e
+                );
+
+            }else{
+                pbDrawMarble(ctx,pos.x,pos.y);
+            }
+        });
+    }
+
+    /* 飛行中的彈珠 */
+
+    if(pb.marble&&!pb.marble.landed){
+        pbDrawMarble(ctx,pb.marble.x,pb.marble.y);
+    }
+
+    /* 角色位置（GIF 為 DOM 元素，才會動） */
+
+    const el=document.getElementById("pbPlayer");
+
+    if(el){
+        el.style.transform=`translate(${(pb.charX-24).toFixed(1)}px,${PB_CHAR_Y}px)`;
+    }
+}
+
+function pbFit(){
+
+    const wrap=document.getElementById("pbFieldWrap");
+    const stage=document.getElementById("pbStage");
+    const cv=document.getElementById("pbCanvas");
+
+    if(!wrap||!stage||!cv)return;
+
+    const s=Math.min(wrap.clientWidth/PB_W,wrap.clientHeight/PB_H,1.6)||1;
+
+    stage.style.transform=`translate(-50%,-50%) scale(${s})`;
+
+    const dpr=Math.max(1,Math.min(3,(window.devicePixelRatio||1)*s));
+    const w=Math.round(PB_W*dpr);
+
+    if(cv.width!==w){
+        cv.width=w;
+        cv.height=Math.round(PB_H*dpr);
+    }
+
+    pb.dpr=cv.width/PB_W;
+}
+
+function pbUpdateHud(){
+
+    const r=state.stepPinball;
+
+    const count=document.getElementById("pbCount");
+    const hint=document.getElementById("pbHint");
+    const btn=document.getElementById("pbDrop");
+
+    if(!r)return;
+
+    const used=r.drops.length+(r.pending?1:0);
+    const left=Math.max(0,r.total-used);
+
+    if(count)count.textContent=`🔵 剩 ${left}／${r.total}`;
+
+    if(hint){
+        const dish=r.board.find(b=>b.kind==="recipe");
+        const meta=pbSlotMeta(dish);
+        hint.textContent=`搖桿左右移動・金色格是 ${meta.icon} ${meta.name}`;
+    }
+
+    const can=r.status==="playing"&&!r.pending&&!pb.marble&&left>0;
+
+    if(btn){
+        btn.disabled=!can;
+        btn.classList.toggle("ready",can);
+    }
+}
+
+
+/* =========================
+   操作
+========================= */
+
+function pbSetKnob(dx){
+
+    const knob=document.getElementById("pbJoystickKnob");
+
+    if(knob)knob.style.transform=`translate(${dx}px,0px)`;
+}
+
+function pbJoyMove(e){
+
+    const joy=document.getElementById("pbJoystick");
+    const rect=joy.getBoundingClientRect();
+    const radius=rect.width/2-23;
+
+    let dx=e.clientX-(rect.left+rect.width/2);
+
+    dx=sbClamp(dx,-radius,radius);
+
+    pbSetKnob(dx);
+
+    pb.joy.vx=dx/radius;
+}
+
+function pbJoyEnd(e){
+
+    if(!pb.joy.active||(e&&e.pointerId!==pb.joy.pid))return;
+
+    pb.joy.active=false;
+    pb.joy.pid=null;
+    pb.joy.vx=0;
+
+    pbSetKnob(0);
+}
+
+function pbBindControls(){
+
+    if(pb.bound)return;
+
+    const joy=document.getElementById("pbJoystick");
+    const drop=document.getElementById("pbDrop");
+
+    if(!joy||!drop)return;
+
+    pb.bound=true;
+
+    joy.addEventListener("pointerdown",e=>{
+        if(!pb.running)return;
+        e.preventDefault();
+        e.stopPropagation();
+        pb.joy.active=true;
+        pb.joy.pid=e.pointerId;
+        try{joy.setPointerCapture(e.pointerId);}catch(err){}
+        pbJoyMove(e);
+    });
+
+    joy.addEventListener("pointermove",e=>{
+        if(!pb.joy.active||e.pointerId!==pb.joy.pid)return;
+        e.preventDefault();
+        pbJoyMove(e);
+    });
+
+    joy.addEventListener("pointerup",pbJoyEnd);
+    joy.addEventListener("pointercancel",pbJoyEnd);
+    joy.addEventListener("lostpointercapture",pbJoyEnd);
+
+    drop.addEventListener("pointerdown",e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        pbDrop();
+    });
+
+    window.addEventListener("resize",()=>{
+        if(pb.running)pbFit();
+    });
+
+    const keyMap={ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right"};
+
+    window.addEventListener("keydown",e=>{
+        if(!pb.running)return;
+        if(keyMap[e.key]){pb.keys[keyMap[e.key]]=true;e.preventDefault();}
+        if(e.key===" "||e.key==="Enter"){e.preventDefault();pbDrop();}
+    });
+
+    window.addEventListener("keyup",e=>{
+        if(keyMap[e.key])pb.keys[keyMap[e.key]]=false;
+    });
+}
+
+/*
+   放下彈珠：
+   - 同一時間只有一顆（等當顆落定才能放下一顆）
+   - 放下當下就把初始條件存檔（pending），之後重新整理也只會得到同一個落點
+*/
+function pbDrop(){
+
+    if(!pb.running)return;
+
+    const r=state.stepPinball;
+
+    if(!r||r.status!=="playing"||r.pending||pb.marble)return;
+
+    if(r.drops.length>=r.total)return;
+
+    const spec={
+        x:Math.round(pb.charX*10)/10,
+        vx:Math.round((Math.random()-0.5)*40*100)/100,
+        seed:Math.floor(Math.random()*2147483646)+1
+    };
+
+    r.pending=spec;
+
+    save();
+
+    pb.marble=pbMakeMarble(spec);
+    pb.acc=0;
+
+    pbUpdateHud();
+}
+
+function pbLoop(ts){
+
+    pb.raf=0;
+
+    if(!pb.running)return;
+
+    const dt=Math.min(0.05,(ts-(pb.last||ts))/1000);
+
+    pb.last=ts;
+
+    /* 角色左右移動 */
+
+    let jx=pb.joy.vx;
+
+    if(!pb.joy.active){
+        jx=(pb.keys.right?1:0)-(pb.keys.left?1:0);
+    }
+
+    if(Math.abs(jx)>0.12){
+        pb.charX=sbClamp(pb.charX+jx*PB_CHAR_SPEED*dt,PB_L+24,PB_R-24);
+    }
+
+    /* 彈珠：固定步長模擬 */
+
+    if(pb.marble){
+
+        pb.acc+=dt;
+
+        while(pb.acc>=PB_DT&&!pb.marble.landed){
+            pbStepMarble(pb.marble,PB_DT);
+            pb.acc-=PB_DT;
+        }
+
+        if(pb.marble.landed){
+
+            const m=pb.marble;
+
+            pb.marble=null;
+            pb.acc=0;
+
+            if(pbRecordLanding(m.slot)){
+
+                const r=state.stepPinball;
+                const idx=r.drops.length-1;
+                const pos=pbStackPos(m.slot,r.drops.filter(d=>d.slot===m.slot).length-1);
+
+                pb.anim={idx,x:m.x,y:m.y,tx:pos.x,ty:pos.y,start:ts,dur:280};
+
+                if(r.status==="settled"){
+                    clearTimeout(pb.timer);
+                    pb.timer=setTimeout(exitStepPinball,900);
+                }
+            }
+
+            pbUpdateHud();
+        }
+    }
+
+    pbRender(ts);
+
+    pb.raf=requestAnimationFrame(pbLoop);
+}
+
+function openStepPinball(){
+
+    if(pb.running||sb.running)return;
+
+    if(!state.stepPinball)return;
+
+    /* 上次離開時還在飛的彈珠：用同一套模擬快轉並記錄，不能重抽 */
+
+    if(state.stepPinball.pending)pbResolvePending();
+
+    const r=state.stepPinball;
+
+    if(!r)return;
+
+    if(r.status==="settled"){
+        renderStepViews();
+        showPinballClaimLayer();
+        return;
+    }
+
+    /* 離開花園操作：確保花園搖桿不在操作中 */
+
+    try{
+        if(gJoy.active){gJoy.active=false;gJoy.pid=null;}
+        stopGardenJoystickMove();
+    }catch(err){}
+
+    pbBindControls();
+
+    const playerChar=sbPickPlayer();
+    const img=document.getElementById("pbPlayerImg");
+
+    img.style.display="";
+
+    if(img.nextElementSibling)img.nextElementSibling.style.display="";
+
+    img.src=MEMBER_BASE+(playerChar?playerChar.file:SB_PLAYER_FILE);
+
+    pb.charX=PB_W/2;
+    pb.marble=null;
+    pb.anim=null;
+    pb.keys={};
+    pb.joy={active:false,pid:null,vx:0};
+    pb.acc=0;
+    pb.last=0;
+    pb.running=true;
+
+    pbSetKnob(0);
+
+    document.getElementById("pinballLayer").classList.add("show");
+
+    pbFit();
+    pbUpdateHud();
+    pbRender(performance.now());
+
+    pb.raf=requestAnimationFrame(pbLoop);
+}
+
+function exitStepPinball(){
+
+    if(!pb.running)return;
+
+    clearTimeout(pb.timer);
+
+    /* 中途離開：飛行中的彈珠快轉到落點並記錄（不能靠離開重抽） */
+
+    if(state.stepPinball&&state.stepPinball.pending)pbResolvePending();
+
+    pb.running=false;
+    pb.marble=null;
+    pb.anim=null;
+
+    if(pb.raf){
+        cancelAnimationFrame(pb.raf);
+        pb.raf=0;
+    }
+
+    pb.joy={active:false,pid:null,vx:0};
+    pb.keys={};
+    pbSetKnob(0);
+
+    document.getElementById("pinballLayer").classList.remove("show");
+
+    renderStepViews();
+
+    const r=state.stepPinball;
+
+    if(r&&r.status==="settled")showPinballClaimLayer();
 }
 
 
@@ -11277,7 +12573,8 @@ state.cooking.push({recipeId:null,endTime:0,helperEnabled:false});
 saveReady=true;
 await save();
 renderGarden();
-if(getStepPending().length)toast("⚽ 有待完成的射門事件，到「步數派遣」繼續");
+if(state.stepPinball)toast("🎯 有進行中的彈珠台，到「步數派遣」繼續");
+else if(getStepPending().length)toast("⚽ 有待完成的射門事件，到「步數派遣」繼續");
 setInterval(gameTick,1000);
 
 }
