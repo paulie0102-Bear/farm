@@ -3438,6 +3438,281 @@ button,
     }
 }
 
+/* =========================================================
+   步數事件：足球小遊戲
+========================================================= */
+
+.step-pending-card{
+    text-align:center;
+    background:#fff5d8;
+    border:1px solid #f0d47a;
+}
+
+.step-pending-title{
+    font-size:14px;
+    font-weight:900;
+    color:var(--brown-dark);
+}
+
+.step-pending-desc{
+    margin:4px 0 10px;
+    font-size:11px;
+    font-weight:900;
+    color:#927f6d;
+}
+
+.soccer-layer{
+    position:fixed;
+    inset:0;
+    z-index:600;
+    display:none;
+    flex-direction:column;
+    padding:calc(8px + var(--safe-top)) 10px calc(10px + var(--safe-bottom));
+    background:linear-gradient(180deg,#eaf5e5 0%,#cfe5c8 100%);
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+    overscroll-behavior:contain;
+}
+
+.soccer-layer.show{
+    display:flex;
+}
+
+.sb-top{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.sb-top .btn{
+    width:auto;
+    min-height:38px;
+    padding:6px 12px;
+    font-size:13px;
+}
+
+.sb-title{
+    flex:1;
+    text-align:center;
+    font-size:16px;
+    font-weight:900;
+    color:var(--green-dark);
+}
+
+.sb-hint{
+    margin:6px 0 4px;
+    text-align:center;
+    font-size:11px;
+    font-weight:900;
+    color:#927f6d;
+}
+
+.sb-field-wrap{
+    position:relative;
+    flex:1;
+    min-height:0;
+    overflow:hidden;
+}
+
+.sb-stage{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:360px;
+    height:560px;
+    transform-origin:center center;
+}
+
+.sb-pitch{
+    position:absolute;
+    left:0;
+    top:44px;
+    width:360px;
+    height:516px;
+    border:3px solid #fff;
+    border-radius:0 0 16px 16px;
+    background:repeating-linear-gradient(180deg,#78b866 0 43px,#6dae5c 43px 86px);
+    box-shadow:0 5px 14px rgba(60,90,50,.25);
+}
+
+.sb-line-box{
+    position:absolute;
+    left:70px;
+    top:0;
+    width:220px;
+    height:84px;
+    border:2px solid rgba(255,255,255,.85);
+    border-top:0;
+}
+
+.sb-line-mid{
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    height:2px;
+    background:rgba(255,255,255,.85);
+}
+
+.sb-line-circle{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:90px;
+    height:90px;
+    margin:-45px 0 0 -45px;
+    border:2px solid rgba(255,255,255,.85);
+    border-radius:50%;
+}
+
+.sb-goal{
+    position:absolute;
+    left:120px;
+    top:2px;
+    width:120px;
+    height:44px;
+    border:4px solid #fff;
+    border-bottom:0;
+    border-radius:8px 8px 0 0;
+    background:
+        repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 2px,transparent 2px 9px),
+        repeating-linear-gradient(-45deg,rgba(255,255,255,.6) 0 2px,transparent 2px 9px),
+        rgba(70,95,70,.4);
+}
+
+.sb-char{
+    position:absolute;
+    left:0;
+    top:0;
+    width:48px;
+    height:48px;
+    pointer-events:none;
+    will-change:transform;
+}
+
+.sb-char img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+}
+
+.sb-char-fallback{
+    display:none;
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    font-size:30px;
+    line-height:48px;
+    text-align:center;
+    background:#fffaf0;
+    border:2px solid #fff;
+}
+
+.sb-ball{
+    position:absolute;
+    left:0;
+    top:0;
+    width:20px;
+    height:20px;
+    font-size:18px;
+    line-height:20px;
+    text-align:center;
+    pointer-events:none;
+    will-change:transform;
+}
+
+.sb-aim{
+    position:absolute;
+    left:0;
+    top:0;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#fff;
+    border:2px solid var(--orange);
+    pointer-events:none;
+    will-change:transform;
+}
+
+.sb-goal-text{
+    position:absolute;
+    left:0;
+    right:0;
+    top:42%;
+    text-align:center;
+    font-size:46px;
+    font-weight:900;
+    color:#fff;
+    text-shadow:0 3px 0 var(--orange-dark),0 0 14px rgba(0,0,0,.3);
+    opacity:0;
+    pointer-events:none;
+}
+
+.sb-goal-text.show{
+    animation:sbGoalPop .7s ease-out forwards;
+}
+
+@keyframes sbGoalPop{
+    0%{opacity:0;transform:scale(.4);}
+    55%{opacity:1;transform:scale(1.15);}
+    100%{opacity:1;transform:scale(1);}
+}
+
+.sb-controls{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 8px 0;
+}
+
+.sb-joystick{
+    position:relative;
+    width:112px;
+    height:112px;
+    border-radius:50%;
+    touch-action:none;
+    background:rgba(255,250,240,.75);
+    border:2px solid #fff;
+    box-shadow:inset 0 2px 8px rgba(120,90,60,.22),0 3px 10px rgba(0,0,0,.14);
+}
+
+.sb-joystick-knob{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:46px;
+    height:46px;
+    margin:-23px 0 0 -23px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+
+.sb-kick{
+    width:96px;
+    height:96px;
+    border:0;
+    border-radius:50%;
+    touch-action:none;
+    font-size:20px;
+    font-weight:900;
+    color:#fff;
+    background:var(--orange);
+    box-shadow:0 5px 0 var(--orange-dark);
+    transition:background .12s;
+}
+
+.sb-kick.ready{
+    background:var(--green);
+    box-shadow:0 5px 0 #466d40;
+}
+
+.sb-kick:active{
+    transform:translateY(3px);
+}
+
 </style>
 </head>
 
@@ -3777,6 +4052,8 @@ button,
 
         </div>
 
+        <div id="stepPendingBox"></div>
+
         <div class="card">
             <div id="stepCalendar"></div>
             <div class="step-cal-hint">點擊有印章的日期，查看當天步數</div>
@@ -3891,6 +4168,60 @@ button,
 
 </div>
 
+
+<!-- =========================================================
+     步數事件：足球小遊戲
+========================================================== -->
+
+<div id="soccerLayer" class="soccer-layer">
+
+    <div class="sb-top">
+        <button class="btn btn-light" onclick="exitStepSoccer()">← 返回</button>
+        <div class="sb-title">⚽ 射門挑戰</div>
+        <button class="btn btn-light" onclick="resetStepSoccerBall()">🔄 重置</button>
+    </div>
+
+    <div class="sb-hint">搖桿移動・靠近球按「踢」・把球射進上方球門！</div>
+
+    <div class="sb-field-wrap" id="sbFieldWrap">
+
+        <div class="sb-stage" id="sbStage">
+
+            <div class="sb-pitch">
+                <div class="sb-line-box"></div>
+                <div class="sb-line-mid"></div>
+                <div class="sb-line-circle"></div>
+            </div>
+
+            <div class="sb-goal"></div>
+
+            <div class="sb-char" id="sbEnemy">
+                <img id="sbEnemyImg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+                <div class="sb-char-fallback">😼</div>
+            </div>
+
+            <div class="sb-char" id="sbPlayer">
+                <img id="sbPlayerImg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+                <div class="sb-char-fallback">🐹</div>
+            </div>
+
+            <div class="sb-aim" id="sbAim"></div>
+            <div class="sb-ball" id="sbBall">⚽</div>
+
+            <div class="sb-goal-text" id="sbGoalText">GOAL!</div>
+
+        </div>
+
+    </div>
+
+    <div class="sb-controls">
+        <div class="sb-joystick" id="sbJoystick">
+            <div class="sb-joystick-knob" id="sbJoystickKnob"></div>
+        </div>
+        <button class="sb-kick" id="sbKick" type="button">踢</button>
+    </div>
+
+</div>
 
 <div id="toast"></div>
 
@@ -4809,6 +5140,7 @@ targetCharacter:null
 },
 stepLog:{},
 stepDispatch:{totalSteps:0,dispatchCount:0},
+stepPending:[],
 trucks:Array.from({length:4},(_,i)=>createDefaultTruck(i)),
 taskSystem:{
 daily:{date:null,dispatch:false,cook:false,list:false,stepUpload:false,claimDispatch:false,claimCook:false,claimList:false,claimStepUpload:false},
@@ -5149,6 +5481,7 @@ merged.dailyCheckin=Object.assign({date:"",streak:0},saved?.dailyCheckin||{});
 merged.expedition=Object.assign({},DEFAULT_STATE.expedition,saved?.expedition||{});
 merged.stepLog=normalizeStepLog(saved?.stepLog);
 merged.stepDispatch=normalizeStepDispatch(saved?.stepDispatch);
+merged.stepPending=normalizeStepPending(saved?.stepPending);
 merged.trucks=Array.isArray(saved?.trucks)?saved.trucks:[];
 if(!merged.trucks.length&&saved?.truck){
 const old=saved.truck;
@@ -9127,9 +9460,6 @@ function runStepDispatchEvent(stepNo){
 
         const id=pickRandomItem(Object.keys(INGREDIENTS));
 
-        state.ingredients[id]=
-            (Number(state.ingredients[id])||0)+1;
-
         event.kind="ingredient";
         event.items=[{itemId:id,count:1}];
 
@@ -9151,11 +9481,6 @@ function runStepDispatchEvent(stepNo){
             counts[id]=(counts[id]||0)+1;
         });
 
-        Object.keys(counts).forEach(id=>{
-            state.ingredients[id]=
-                (Number(state.ingredients[id])||0)+counts[id];
-        });
-
         event.kind="ingredient";
         event.items=Object.keys(counts).map(id=>({
             itemId:id,
@@ -9168,9 +9493,6 @@ function runStepDispatchEvent(stepNo){
     /* 10%：料理 x1，直接進入料理庫存（state.dishes） */
 
     const recipe=pickRandomItem(RECIPES);
-
-    state.dishes[recipe.id]=
-        (Number(state.dishes[recipe.id])||0)+1;
 
     event.kind="recipe";
     event.recipeId=recipe.id;
@@ -9695,7 +10017,11 @@ function applyStepReading(reading){
                     (dispatch.dispatchCount+1)*STEP_DISPATCH_UNIT
                 );
 
-                day.events.push(event);
+                event.id=createStepEventId(dispatch.dispatchCount+1);
+                event.date=dateKey;
+                event.status="pending";
+                event.kicks=0;
+                getStepPending().push(event);
                 day.dispatchCount++;
                 dispatch.dispatchCount++;
                 newEvents.push(event);
@@ -9722,7 +10048,7 @@ function applyStepReading(reading){
     renderStepViews();
 
     if(newEvents.length){
-        showStepDispatchResult(dateKey,newEvents);
+        openNextStepSoccer();
     }
 }
 
@@ -9961,11 +10287,932 @@ function renderStepPage(){
 
     document.getElementById("stepTodayLog").innerHTML=
         html||`<div class="empty">今天還沒有步數派遣<br>走滿 ${STEP_DISPATCH_UNIT} 步就會出發！</div>`;
+
+    renderStepPendingBox();
 }
 
 function renderStepViews(){
 
     renderStepPage();
+}
+
+
+
+/* =========================================================
+   步數事件：待完成事件（state.stepPending）
+
+   每次達標事件在 applyStepReading() 抽獎後，先放進 stepPending：
+   {
+       id, step, date,
+       kind:"ingredient"|"recipe", items | recipeId+count,   ← 原本抽中的獎勵（不再重抽）
+       status:"pending"|"goal",   pending=還沒進球；goal=已進球、等待領取
+       kicks                       踢球次數（遊戲進度）
+   }
+   一次上傳只玩一場：進一球即完成所有待射門事件（全部變 goal），領取時一次領完。
+   兩次上傳之間若沒有新達標事件，就不會開啟小遊戲。
+   獎勵在「進球 + 按下領取」之前不會進入庫存；
+   領取時才發放、移入 stepLog 並從 stepPending 移除（同一步完成，防重複）。
+========================================================= */
+
+function normalizeStepPending(raw){
+
+    const result=[];
+    const seen=new Set();
+
+    if(!Array.isArray(raw))return result;
+
+    raw.forEach(e=>{
+
+        if(!e||typeof e!=="object")return;
+
+        const id=typeof e.id==="string"?e.id:"";
+
+        if(!id||seen.has(id))return;
+
+        const out={
+            id,
+            step:Math.max(0,Math.floor(Number(e.step)||0)),
+            date:isValidStepDateKey(e.date)?e.date:getStepDateKey(),
+            status:e.status==="goal"?"goal":"pending",
+            kicks:Math.max(0,Math.floor(Number(e.kicks)||0))
+        };
+
+        if(e.kind==="recipe"){
+
+            if(!RECIPES.some(r=>r.id===e.recipeId))return;
+
+            out.kind="recipe";
+            out.recipeId=e.recipeId;
+            out.count=Math.max(1,Math.floor(Number(e.count)||1));
+
+        }else if(e.kind==="ingredient"){
+
+            const items=(Array.isArray(e.items)?e.items:[])
+                .filter(it=>it&&INGREDIENTS[it.itemId])
+                .map(it=>({
+                    itemId:it.itemId,
+                    count:Math.max(1,Math.floor(Number(it.count)||1))
+                }));
+
+            if(!items.length)return;
+
+            out.kind="ingredient";
+            out.items=items;
+
+        }else{
+            return;
+        }
+
+        seen.add(id);
+        result.push(out);
+    });
+
+    return result;
+}
+
+function getStepPending(){
+
+    if(!Array.isArray(state.stepPending)){
+        state.stepPending=normalizeStepPending(state.stepPending);
+    }
+
+    return state.stepPending;
+}
+
+function findStepPending(id){
+    return getStepPending().find(e=>e.id===id)||null;
+}
+
+function createStepEventId(stepNo){
+    return `se_${stepNo}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,7)}`;
+}
+
+
+/* =========================
+   發放獎勵（與原本 runStepDispatchEvent 內的發放邏輯完全相同）
+========================= */
+
+function grantStepEventReward(event){
+
+    if(event.kind==="recipe"){
+
+        state.dishes[event.recipeId]=
+            (Number(state.dishes[event.recipeId])||0)+(Number(event.count)||1);
+
+        return;
+    }
+
+    (event.items||[]).forEach(entry=>{
+
+        state.ingredients[entry.itemId]=
+            (Number(state.ingredients[entry.itemId])||0)+(Number(entry.count)||1);
+    });
+}
+
+/*
+   安全領取：
+   - 只有「已進球」的事件能領
+   - 事件不在待完成清單 = 已領過，直接回傳 false（不會重複發）
+   - 發放、移出 stepPending、寫入 stepLog 在同一個同步區塊內完成
+*/
+function claimStepEvent(id){
+
+    const list=getStepPending();
+
+    const idx=list.findIndex(e=>e.id===id);
+
+    if(idx<0)return false;
+
+    const event=list[idx];
+
+    if(event.status!=="goal")return false;
+
+    list.splice(idx,1);
+
+    grantStepEventReward(event);
+
+    const logged={step:event.step,kind:event.kind};
+
+    if(event.kind==="recipe"){
+        logged.recipeId=event.recipeId;
+        logged.count=event.count;
+    }else{
+        logged.items=event.items.map(it=>({itemId:it.itemId,count:it.count}));
+    }
+
+    getStepDay(event.date,true).events.push(logged);
+
+    save();
+
+    renderGarden();
+    renderKitchen();
+    renderStepViews();
+
+    return true;
+}
+
+
+/* =========================
+   待完成事件入口
+========================= */
+
+function openNextStepSoccer(){
+
+    const list=getStepPending();
+
+    if(!list.length)return;
+
+    const event=list[0];
+
+    if(event.status==="goal"){
+        showStepClaimLayer(event.id);
+    }else{
+        startStepSoccer(event.id);
+    }
+}
+
+function renderStepPendingBox(){
+
+    const box=document.getElementById("stepPendingBox");
+
+    if(!box)return;
+
+    const list=getStepPending();
+
+    if(!list.length){
+        box.innerHTML="";
+        return;
+    }
+
+    const goal=list[0].status==="goal";
+
+    box.innerHTML=`
+<div class="card step-pending-card">
+<div class="step-pending-title">⚽ 有 ${list.length} 個待完成的射門事件</div>
+<div class="step-pending-desc">${goal?"已進球，可以領取獎勵了！":"進球後就能看到並領取獎勵"}</div>
+<button class="btn btn-green" onclick="openNextStepSoccer()">${goal?"🎁 領取獎勵":"⚽ 開始射門"}</button>
+</div>`;
+}
+
+function showStepClaimLayer(eventId){
+
+    const event=findStepPending(eventId);
+
+    if(!event||event.status!=="goal")return;
+
+    document.querySelectorAll(".step-claim-layer").forEach(el=>el.remove());
+
+    const goals=getStepPending().filter(e=>e.status==="goal");
+
+    let regionText;
+    let bodyHtml;
+
+    if(goals.length<=1){
+
+        regionText=`${formatStepDateLabel(event.date)}・${formatSteps(event.step)} 步`;
+        bodyHtml=buildStepEventHtml(event);
+
+    }else{
+
+        regionText=`共 ${goals.length} 份獎勵`;
+
+        bodyHtml=goals.map(e=>{
+
+            const html=buildStepEventHtml(e);
+
+            if(!html)return "";
+
+            return `<div class="dispatch-result-subtitle">🚶 ${formatSteps(e.step)} 步</div>${html}`;
+
+        }).join("");
+    }
+
+    const layer=document.createElement("div");
+
+    layer.className="dispatch-result-layer step-claim-layer";
+
+    layer.innerHTML=`
+<div class="dispatch-result-modal">
+<div class="dispatch-result-title">⚽ 進球成功！</div>
+<div class="dispatch-result-region">${regionText}</div>
+${bodyHtml}
+<button class="btn btn-orange dispatch-result-close" onclick="confirmClaimStepEvent('${event.id}',this)">🎁 領取獎勵</button>
+</div>`;
+
+    document.body.appendChild(layer);
+}
+
+function confirmClaimStepEvent(eventId,btn){
+
+    if(btn){
+        if(btn.disabled)return;
+        btn.disabled=true;
+    }
+
+    /* 同一場進球完成的所有事件一起領（每一筆仍走 claimStepEvent，維持防重複） */
+
+    const ids=getStepPending().filter(e=>e.status==="goal").map(e=>e.id);
+
+    if(!ids.includes(eventId))ids.push(eventId);
+
+    let claimed=0;
+
+    ids.forEach(id=>{
+        if(claimStepEvent(id))claimed++;
+    });
+
+    document.querySelectorAll(".step-claim-layer").forEach(el=>el.remove());
+
+    if(claimed>1)toast(`🎁 已領取 ${claimed} 份獎勵`);
+    else if(claimed===1)toast("🎁 已領取獎勵");
+
+    if(getStepPending().length){
+        setTimeout(openNextStepSoccer,350);
+    }
+}
+
+
+/* =========================================================
+   足球小遊戲
+
+   - 邏輯座標：球場 360 x 560（球門在上方），畫面再等比縮放
+   - 玩家、敵人、足球全部使用同一套座標做碰撞與進球判定
+   - 搖桿使用獨立的 sb.joy，不碰花園的 gJoy
+========================================================= */
+
+const SB_W=360;
+const SB_H=560;
+const SB_TOP=44;                 // 球門線（球場上緣）
+const SB_GX1=120;                // 球門左柱
+const SB_GX2=240;                // 球門右柱
+const SB_PR=20;                  // 玩家半徑
+const SB_ER=20;                  // 敵人半徑
+const SB_BR=10;                  // 足球半徑
+const SB_PLAYER_SPEED=150;       // 玩家最大速度（單位／秒）
+const SB_ENEMY_SPEED_RATIO=0.4;  // 敵人速度 = 玩家的 40%（原 80% 的一半）
+const SB_KICK_RANGE=SB_PR+SB_BR+8;
+const SB_KICK_POWER=460;
+const SB_KICK_COOLDOWN=250;      // 毫秒
+const SB_FRICTION=1.2;
+const SB_WALL_BOUNCE=0.7;
+const SB_HIT_BOUNCE=0.35;
+const SB_ENEMY_TACKLE_POWER=230;  // 敵人截球時給球的速度
+const SB_ENEMY_TACKLE_CD=0.9;      // 截球間隔（秒）
+const SB_PLAYER_FILE="QUOKKA.gif";     // 備用：尚未選擇料理小幫手時使用
+const SB_ENEMY_FILE="MR.BURNT.gif";     // 備用：派遣頁沒有任何角色時使用
+
+const sb={
+    running:false,
+    phase:"idle",          // idle | play | goal
+    raf:0,
+    last:0,
+    eventId:null,
+    playerId:null,     // 本場我方角色（= 料理小幫手）
+    enemyId:null,      // 本場對手（每場開始時抽一次，重置不重抽）
+    kicks:0,
+    kickAt:0,
+    hintAt:0,
+    enemyCd:0,
+    px:0,py:0,pvx:0,pvy:0,
+    ex:0,ey:0,evx:0,evy:0,
+    bx:0,by:0,bvx:0,bvy:0,
+    dirX:0,dirY:-1,
+    joy:{active:false,pid:null,vx:0,vy:0},
+    keys:{},
+    timer:0,
+    ready:false,
+    bound:false
+};
+
+function sbClamp(v,a,b){
+    return Math.max(a,Math.min(b,v));
+}
+
+function sbInMouth(x){
+    return x>SB_GX1+SB_BR*0.5&&x<SB_GX2-SB_BR*0.5;
+}
+
+function sbPlaceStart(){
+
+    sb.px=SB_W/2;sb.py=SB_H-70;
+    sb.pvx=0;sb.pvy=0;
+
+    sb.ex=SB_W/2-70;sb.ey=SB_TOP+90;
+    sb.evx=0;sb.evy=0;
+
+    sb.bx=SB_W/2;sb.by=SB_H-150;
+    sb.bvx=0;sb.bvy=0;
+
+    sb.dirX=0;sb.dirY=-1;
+}
+
+function sbFit(){
+
+    const wrap=document.getElementById("sbFieldWrap");
+    const stage=document.getElementById("sbStage");
+
+    if(!wrap||!stage)return;
+
+    const s=Math.min(wrap.clientWidth/SB_W,wrap.clientHeight/SB_H,1.6)||1;
+
+    stage.style.transform=`translate(-50%,-50%) scale(${s})`;
+}
+
+function sbRender(){
+
+    const put=(id,x,y,half)=>{
+        const el=document.getElementById(id);
+        if(!el)return;
+        el.style.transform=`translate(${(x-half).toFixed(1)}px,${(y-half).toFixed(1)}px)`;
+        el.style.zIndex=Math.round(y);
+    };
+
+    put("sbPlayer",sb.px,sb.py,24);
+    put("sbEnemy",sb.ex,sb.ey,24);
+    put("sbBall",sb.bx,sb.by,10);
+
+    const aim=document.getElementById("sbAim");
+
+    if(aim){
+        aim.style.transform=
+            `translate(${(sb.px+sb.dirX*32-5).toFixed(1)}px,${(sb.py+sb.dirY*32-5).toFixed(1)}px)`;
+        aim.style.display=sb.phase==="play"?"block":"none";
+    }
+
+    const near=Math.hypot(sb.bx-sb.px,sb.by-sb.py)<=SB_KICK_RANGE;
+
+    if(near!==sb.ready){
+        sb.ready=near;
+        document.getElementById("sbKick")?.classList.toggle("ready",near);
+    }
+}
+
+/* 足球與角色（玩家／敵人）的碰撞：把球推出去並給它速度 */
+function sbCollide(ox,oy,ovx,ovy,r){
+
+    let dx=sb.bx-ox;
+    let dy=sb.by-oy;
+    let d=Math.hypot(dx,dy);
+    const minD=r+SB_BR;
+
+    if(d>=minD)return;
+
+    if(d<0.001){dx=0;dy=1;d=1;}
+
+    const nx=dx/d;
+    const ny=dy/d;
+
+    sb.bx=ox+nx*minD;
+    sb.by=oy+ny*minD;
+
+    const rel=(sb.bvx-ovx)*nx+(sb.bvy-ovy)*ny;
+
+    if(rel<0){
+        const j=-(1+SB_HIT_BOUNCE)*rel;
+        sb.bvx+=nx*j;
+        sb.bvy+=ny*j;
+    }
+}
+
+/* 球被牆壓住時，把角色推開，避免角色與球重疊卡死 */
+function sbPushOut(isPlayer){
+
+    const r=isPlayer?SB_PR:SB_ER;
+    let x=isPlayer?sb.px:sb.ex;
+    let y=isPlayer?sb.py:sb.ey;
+
+    const dx=x-sb.bx;
+    const dy=y-sb.by;
+    const d=Math.hypot(dx,dy);
+    const minD=r+SB_BR;
+
+    if(d>=minD-0.5)return;
+
+    const nx=d>0.001?dx/d:0;
+    const ny=d>0.001?dy/d:1;
+
+    x=sbClamp(sb.bx+nx*minD,r,SB_W-r);
+    y=sbClamp(sb.by+ny*minD,SB_TOP+r,SB_H-r);
+
+    if(isPlayer){sb.px=x;sb.py=y;}else{sb.ex=x;sb.ey=y;}
+}
+
+function sbWalls(){
+
+    if(sb.bx<SB_BR){
+        sb.bx=SB_BR;
+        sb.bvx=Math.abs(sb.bvx)*SB_WALL_BOUNCE;
+    }else if(sb.bx>SB_W-SB_BR){
+        sb.bx=SB_W-SB_BR;
+        sb.bvx=-Math.abs(sb.bvx)*SB_WALL_BOUNCE;
+    }
+
+    if(sb.by>SB_H-SB_BR){
+        sb.by=SB_H-SB_BR;
+        sb.bvy=-Math.abs(sb.bvy)*SB_WALL_BOUNCE;
+    }
+
+    /* 上緣：只有球門口是開的，其他位置會反彈 */
+    if(sb.by<SB_TOP+SB_BR&&!sbInMouth(sb.bx)){
+        sb.by=SB_TOP+SB_BR;
+        sb.bvy=Math.abs(sb.bvy)*SB_WALL_BOUNCE;
+    }
+}
+
+function sbStep(ts){
+
+    sb.raf=0;
+
+    if(!sb.running)return;
+
+    const dt=Math.min(0.05,(ts-(sb.last||ts))/1000);
+
+    sb.last=ts;
+
+    if(sb.phase==="play"){
+
+        /* 玩家 */
+
+        let jx=sb.joy.vx;
+        let jy=sb.joy.vy;
+
+        if(!sb.joy.active){
+            jx=(sb.keys.right?1:0)-(sb.keys.left?1:0);
+            jy=(sb.keys.down?1:0)-(sb.keys.up?1:0);
+        }
+
+        const mag=Math.hypot(jx,jy);
+
+        if(mag>0.12){
+            const ux=jx/mag;
+            const uy=jy/mag;
+            const sp=Math.min(1,mag)*SB_PLAYER_SPEED;
+            sb.pvx=ux*sp;
+            sb.pvy=uy*sp;
+            sb.dirX=ux;
+            sb.dirY=uy;
+        }else{
+            sb.pvx=0;
+            sb.pvy=0;
+        }
+
+        sb.px=sbClamp(sb.px+sb.pvx*dt,SB_PR,SB_W-SB_PR);
+        sb.py=sbClamp(sb.py+sb.pvy*dt,SB_TOP+SB_PR,SB_H-SB_PR);
+
+        /* 敵人：追逐「足球」，速度固定低於玩家，逐步移動（不瞬移） */
+
+        const edx=sb.bx-sb.ex;
+        const edy=sb.by-sb.ey;
+        const ed=Math.hypot(edx,edy);
+        const espeed=SB_PLAYER_SPEED*SB_ENEMY_SPEED_RATIO;
+
+        if(ed>SB_ER+SB_BR-4){
+            sb.evx=edx/ed*espeed;
+            sb.evy=edy/ed*espeed;
+        }else{
+            sb.evx=0;
+            sb.evy=0;
+        }
+
+        /* 敵人截球：貼近球時，每隔一小段時間把球撥開（偏向場中央，避免把球頂死在牆角） */
+
+        sb.enemyCd-=dt;
+
+        if(ed<=SB_ER+SB_BR+6&&sb.enemyCd<=0&&ed>0.001){
+
+            const cx=SB_W/2-sb.bx;
+            const cy=(SB_TOP+SB_H)/2-sb.by;
+            const cd=Math.hypot(cx,cy)||1;
+
+            let tx=edx/ed+cx/cd*0.6;
+            let ty=edy/ed+cy/cd*0.6;
+            const td=Math.hypot(tx,ty)||1;
+
+            sb.bvx=tx/td*SB_ENEMY_TACKLE_POWER;
+            sb.bvy=ty/td*SB_ENEMY_TACKLE_POWER;
+            sb.enemyCd=SB_ENEMY_TACKLE_CD;
+        }
+
+        sb.ex=sbClamp(sb.ex+sb.evx*dt,SB_ER,SB_W-SB_ER);
+        sb.ey=sbClamp(sb.ey+sb.evy*dt,SB_TOP+SB_ER,SB_H-SB_ER);
+
+        /* 玩家與敵人互相擠開 */
+
+        const pdx=sb.px-sb.ex;
+        const pdy=sb.py-sb.ey;
+        const pd=Math.hypot(pdx,pdy);
+        const pmin=SB_PR+SB_ER-6;
+
+        if(pd<pmin&&pd>0.001){
+            const push=(pmin-pd)/2;
+            const nx=pdx/pd;
+            const ny=pdy/pd;
+            sb.px=sbClamp(sb.px+nx*push,SB_PR,SB_W-SB_PR);
+            sb.py=sbClamp(sb.py+ny*push,SB_TOP+SB_PR,SB_H-SB_PR);
+            sb.ex=sbClamp(sb.ex-nx*push,SB_ER,SB_W-SB_ER);
+            sb.ey=sbClamp(sb.ey-ny*push,SB_TOP+SB_ER,SB_H-SB_ER);
+        }
+
+        /* 足球 */
+
+        sb.bx+=sb.bvx*dt;
+        sb.by+=sb.bvy*dt;
+
+        const f=Math.exp(-SB_FRICTION*dt);
+
+        sb.bvx*=f;
+        sb.bvy*=f;
+
+        if(Math.hypot(sb.bvx,sb.bvy)<5){
+            sb.bvx=0;
+            sb.bvy=0;
+        }
+
+        sbCollide(sb.px,sb.py,sb.pvx,sb.pvy,SB_PR);
+        sbCollide(sb.ex,sb.ey,sb.evx,sb.evy,SB_ER);
+
+        sbWalls();
+
+        sbPushOut(true);
+        sbPushOut(false);
+
+        /* 進球：球心越過球門線，且位於球門口之內 */
+
+        if(sb.by<SB_TOP-2&&sbInMouth(sb.bx)){
+            sbGoal();
+        }
+
+    }else if(sb.phase==="goal"){
+
+        /* 進球後：玩家、敵人停止，球在網內慢慢停下 */
+
+        sb.bx+=sb.bvx*dt;
+        sb.by+=sb.bvy*dt;
+
+        const f=Math.exp(-6*dt);
+
+        sb.bvx*=f;
+        sb.bvy*=f;
+
+        sb.bx=sbClamp(sb.bx,SB_GX1+SB_BR+4,SB_GX2-SB_BR-4);
+        sb.by=sbClamp(sb.by,SB_BR+6,SB_TOP-4);
+    }
+
+    sbRender();
+
+    sb.raf=requestAnimationFrame(sbStep);
+}
+
+function sbKick(){
+
+    if(!sb.running||sb.phase!=="play")return;
+
+    const now=performance.now();
+
+    if(now<sb.kickAt)return;
+
+    const d=Math.hypot(sb.bx-sb.px,sb.by-sb.py);
+
+    if(d>SB_KICK_RANGE){
+
+        if(now-sb.hintAt>1200){
+            sb.hintAt=now;
+            toast("靠近足球才能踢！");
+        }
+
+        return;
+    }
+
+    sb.kickAt=now+SB_KICK_COOLDOWN;
+
+    sb.bvx=sb.dirX*SB_KICK_POWER;
+    sb.bvy=sb.dirY*SB_KICK_POWER;
+
+    sb.kicks++;
+}
+
+function sbGoal(){
+
+    if(sb.phase!=="play")return;
+
+    sb.phase="goal";
+
+    sb.joy.vx=0;sb.joy.vy=0;
+    sb.pvx=0;sb.pvy=0;
+    sb.evx=0;sb.evy=0;
+
+    /* 立刻保存「已進球」：之後即使重新整理，也能直接領取，不必再踢一次 */
+
+    /* 一次上傳只玩一場：這一球同時完成目前所有「待射門」的事件 */
+
+    const event=findStepPending(sb.eventId);
+
+    if(event&&event.status!=="goal"){
+        event.kicks=(event.kicks||0)+sb.kicks;
+        sb.kicks=0;
+    }
+
+    let settled=false;
+
+    getStepPending().forEach(e=>{
+        if(e.status!=="goal"){
+            e.status="goal";
+            settled=true;
+        }
+    });
+
+    if(settled)save();
+
+    document.getElementById("sbGoalText")?.classList.add("show");
+
+    clearTimeout(sb.timer);
+
+    sb.timer=setTimeout(exitStepSoccer,1400);
+}
+
+function resetStepSoccerBall(){
+
+    if(!sb.running||sb.phase!=="play")return;
+
+    sbPlaceStart();
+    sbRender();
+}
+
+function sbSetKnob(dx,dy){
+
+    const knob=document.getElementById("sbJoystickKnob");
+
+    if(knob)knob.style.transform=`translate(${dx}px,${dy}px)`;
+}
+
+function sbJoyMove(e){
+
+    const joy=document.getElementById("sbJoystick");
+
+    const r=joy.getBoundingClientRect();
+
+    const radius=r.width/2-23;
+
+    let dx=e.clientX-(r.left+r.width/2);
+    let dy=e.clientY-(r.top+r.height/2);
+
+    const d=Math.hypot(dx,dy);
+
+    if(d>radius){
+        dx=dx/d*radius;
+        dy=dy/d*radius;
+    }
+
+    sbSetKnob(dx,dy);
+
+    sb.joy.vx=dx/radius;
+    sb.joy.vy=dy/radius;
+}
+
+function sbJoyEnd(e){
+
+    if(!sb.joy.active||(e&&e.pointerId!==sb.joy.pid))return;
+
+    sb.joy.active=false;
+    sb.joy.pid=null;
+    sb.joy.vx=0;
+    sb.joy.vy=0;
+
+    sbSetKnob(0,0);
+}
+
+function sbBindControls(){
+
+    if(sb.bound)return;
+
+    const joy=document.getElementById("sbJoystick");
+    const kick=document.getElementById("sbKick");
+
+    if(!joy||!kick)return;
+
+    sb.bound=true;
+
+    joy.addEventListener("pointerdown",e=>{
+        if(!sb.running||sb.phase!=="play")return;
+        e.preventDefault();
+        e.stopPropagation();
+        sb.joy.active=true;
+        sb.joy.pid=e.pointerId;
+        try{joy.setPointerCapture(e.pointerId);}catch(err){}
+        sbJoyMove(e);
+    });
+
+    joy.addEventListener("pointermove",e=>{
+        if(!sb.joy.active||e.pointerId!==sb.joy.pid)return;
+        e.preventDefault();
+        sbJoyMove(e);
+    });
+
+    joy.addEventListener("pointerup",sbJoyEnd);
+    joy.addEventListener("pointercancel",sbJoyEnd);
+    joy.addEventListener("lostpointercapture",sbJoyEnd);
+
+    /* 踢球用 pointerdown，避免被全域「防雙擊放大」的 touchend 攔掉連點 */
+
+    kick.addEventListener("pointerdown",e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        sbKick();
+    });
+
+    window.addEventListener("resize",()=>{
+        if(sb.running)sbFit();
+    });
+
+    const keyMap={
+        ArrowLeft:"left",a:"left",A:"left",
+        ArrowRight:"right",d:"right",D:"right",
+        ArrowUp:"up",w:"up",W:"up",
+        ArrowDown:"down",s:"down",S:"down"
+    };
+
+    window.addEventListener("keydown",e=>{
+        if(!sb.running)return;
+        if(keyMap[e.key]){sb.keys[keyMap[e.key]]=true;e.preventDefault();}
+        if(e.key===" "||e.key==="Enter"){e.preventDefault();sbKick();}
+    });
+
+    window.addEventListener("keyup",e=>{
+        if(keyMap[e.key])sb.keys[keyMap[e.key]]=false;
+    });
+}
+
+/* 我方角色 = 目前的料理小幫手；沒有設定小幫手時退回預設角色 */
+function sbPickPlayer(){
+
+    const id=state.helper?.characterId;
+
+    const c=id?getCharacter(id):null;
+
+    return c||null;
+}
+
+/* 對手 = 派遣頁可選角色（state.joined）中隨機一位，盡量避開與我方同名的角色 */
+function sbPickEnemy(player){
+
+    const all=(Array.isArray(state.joined)?state.joined:[])
+        .map(id=>getCharacter(id))
+        .filter(Boolean);
+
+    let pool=player?all.filter(c=>c.id!==player.id&&c.name!==player.name):all;
+
+    if(!pool.length)pool=all;
+
+    if(!pool.length)return null;
+
+    return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function startStepSoccer(eventId){
+
+    if(sb.running)return;
+
+    const event=findStepPending(eventId);
+
+    if(!event)return;
+
+    if(event.status==="goal"){
+        showStepClaimLayer(event.id);
+        return;
+    }
+
+    /* 離開花園操作：確保花園搖桿不在操作中 */
+
+    try{
+        if(gJoy.active){gJoy.active=false;gJoy.pid=null;}
+        stopGardenJoystickMove();
+    }catch(err){}
+
+    sbBindControls();
+
+    /* 每一場開始時決定雙方角色；「重置」不會經過這裡，所以對手不會重抽 */
+
+    const playerChar=sbPickPlayer();
+    const enemyChar=sbPickEnemy(playerChar);
+
+    sb.playerId=playerChar?playerChar.id:null;
+    sb.enemyId=enemyChar?enemyChar.id:null;
+
+    const pImg=document.getElementById("sbPlayerImg");
+    const eImg=document.getElementById("sbEnemyImg");
+
+    /* 圖片載入失敗時會被 onerror 隱藏，換角色前先還原顯示 */
+    [pImg,eImg].forEach(img=>{
+        img.style.display="";
+        if(img.nextElementSibling)img.nextElementSibling.style.display="";
+    });
+
+    pImg.src=MEMBER_BASE+(playerChar?playerChar.file:SB_PLAYER_FILE);
+    eImg.src=MEMBER_BASE+(enemyChar?enemyChar.file:SB_ENEMY_FILE);
+
+    document.getElementById("sbGoalText").classList.remove("show");
+
+    sb.eventId=eventId;
+    sb.kicks=0;
+    sb.kickAt=0;
+    sb.enemyCd=0;
+    sb.keys={};
+    sb.joy={active:false,pid:null,vx:0,vy:0};
+    sb.ready=false;
+    sb.phase="play";
+    sb.running=true;
+    sb.last=0;
+
+    sbSetKnob(0,0);
+    sbPlaceStart();
+
+    document.getElementById("soccerLayer").classList.add("show");
+
+    sbFit();
+    sbRender();
+
+    sb.raf=requestAnimationFrame(sbStep);
+}
+
+function exitStepSoccer(){
+
+    if(!sb.running)return;
+
+    const wasGoal=sb.phase==="goal";
+    const eventId=sb.eventId;
+
+    sb.running=false;
+    sb.phase="idle";
+
+    clearTimeout(sb.timer);
+
+    if(sb.raf){
+        cancelAnimationFrame(sb.raf);
+        sb.raf=0;
+    }
+
+    sb.joy={active:false,pid:null,vx:0,vy:0};
+    sb.keys={};
+    sbSetKnob(0,0);
+
+    /* 中途退出：只保存踢球進度，事件仍是待完成，不會重抽、不會發獎 */
+
+    if(sb.kicks>0){
+        const event=findStepPending(eventId);
+        if(event){
+            event.kicks=(event.kicks||0)+sb.kicks;
+            save();
+        }
+        sb.kicks=0;
+    }
+
+    document.getElementById("soccerLayer").classList.remove("show");
+
+    renderStepViews();
+
+    if(wasGoal){
+        showStepClaimLayer(eventId);
+    }
 }
 
 
@@ -10030,6 +11277,7 @@ state.cooking.push({recipeId:null,endTime:0,helperEnabled:false});
 saveReady=true;
 await save();
 renderGarden();
+if(getStepPending().length)toast("⚽ 有待完成的射門事件，到「步數派遣」繼續");
 setInterval(gameTick,1000);
 
 }
