@@ -3461,6 +3461,130 @@ button,
     color:#927f6d;
 }
 
+/* 小遊戲樂園（自由遊玩）入口與選單 */
+
+.arcade-entry{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+    margin-bottom:12px;
+    padding:12px 14px;
+    text-align:left;
+    cursor:pointer;
+    font-family:inherit;
+    background:linear-gradient(135deg,#fff5d8 0%,#ffe9c2 100%);
+    border:1px solid #f0d47a;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    transition:transform .1s;
+}
+
+.arcade-entry:active{
+    transform:scale(.98);
+}
+
+.arcade-entry-icon{
+    font-size:30px;
+    line-height:1;
+}
+
+.arcade-entry-text{
+    flex:1;
+    min-width:0;
+}
+
+.arcade-entry-title{
+    font-size:15px;
+    font-weight:900;
+    color:var(--brown-dark);
+}
+
+.arcade-entry-sub{
+    margin-top:2px;
+    font-size:11px;
+    font-weight:900;
+    color:#927f6d;
+}
+
+.arcade-entry-arrow{
+    font-size:22px;
+    font-weight:900;
+    color:#c9a24a;
+}
+
+.arcade-option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+    margin-top:12px;
+    padding:12px 14px;
+    text-align:left;
+    cursor:pointer;
+    font-family:inherit;
+    background:#fff;
+    border:1px solid #eadfce;
+    border-radius:16px;
+    box-shadow:0 3px 0 #eadfce;
+    transition:transform .1s;
+}
+
+.arcade-option:active{
+    transform:scale(.98);
+}
+
+.arcade-option-icon{
+    font-size:30px;
+    line-height:1;
+}
+
+.arcade-option-title{
+    font-size:15px;
+    font-weight:900;
+    color:var(--brown-dark);
+}
+
+.arcade-option-sub{
+    margin-top:2px;
+    font-size:11px;
+    font-weight:900;
+    color:#927f6d;
+}
+
+.arcade-note{
+    margin-top:12px;
+    font-size:11px;
+    font-weight:900;
+    color:#a38d79;
+    line-height:1.6;
+}
+
+.arcade-result{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    justify-content:center;
+    margin-top:12px;
+}
+
+.arcade-chip{
+    padding:5px 10px;
+    border-radius:999px;
+    background:#fff5d8;
+    border:1px solid #f0d47a;
+    font-size:12px;
+    font-weight:900;
+    color:var(--brown-dark);
+}
+
+.arcade-end-actions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:16px;
+}
+
 .soccer-layer{
     position:fixed;
     inset:0;
@@ -4137,6 +4261,15 @@ button,
 
         </div>
 
+        <button class="arcade-entry" type="button" onclick="openArcade()">
+            <div class="arcade-entry-icon">🎡</div>
+            <div class="arcade-entry-text">
+                <div class="arcade-entry-title">小遊戲樂園</div>
+                <div class="arcade-entry-sub">自由遊玩，不需要累積步數</div>
+            </div>
+            <div class="arcade-entry-arrow">›</div>
+        </button>
+
         <div id="stepPendingBox"></div>
 
         <div class="card">
@@ -4763,7 +4896,13 @@ track_r2:{name:"如果可以",url:"https://paulie0102-bear.github.io/garden/musi
 track_r3:{name:"總有一工",url:"https://paulie0102-bear.github.io/garden/music/10.mp3"},
 track_r4:{name:"絕地花園",url:"https://paulie0102-bear.github.io/garden/music/14.mp3"},
 track_r5:{name:"披星戴月的想你",url:"https://paulie0102-bear.github.io/garden/music/15.mp3"},
-track_r6:{name:"소연 (SOYEON) 퇴사할게여 (Narr. 기안84)",url:"https://paulie0102-bear.github.io/catch/music/6.mp3"}
+track_r6:{name:"소연 (SOYEON) 퇴사할게여 (Narr. 기안84)",url:"https://paulie0102-bear.github.io/catch/music/6.mp3"},
+track_r7:{name:"或許我沒有你以為的那麼勇敢 Behind the Armor",url:"https://paulie0102-bear.github.io/farm/music/7.mp3"},
+track_r8:{name:"Neverland SPECIAL CLIP",url:"https://paulie0102-bear.github.io/farm/music/8.mp3"},
+track_r9:{name:"REBEL HEART",url:"https://paulie0102-bear.github.io/farm/music/9.mp3"},
+track_r10:{name:"I AM",url:"https://paulie0102-bear.github.io/farm/music/10.mp3"},
+track_r11:{name:"ESCAPE",url:"https://paulie0102-bear.github.io/farm/music/11.mp3"}
+
 };
 
 const TASK_SEASON_REWARDS=[
@@ -4813,25 +4952,29 @@ const TASK_SEASON_REWARDS=[
 {id:"bg_r7",name:"願者上鉤",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/7.png",threshold:30},
 {id:"plant_r7",name:"天天有活力",category:"plant",img:"https://paulie0102-Bear.github.io/pharm/bouquet_energy.png",threshold:60},
 {id:"food_r7",name:"杯子蛋糕",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f9c1.png",threshold:90},
-{id:"char_r7",name:"Mr.Burnt",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/MR.BURNT.gif",threshold:120}
+{id:"char_r7",name:"Mr.Burnt",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/MR.BURNT.gif",threshold:120},
+{id:"music_r7",name:"或許我沒有你以為的那麼勇敢 Behind the Armor",category:"music",trackId:"track_r7",threshold:150}
 ],
 [
 {id:"bg_r8",name:"雪人",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/8.png",threshold:30},
 {id:"plant_r8",name:"倏然夢",category:"plant",img:"https://paulie0102-Bear.github.io/pharm/bouquet_dream.png",threshold:60},
 {id:"food_r8",name:"生日蛋糕",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f382.png",threshold:90},
-{id:"char_r8",name:"MamaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/MAMA%20QUOKKA.gif",threshold:120}
+{id:"char_r8",name:"MamaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/MAMA%20QUOKKA.gif",threshold:120},
+{id:"music_r8",name:"Neverland SPECIAL CLIP",category:"music",trackId:"track_r8",threshold:150}
 ],
 [
 {id:"bg_r9",name:"雪球",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/9.png",threshold:30},
 {id:"plant_r9",name:"成功之路",category:"plant",img:"https://paulie0102-Bear.github.io/pharm/bouquet_success.png",threshold:60},
 {id:"food_r9",name:"餅乾",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f36a.png",threshold:90},
-{id:"char_r9",name:"PapaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/PAPA%20QUOKKA.gif",threshold:120}
+{id:"char_r9",name:"PapaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/PAPA%20QUOKKA.gif",threshold:120},
+{id:"music_r9",name:"REBEL HEART",category:"music",trackId:"track_r9",threshold:150}
 ],
 [
 {id:"bg_r10",name:"眾樂樂",category:"background",img:"https://raw.githubusercontent.com/paulie0102-Bear/garden/refs/heads/main/10.png",threshold:30},
 {id:"plant_r10",name:"畢業快樂",category:"plant",img:"https://paulie0102-Bear.github.io/pharm/bouquet_grad.png",threshold:60},
 {id:"food_r10",name:"甜甜圈",category:"food",img:"https://raw.githubusercontent.com/googlefonts/noto-emoji/refs/heads/main/2D/png/128/emoji_u1f369.png",threshold:90},
-{id:"char_r10",name:"GrandpaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/GRANDPA%20QUOKKA.gif",threshold:120}
+{id:"char_r10",name:"GrandpaQuokka",category:"character",img:"https://raw.githubusercontent.com/paulie0102-Bear/farm/refs/heads/main/member/GRANDPA%20QUOKKA.gif",threshold:120},
+{id:"music_r10",name:"I AM",category:"music",trackId:"track_r10",threshold:150}
 ]
 ];
 
@@ -10560,6 +10703,10 @@ function openNextStepSoccer(){
 
     if(sb.running||pb.running)return;
 
+    /* 小遊戲樂園選單／結束提示開著時，不自動跳進正式派遣遊戲 */
+
+    if(document.querySelector(".arcade-layer"))return;
+
     /* 已有進行中（或已結算待領取）的彈珠台：優先回到彈珠台 */
 
     if(state.stepPinball){
@@ -10754,6 +10901,7 @@ const SB_ENEMY_FILE="MR.BURNT.gif";     // 備用：派遣頁沒有任何角色�
 
 const sb={
     running:false,
+    mode:"dispatch",       // dispatch（正式步數派遣）| free（小遊戲樂園自由遊玩）
     phase:"idle",          // idle | play | goal
     raf:0,
     last:0,
@@ -11092,6 +11240,19 @@ function sbGoal(){
     sb.pvx=0;sb.pvy=0;
     sb.evx=0;sb.evy=0;
 
+    /* 自由遊玩：進球只結束這一局，不碰待射門事件、不存檔、不接彈珠台 */
+
+    if(sb.mode==="free"){
+
+        document.getElementById("sbGoalText")?.classList.add("show");
+
+        clearTimeout(sb.timer);
+
+        sb.timer=setTimeout(exitStepSoccer,1400);
+
+        return;
+    }
+
     /* 立刻保存「已進球」：之後即使重新整理，也能直接領取，不必再踢一次 */
 
     /* 一次上傳只玩一場：這一球同時完成目前所有「待射門」的事件 */
@@ -11279,6 +11440,18 @@ function startStepSoccer(eventId){
         return;
     }
 
+    sbLaunch("dispatch",eventId);
+}
+
+/* 開局共用流程：mode 一定由呼叫端明確指定（dispatch | free） */
+function sbLaunch(mode,eventId){
+
+    if(sb.running)return;
+
+    sb.mode=mode==="free"?"free":"dispatch";
+
+    clearTimeout(sb.timer);
+
     /* 離開花園操作：確保花園搖桿不在操作中 */
 
     try{
@@ -11338,6 +11511,7 @@ function exitStepSoccer(){
 
     const wasGoal=sb.phase==="goal";
     const eventId=sb.eventId;
+    const mode=sb.mode;
 
     sb.running=false;
     sb.phase="idle";
@@ -11355,7 +11529,7 @@ function exitStepSoccer(){
 
     /* 中途退出：只保存踢球進度，事件仍是待完成，不會重抽、不會發獎 */
 
-    if(sb.kicks>0){
+    if(mode==="dispatch"&&sb.kicks>0){
         const event=findStepPending(eventId);
         if(event){
             event.kicks=(event.kicks||0)+sb.kicks;
@@ -11365,6 +11539,21 @@ function exitStepSoccer(){
     }
 
     document.getElementById("soccerLayer").classList.remove("show");
+
+    /* 模式不殘留：每次開局都會重新明確指定 */
+
+    sb.mode="dispatch";
+    sb.eventId=null;
+
+    /* 自由遊玩：只結束這一局，回到小遊戲樂園（不接彈珠台、不結算） */
+
+    if(mode==="free"){
+
+        if(wasGoal)showArcadeEnd("soccer");
+        else openArcade();
+
+        return;
+    }
 
     renderStepViews();
 
@@ -11469,6 +11658,8 @@ const PB_SEGS=PB_PLATES.concat(PB_DIVIDERS);
 
 const pb={
     running:false,
+    mode:"dispatch",     // dispatch（正式步數派遣）| free（小遊戲樂園自由遊玩）
+    freeRound:null,      // 自由遊玩專用的暫時盤面（只存在記憶體，不寫入存檔）
     raf:0,
     last:0,
     acc:0,
@@ -11486,6 +11677,12 @@ const pb={
 /* =========================
    盤面／資料
 ========================= */
+
+/* 目前這一局使用的「一輪」：正式派遣用存檔裡的 stepPinball，自由遊玩用暫時盤面 */
+
+function pbRound(){
+    return pb.mode==="free"?pb.freeRound:state.stepPinball;
+}
 
 function pbCleanItem(it){
 
@@ -11608,6 +11805,23 @@ function normalizeStepPinball(raw,pendingList){
         drops,
         pending,
         status:drops.length>=events.length?"settled":"playing"
+    };
+}
+
+const PB_FREE_MARBLES=3;   // 自由遊玩每局的彈珠數
+
+/* 自由遊玩專用盤面：只放在 pb.freeRound，不經過 state、不存檔 */
+
+function pbBuildFreeRound(){
+
+    return {
+        id:"free_"+Date.now().toString(36),
+        events:[],
+        total:PB_FREE_MARBLES,
+        board:pbBuildBoard(),
+        drops:[],
+        pending:null,
+        status:"playing"
     };
 }
 
@@ -11813,7 +12027,7 @@ function pbSimulateSpec(spec){
 
 function pbRecordLanding(slot){
 
-    const r=state.stepPinball;
+    const r=pbRound();
 
     if(!r||!r.pending||r.status!=="playing")return false;
 
@@ -11826,7 +12040,7 @@ function pbRecordLanding(slot){
 
     if(r.drops.length>=r.total)r.status="settled";
 
-    save();
+    if(pb.mode!=="free")save();
 
     return true;
 }
@@ -11835,7 +12049,7 @@ function pbRecordLanding(slot){
 
 function pbResolvePending(){
 
-    const r=state.stepPinball;
+    const r=pbRound();
 
     if(!r||!r.pending)return false;
 
@@ -12028,7 +12242,7 @@ function pbRender(now){
 
     const ctx=cv.getContext("2d");
     const k=pb.dpr||1;
-    const r=state.stepPinball;
+    const r=pbRound();
 
     ctx.setTransform(k,0,0,k,0,0);
     ctx.clearRect(0,0,PB_W,PB_H);
@@ -12209,7 +12423,7 @@ function pbFit(){
 
 function pbUpdateHud(){
 
-    const r=state.stepPinball;
+    const r=pbRound();
 
     const count=document.getElementById("pbCount");
     const hint=document.getElementById("pbHint");
@@ -12337,7 +12551,7 @@ function pbDrop(){
 
     if(!pb.running)return;
 
-    const r=state.stepPinball;
+    const r=pbRound();
 
     if(!r||r.status!=="playing"||r.pending||pb.marble)return;
 
@@ -12351,7 +12565,7 @@ function pbDrop(){
 
     r.pending=spec;
 
-    save();
+    if(pb.mode!=="free")save();
 
     pb.marble=pbMakeMarble(spec);
     pb.acc=0;
@@ -12401,7 +12615,7 @@ function pbLoop(ts){
 
             if(pbRecordLanding(m.slot)){
 
-                const r=state.stepPinball;
+                const r=pbRound();
                 const idx=r.drops.length-1;
                 const pos=pbStackPos(m.slot,r.drops.filter(d=>d.slot===m.slot).length-1);
 
@@ -12428,6 +12642,8 @@ function openStepPinball(){
 
     if(!state.stepPinball)return;
 
+    pb.mode="dispatch";     // 正式派遣：明確指定模式（pbResolvePending 之前就要設好）
+
     /* 上次離開時還在飛的彈珠：用同一套模擬快轉並記錄，不能重抽 */
 
     if(state.stepPinball.pending)pbResolvePending();
@@ -12441,6 +12657,20 @@ function openStepPinball(){
         showPinballClaimLayer();
         return;
     }
+
+    pbLaunch("dispatch");
+}
+
+/* 開局共用流程：mode 一定由呼叫端明確指定（dispatch | free） */
+function pbLaunch(mode){
+
+    if(pb.running||sb.running)return;
+
+    pb.mode=mode==="free"?"free":"dispatch";
+
+    clearTimeout(pb.timer);
+
+    pb.freeRound=pb.mode==="free"?pbBuildFreeRound():null;
 
     /* 離開花園操作：確保花園搖桿不在操作中 */
 
@@ -12486,9 +12716,12 @@ function exitStepPinball(){
 
     clearTimeout(pb.timer);
 
-    /* 中途離開：飛行中的彈珠快轉到落點並記錄（不能靠離開重抽） */
+    const mode=pb.mode;
+    const freeRound=pb.freeRound;
 
-    if(state.stepPinball&&state.stepPinball.pending)pbResolvePending();
+    /* 中途離開：飛行中的彈珠快轉到落點並記錄（不能靠離開重抽）。自由遊玩的暫時盤面直接丟棄 */
+
+    if(mode!=="free"&&state.stepPinball&&state.stepPinball.pending)pbResolvePending();
 
     pb.running=false;
     pb.marble=null;
@@ -12505,11 +12738,133 @@ function exitStepPinball(){
 
     document.getElementById("pinballLayer").classList.remove("show");
 
+    /* 模式不殘留：每次開局都會重新明確指定 */
+
+    pb.mode="dispatch";
+    pb.freeRound=null;
+
+    /* 自由遊玩：不結算、不領獎，只回到小遊戲樂園 */
+
+    if(mode==="free"){
+
+        if(freeRound&&freeRound.status==="settled")showArcadeEnd("pinball",freeRound);
+        else openArcade();
+
+        return;
+    }
+
     renderStepViews();
 
     const r=state.stepPinball;
 
     if(r&&r.status==="settled")showPinballClaimLayer();
+}
+
+
+/* =========================================================
+   小遊戲樂園（自由遊玩）
+
+   - 只負責開局與收尾提示，遊戲本身沿用 sbLaunch / pbLaunch
+   - 自由遊玩不讀寫 state（步數、庫存、派遣紀錄、stepPinball 都不動）
+   - 選單與結束提示使用 .arcade-layer，與正式派遣的 .step-claim-layer 分開
+========================================================= */
+
+function arcadeClose(){
+    document.querySelectorAll(".arcade-layer").forEach(el=>el.remove());
+}
+
+function openArcade(){
+
+    if(sb.running||pb.running)return;
+
+    arcadeClose();
+
+    const layer=document.createElement("div");
+
+    layer.className="dispatch-result-layer arcade-layer";
+
+    layer.innerHTML=`
+<div class="dispatch-result-modal">
+<div class="dispatch-result-title">🎡 小遊戲樂園</div>
+<div class="dispatch-result-region">自由遊玩，不需要累積步數</div>
+<button class="arcade-option" type="button" onclick="startFreeSoccer()">
+<div class="arcade-option-icon">⚽</div>
+<div><div class="arcade-option-title">足球小遊戲</div><div class="arcade-option-sub">搖桿移動、把球射進球門</div></div>
+</button>
+<button class="arcade-option" type="button" onclick="startFreePinball()">
+<div class="arcade-option-icon">🎯</div>
+<div><div class="arcade-option-title">彈珠台小遊戲</div><div class="arcade-option-sub">放下彈珠，看它落進哪一格</div></div>
+</button>
+<div class="arcade-note">自由遊玩不會獲得獎勵，也不會影響步數派遣</div>
+<button class="btn btn-light dispatch-result-close" type="button" onclick="arcadeClose()">← 返回派遣頁面</button>
+</div>`;
+
+    document.body.appendChild(layer);
+}
+
+function startFreeSoccer(){
+
+    if(sb.running||pb.running)return;
+
+    arcadeClose();
+
+    sbLaunch("free",null);
+}
+
+function startFreePinball(){
+
+    if(sb.running||pb.running)return;
+
+    arcadeClose();
+
+    pbLaunch("free");
+}
+
+function arcadeReplay(game){
+
+    if(game==="pinball")startFreePinball();
+    else startFreeSoccer();
+}
+
+/* 自由遊玩結束提示：只顯示這一局的結果，不發獎勵 */
+function showArcadeEnd(game,round){
+
+    arcadeClose();
+
+    let title;
+    let body="";
+
+    if(game==="pinball"){
+
+        title="🎯 彈珠台結束";
+
+        const chips=round?pbTotals(round):[];
+
+        body=chips.length
+            ?`<div class="arcade-result">${chips.map(c=>`<span class="arcade-chip">${c.icon} ${c.name} ×${c.count}</span>`).join("")}</div>`
+            :"";
+
+    }else{
+
+        title="⚽ 進球成功！";
+    }
+
+    const layer=document.createElement("div");
+
+    layer.className="dispatch-result-layer arcade-layer";
+
+    layer.innerHTML=`
+<div class="dispatch-result-modal">
+<div class="dispatch-result-title">${title}</div>
+<div class="dispatch-result-region">自由遊玩・不會獲得獎勵</div>
+${body}
+<div class="arcade-end-actions">
+<button class="btn btn-green" type="button" onclick="arcadeReplay('${game}')">🔄 再玩一次</button>
+<button class="btn btn-light" type="button" onclick="openArcade()">← 返回小遊戲樂園</button>
+</div>
+</div>`;
+
+    document.body.appendChild(layer);
 }
 
 
