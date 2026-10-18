@@ -7162,29 +7162,93 @@ function renderExpedition(){
    回傳：結果卡用的 bonus，沒有結果則回傳 null
 ========================================================= */
 
+/* =========================================================
+   角色系列／裝扮公平抽選（派遣與彈珠台第 7 格共用）
+
+   系列 = CHARACTERS 中 name 相同的角色（依資料自動歸類，不硬編碼）。
+   第一階段：系列等機率；第二階段：系列內「未滿 3 心」的裝扮等機率。
+========================================================= */
+
+function getCharacterSeriesMap(){
+
+    const map=new Map();
+
+    CHARACTERS.forEach(c=>{
+        if(!c)return;
+        if(!map.has(c.name))map.set(c.name,[]);
+        map.get(c.name).push(c);
+    });
+
+    return map;
+}
+
+function isOutfitFriendshipFull(c){
+    return Number(state.friendship?.[c.id]||0)>=3;
+}
+
+/* 從指定系列中，等機率抽一個未滿 3 心的裝扮；全滿則回傳 null */
+function pickEligibleOutfitInSeries(seriesName){
+
+    const pool=(getCharacterSeriesMap().get(seriesName)||[])
+        .filter(c=>!isOutfitFriendshipFull(c));
+
+    return pool.length?pool[Math.floor(Math.random()*pool.length)]:null;
+}
+
+/* 兩階段抽選：先等機率抽系列（只算還有未滿心裝扮的系列），再抽裝扮；沒有任何合格裝扮回傳 null */
+function pickFriendshipTarget(){
+
+    const series=[];
+
+    getCharacterSeriesMap().forEach((list,name)=>{
+        if(list.some(c=>!isOutfitFriendshipFull(c)))series.push(name);
+    });
+
+    if(!series.length)return null;
+
+    return pickEligibleOutfitInSeries(
+        series[Math.floor(Math.random()*series.length)]
+    );
+}
+
+/* 好感度 +1（上限 3，滿 3 心加入小隊）。回傳 {ok,newValue,joined}；已滿則 ok=false 且不更動 */
+function addOutfitFriendship(id){
+
+    if(!state.friendship||typeof state.friendship!=="object")state.friendship={};
+    if(!Array.isArray(state.joined))state.joined=[];
+
+    const current=Number(state.friendship[id]||0);
+
+    if(current>=3)return {ok:false,newValue:current,joined:false};
+
+    const v=current+1;
+
+    state.friendship[id]=v;
+
+    let joined=false;
+
+    if(v>=3&&!state.joined.includes(id)){
+        state.joined.push(id);
+        joined=true;
+    }
+
+    return {ok:true,newValue:v,joined};
+}
+
 function applyCharacterEncounter(character){
 
     let bonus=null;
 
 
     /*
-       找角色本體。
-
-       例如抽到 QUOKKA7，
-       好感仍算在 QUOKKA。
-
-       抽到 BOBO2，
-       好感仍算在 BOBO。
+       每個裝扮使用自己的角色 ID 記錄好感度（互相獨立），
+       不再集中寫入基礎角色。
+       舊存檔中記在基礎角色 ID 的好感度，
+       本來就等於「基礎裝扮自己的好感度」，不需遷移、也不會膨脹。
     */
 
-    const baseCharacter=
-        getBaseCharacter(
-            character
-        );
-
-
     const friendshipId=
-        baseCharacter.id;
+        character.id;
 
 
     if(
@@ -7474,11 +7538,17 @@ function completeDispatch(){
 
 
             /*
-               再從這個角色的所有裝扮中
-               隨機選一個外觀。
+               第二階段：只從這個系列「未滿 3 心」的裝扮中等機率抽一個。
+               若整個系列都已滿心，維持原有行為：
+               隨機取一個外觀，交給 applyCharacterEncounter 走原本的送禮分支
+               （不增加任何好感度）。
             */
 
             const character=
+                pickEligibleOutfitInSeries(
+                    targetName
+                )
+                ||
                 getRandomCharacterOutfit(
                     targetName
                 );
@@ -10278,6 +10348,22 @@ function applyStepReading(reading){
 
 function stepEventToView(event){
 
+    if(event.kind==="friendship"){
+
+        const ch=getCharacter(event.charId);
+
+        if(!ch)return null;
+
+        return {
+            bonus:null,
+            reward:[{
+                icon:"💗",
+                name:ch.name+" 好感度"+(event.capped?"（已滿）":""),
+                count:event.capped?0:1
+            }]
+        };
+    }
+
     if(event.kind==="recipe"){
 
         const recipe=RECIPES.find(r=>r.id===event.recipeId);
@@ -11696,6 +11782,11 @@ function pbCleanItem(it){
         return {kind:"ingredient",itemId:it.itemId};
     }
 
+    /* 新版第 7 格：指定裝扮的好感度獎勵（目標在建立盤面時固定） */
+    if(it.kind==="friendship"&&typeof it.charId==="string"&&getCharacter(it.charId)){
+        return {kind:"friendship",charId:it.charId};
+    }
+
     return null;
 }
 
@@ -11705,7 +11796,12 @@ function pbSlotMeta(item){
 
     if(item.kind==="recipe"){
         const r=RECIPES.find(x=>x.id===item.recipeId);
-        return {icon:r?r.icon:"🍽️",name:r?r.name:"料理"};
+        return {icon:r?r.icon:"🍽️",name:r?r.name:"料理",tag:"料理"};
+    }
+
+    if(item.kind==="friendship"){
+        const c=getCharacter(item.charId);
+        return {icon:"💗",name:(c?c.name:"角色")+" 好感度",tag:"好感"};
     }
 
     const g=INGREDIENTS[item.itemId];
@@ -11713,13 +11809,19 @@ function pbSlotMeta(item){
     return {icon:g?g.icon:item.itemId,name:g?g.name:item.itemId};
 }
 
-/* 6 種食材各一格 + 隨機 1 道料理，Fisher–Yates 洗牌一次 */
+/* 6 種食材各一格 + 第 7 格（優先：兩階段抽選出的好感度目標；沒有合格裝扮才退回隨機料理），Fisher–Yates 洗牌一次 */
 
 function pbBuildBoard(){
 
     const slots=Object.keys(INGREDIENTS).map(id=>({kind:"ingredient",itemId:id}));
 
-    slots.push({kind:"recipe",recipeId:pickRandomItem(RECIPES).id});
+    const target=pickFriendshipTarget();
+
+    if(target){
+        slots.push({kind:"friendship",charId:target.id});
+    }else{
+        slots.push({kind:"recipe",recipeId:pickRandomItem(RECIPES).id});
+    }
 
     for(let i=slots.length-1;i>0;i--){
         const j=Math.floor(Math.random()*(i+1));
@@ -11799,6 +11901,7 @@ function normalizeStepPinball(raw,pendingList){
 
     return {
         id,
+        v:raw.v===2?2:1,     /* 1=舊盤面（第 7 格為料理）；2=新盤面（第 7 格可為好感度） */
         events,
         total:events.length,
         board,
@@ -11837,6 +11940,7 @@ function createPinballRound(goalEvents){
 
     state.stepPinball={
         id:"pb_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7),
+        v:2,
         events:evs.map(e=>({id:e.id,step:e.step,date:e.date})),
         total:evs.length,
         board:pbBuildBoard(),
@@ -12064,7 +12168,7 @@ function pbTotals(round){
 
     round.drops.forEach(d=>{
 
-        const key=d.kind==="recipe"?"r:"+d.recipeId:"i:"+d.itemId;
+        const key=d.kind==="recipe"?"r:"+d.recipeId:d.kind==="friendship"?"f:"+d.charId:"i:"+d.itemId;
         const cur=map.get(key);
 
         if(cur){
@@ -12107,6 +12211,8 @@ function showPinballClaimLayer(){
    - 發放、移除對應步數事件、寫入 stepLog、清除這一輪，全部在同一個同步區塊完成
    - 清掉之後再呼叫一次只會回傳 false，不會重複發放
 */
+let pbClaimNotes=[];
+
 function claimPinballRound(id){
 
     const r=state.stepPinball;
@@ -12116,6 +12222,8 @@ function claimPinballRound(id){
     r.granted=true;
 
     const list=getStepPending();
+
+    pbClaimNotes=[];
 
     r.events.forEach((ev,i)=>{
 
@@ -12136,6 +12244,28 @@ function claimPinballRound(id){
             logged.kind="recipe";
             logged.recipeId=d.recipeId;
             logged.count=Number(d.count)||1;
+
+        }else if(d.kind==="friendship"){
+
+            /* 好感度只在這裡（正式領獎）寫入；只加給盤面指定的那個裝扮，
+               已滿 3 心時不增加、也不轉送給其他裝扮 */
+
+            const ch=getCharacter(d.charId);
+            const res=addOutfitFriendship(d.charId);
+
+            logged.kind="friendship";
+            logged.charId=d.charId;
+            logged.capped=!res.ok;
+
+            if(!ch){
+                pbClaimNotes.push("指定角色不存在，好感度獎勵略過");
+            }else if(!res.ok){
+                pbClaimNotes.push(`${ch.name} 的好感度已滿 ❤️❤️❤️，此次好感度獎勵不再增加`);
+            }else if(res.joined){
+                pbClaimNotes.push(`🎉 ${ch.name} 好感度達到 ❤️❤️❤️，已加入小隊！`);
+            }else{
+                pbClaimNotes.push(`💗 ${ch.name} 好感度 +1（${res.newValue}/3）`);
+            }
 
         }else{
 
@@ -12172,7 +12302,7 @@ function confirmClaimPinball(id,btn){
 
     document.querySelectorAll(".step-claim-layer").forEach(el=>el.remove());
 
-    if(ok)toast("🎁 已領取彈珠台獎勵");
+    if(ok)toast(pbClaimNotes.length?"🎁 已領取彈珠台獎勵\n"+pbClaimNotes.join("；"):"🎁 已領取彈珠台獎勵");
 
     if(getStepPending().length||state.stepPinball){
         setTimeout(openNextStepSoccer,350);
@@ -12293,7 +12423,7 @@ function pbRender(now){
 
         const item=r?r.board[i]:null;
         const x=PB_L+PB_SLOT_W*i;
-        const isDish=!!item&&item.kind==="recipe";
+        const isDish=!!item&&item.kind!=="ingredient";
 
         ctx.fillStyle=isDish?"rgba(255,217,102,.55)":"rgba(255,255,255,.14)";
         pbRoundRect(ctx,x+3,PB_SLOT_TOP+6,PB_SLOT_W-6,PB_SLOT_BOT-PB_SLOT_TOP-8,8);
@@ -12314,7 +12444,7 @@ function pbRender(now){
         if(isDish){
             ctx.font="bold 10px sans-serif";
             ctx.fillStyle="#fff3c4";
-            ctx.fillText("料理",x+PB_SLOT_W/2,PB_SLOT_TOP+52);
+            ctx.fillText(meta.tag||"料理",x+PB_SLOT_W/2,PB_SLOT_TOP+52);
         }
     }
 
@@ -12437,7 +12567,7 @@ function pbUpdateHud(){
     if(count)count.textContent=`🔵 剩 ${left}／${r.total}`;
 
     if(hint){
-        const dish=r.board.find(b=>b.kind==="recipe");
+        const dish=r.board.find(b=>b.kind!=="ingredient");
         const meta=pbSlotMeta(dish);
         hint.textContent=`搖桿左右移動・金色格是 ${meta.icon} ${meta.name}`;
     }
