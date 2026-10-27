@@ -1,4 +1,4 @@
-const CACHE_NAME = "secret-garden-v9";
+const CACHE_NAME = "secret-garden-v10";
 
 const CACHE_FILES = [
     "./",
