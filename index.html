@@ -4887,7 +4887,8 @@ const TASK_CONFIG={
 seasonLengthDays:14,
 seasonAnchor:{year:2026,month:8,day:28,hour:8},
 dailyTaskPoints:5,
-dailyResetHour:8
+dailyResetHour:8,
+musicPurchasePrice:300
 };
 
 const TASK_MUSIC_TRACKS={
@@ -5269,12 +5270,59 @@ renderMusicModal();
 openModal();
 }
 
+/* 取得「活動已結束、玩家尚未解鎖」的歌曲 ID（依活動順序排列）。
+   活動歌曲以 TASK_SEASON_REWARDS 的輪次為準；
+   該輪次已結束（目前輪次序號 > 該輪序號），且目前不是正在進行同一份獎勵時，才開放購買。 */
+function getPurchasableTrackIds(){
+const m=state.taskSystem.music;
+const len=TASK_SEASON_REWARDS.length;
+const curIdx=taskCurrentSeasonIndex(Date.now());
+const result=[];
+TASK_SEASON_REWARDS.forEach((season,i)=>{
+const ended=curIdx>i;
+const runningNow=(((curIdx%len)+len)%len)===i;
+if(!ended||runningNow)return;
+season.forEach(r=>{
+if(r.category==="music"&&r.trackId&&TASK_MUSIC_TRACKS[r.trackId]&&!m.unlocked.includes(r.trackId)&&!result.includes(r.trackId)){
+result.push(r.trackId);
+}
+});
+});
+return result;
+}
+
+function refreshCoinDisplays(){
+["gardenCoins","kitchenCoins","truckCoins"].forEach(id=>{
+const el=document.getElementById(id);
+if(el)el.textContent=state.coins;
+});
+}
+
+function purchaseTaskMusic(id){
+ensureTaskSystem();
+const m=state.taskSystem.music;
+const track=TASK_MUSIC_TRACKS[id];
+if(!track)return;
+if(m.unlocked.includes(id)){renderMusicModal();return;}
+if(!getPurchasableTrackIds().includes(id)){toast("此歌曲目前無法購買");return;}
+const price=TASK_CONFIG.musicPurchasePrice;
+if(state.coins<price){toast("錢幣不足");return;}
+if(!confirm(`花費 ${price} 金幣購買解鎖「${track.name}」？`))return;
+state.coins-=price;
+m.unlocked.push(id);
+save();
+refreshCoinDisplays();
+renderMusicModal();
+toast("已購買解鎖："+track.name);
+}
+
 function renderMusicModal(){
 ensureTaskSystem();
 const m=state.taskSystem.music;
 const unlocked=m.unlocked;
+const purchasable=getPurchasableTrackIds();
 let listHtml;
-if(!unlocked.length){
+if(!unlocked.length&&!purchasable.length){
 listHtml=`<div style="font-size:11px;color:#998675;text-align:center;padding:14px 0;">尚未解鎖任何音樂，完成任務解鎖吧！</div>`;
 }else{
 listHtml=unlocked.map(id=>{
@@ -5290,11 +5338,25 @@ return `<div style="display:flex;align-items:center;gap:10px;padding:7px 8px;bor
 </div>
 <button class="btn btn-light" style="width:auto;min-height:30px;padding:4px 10px;font-size:12px;">${isPlaying?"⏸":"▶"}</button>
 </div>`;
+}).join("")+purchasable.map(id=>{
+const track=TASK_MUSIC_TRACKS[id];
+if(!track)return"";
+const price=TASK_CONFIG.musicPurchasePrice;
+const canAfford=state.coins>=price;
+return `<div style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:12px;opacity:.85;">
+<div style="font-size:20px;filter:grayscale(1);">🔒</div>
+<div style="flex:1;min-width:0;">
+<div style="font-size:12px;font-weight:900;color:#4a4039;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${track.name}</div>
+<div style="font-size:10px;color:#998675;">限時活動已結束，可購買解鎖</div>
+</div>
+<button class="btn ${canAfford?"btn-orange":"btn-light"}" style="width:auto;min-height:30px;padding:4px 10px;font-size:12px;flex-shrink:0;" onclick="purchaseTaskMusic('${id}')">💰${price}</button>
+</div>`;
 }).join("");
 }
 const modal=document.getElementById("modal");
 if(!modal)return;
 modal.innerHTML=`<div class="modal-title">💿 音樂播放器</div>
+${purchasable.length?`<div style="font-size:11px;color:#998675;text-align:right;margin-bottom:6px;">目前擁有 💰${state.coins}</div>`:""}
 <div style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;margin-bottom:10px;">${listHtml}</div>
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
 <span style="font-size:11px;color:#765b45;font-weight:900;white-space:nowrap;">🔊 音量</span>
@@ -5308,6 +5370,7 @@ modal.innerHTML=`<div class="modal-title">💿 音樂播放器</div>
 function toggleTaskMusic(id){
 ensureTaskSystem();
 const m=state.taskSystem.music;
+if(!m.unlocked.includes(id))return;
 const isPlaying=m.current===id&&AudioSys.isPlaying;
 if(isPlaying){
 AudioSys.pause();
